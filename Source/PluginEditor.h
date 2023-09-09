@@ -56,11 +56,12 @@ public:
         int processorPattern=audioProcessor.pseq_current->get()-1;
 
         debug.setText ("ppq = " + std::__cxx11::to_string(ppq)+"\n"+
-                       "pattern\t\t\t" + std::__cxx11::to_string(seq_pattern_selected.getSelectedItemIndex()+1)+
+                       "pattern\t\t\t" + std::__cxx11::to_string(/*seq_pattern_selected.getSelectedItemIndex()+1*/audioProcessor.pseq_current->get())+
                        " step " +std::__cxx11::to_string(index+1)+"\n" +
                        "sequence\t" +std::__cxx11::to_string(seq_sequence_selected.getSelectedItemIndex()+1)+ 
-                       " step " +std::__cxx11::to_string(seqIndex+1)
-                       , juce::dontSendNotification);      
+                       " step " +std::__cxx11::to_string(seqIndex+1) +"\n"/*+
+                       " stepIndex " + std::__cxx11::to_string(audioProcessor.pseq_current->get())*/
+                       , juce::dontSendNotification);     
 
         for (int i=0;i<sizeof(sequence)/sizeof(sequence[0]);i++)
         {
@@ -197,16 +198,18 @@ public:
     {   
         int seqIndex=seq_sequence_selected.getSelectedItemIndex();
         sequences[seqIndex][step]=sseq_step[step].getSelectedItemIndex();       
-        ssequence[step]=sequences[seqIndex][step];
-        audioProcessor.pseq_current->operator=(seqIndex+1);
+        //ssequence[step]=sequences[seqIndex][step];
+        audioProcessor.pattern_seqs[seqIndex][step]=sseq_step[step].getSelectedItemIndex();
+        
+        //audioProcessor.sseq_current->operator=(seqIndex+1);
     }
     void seq_pattern_change() 
     {   
         int seqIndex=seq_sequence_selected.getSelectedItemIndex();  
         for (int i=0;i<sizeof(sequence)/sizeof(sequence[0]);i++) 
             {
-                ssequence[i]=sequences[seqIndex][i];
-                sseq_step[i].setSelectedItemIndex(ssequence[i]);
+                //ssequence[i]=sequences[seqIndex][i];
+                sseq_step[i].setSelectedItemIndex(sequences[seqIndex][i]);
             }
         audioProcessor.sseq_current->operator=(seqIndex+1);
     }
@@ -238,7 +241,25 @@ public:
     {
         audioProcessor.pseq_gate_length->operator=(seq_gate_length.getValue());
     }
-
+    void ui_debug(std::string text)
+    {
+        debug.setText (text, juce::dontSendNotification);
+    }
+    void init_all_sequences()
+    {
+        for (int i;i<16;i++){
+            audioProcessor.sequences[i]=bitArrayToInt32(patterns[i],16);
+            for (int j;j<16;j++){
+                audioProcessor.pattern_seqs[i][j]=patterns[i][j];
+            }
+        }
+        // PATTERN INIT FOR PROCESSOR;
+       /* for (int i=15;i<=0;i--) {
+            audioProcessor.updatePattern(i,bitArrayToInt32(patterns[i],16));
+        }*/
+        
+        audioProcessor.initGatesMap();
+    }
 
 private:
     // This reference is provided as a quick way for your editor to
@@ -280,8 +301,6 @@ private:
     juce::ImageButton banner;
     juce::TextEditor debug;
     
-    
-
     const std::string imagePath="/home/pwner/dev/chopper/Ressources/images";
 
     bool patterns[16][16]={{1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0},{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},{1,1,1,1,0,0,0,0,1,1,1,1,0,0,0,0},{1,1,0,0,1,1,0,0,1,1,0,0,1,1,0,0},
@@ -289,7 +308,7 @@ private:
                            {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
                            {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1} 
                             };
-    int sequences[16][16]={{0,1,0,2,4,5,4,6,0,4,3,5,0,2,0,6},{0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15},{0,1,0,2,4,5,4,6,0,4,3,5,0,2,0,6},{0,1,0,2,4,5,4,6,0,4,3,5,0,2,0,6},
+    int sequences[16][16]={{0,1,0,2,0,1,0,2,0,1,0,2,0,1,0,2},{3,4,3,5,3,4,3,5,3,4,3,5,3,4,3,5},{6,7,6,8,6,7,6,8,6,7,6,8,6,7,6,8},{0,1,0,2,4,5,4,6,0,4,3,5,0,2,0,6},
                            {0,1,0,2,4,5,4,6,0,4,3,5,0,2,0,6},{0,1,0,2,4,5,4,6,0,4,3,5,0,2,0,6},{0,1,0,2,4,5,4,6,0,4,3,5,0,2,0,6},{0,1,0,2,4,5,4,6,0,4,3,5,0,2,0,6},
                            {0,1,0,2,4,5,4,6,0,4,3,5,0,2,0,6},{0,1,0,2,4,5,4,6,0,4,3,5,0,2,0,6},{0,1,0,2,4,5,4,6,0,4,3,5,0,2,0,6},{0,1,0,2,4,5,4,6,0,4,3,5,0,2,0,6},
                            {0,1,0,2,4,5,4,6,0,4,3,5,0,2,0,6},{0,1,0,2,4,5,4,6,0,4,3,5,0,2,0,6},{0,1,0,2,4,5,4,6,0,4,3,5,0,2,0,6},{0,1,0,2,4,5,4,6,0,4,3,5,0,2,0,6}            

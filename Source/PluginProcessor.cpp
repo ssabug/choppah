@@ -30,7 +30,7 @@ ChopperAudioProcessor::ChopperAudioProcessor()
     
     //pseq_current->valueChanged() = [this] { update_pat();};
 
-    initGatesMap();
+    //initGatesMap();
 }
 
 ChopperAudioProcessor::~ChopperAudioProcessor()
@@ -144,40 +144,35 @@ void ChopperAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce
     juce::ScopedNoDenormals noDenormals;
     auto totalNumInputChannels  = getTotalNumInputChannels();
     auto totalNumOutputChannels = getTotalNumOutputChannels();
-
-    //float parameterValue = this->getParameter("out_mix")->getValue();
     float seqStepValue,lastSeqStepValue;
-
 
     juce::AudioPlayHead* phead = getPlayHead();
     if (phead != nullptr)
     {
         auto playposinfo=phead->getPosition();
-        //auto toto=*playposinfo;
         ppq=*(*playposinfo).getPpqPosition();
         ppqlastbar=*(*playposinfo).getPpqPositionOfLastBarStart();
         int step=int(std::floor((ppq/4-ppqlastbar/4)*64));
         float gain=out_gain->get();
-        //seq_mode->getIndex() == 1
-        if (seq_mode->getIndex() == 1) {
-            /*const int seqLength=sseq_length->get();
-            int seqIndex;
-            if (ppq>=seqLength) {seqIndex=int(std::floor(ppq)-seqLength*std::floor(ppq/seqLength));} else {seqIndex=std::floor(ppq);}
-            int seqValue=pattern_seqs[seqIndex];
+        int selected_pattern=pseq_current->get()-1;
 
-            seqStepValue=gateMaps[seqValue][step]*gain;
-            lastSeqStepValue=0.0;*/
-            seqStepValue=0.0;lastSeqStepValue=0.0;
-           /* 
-            seqStepValue=gateMaps[pattern_seqs[seqIndex]][step]*gain;
-            if (step==0) { lastSeqStepValue=gateMap[63]*gain; } else { lastSeqStepValue=gateMap[seqIndex-1]*gain;}*/
-        } else {
-            seqStepValue=gateMap[step]*gain;
+        if (seq_mode->getIndex() == 1) {
+            const int seqLength=sseq_length->get(); 
+            int sequenceNumber=sseq_current->get()-1;
+            int seqIndex;
+            if (int(ppq/4)>=seqLength) {seqIndex=int(std::floor(ppq/4)-seqLength*std::floor(ppq/(4*seqLength)));} else {seqIndex=int(std::floor(ppq/4));}
+           
+            selected_pattern=pattern_seqs[sequenceNumber][seqIndex];
+            if (selected_pattern>=15) {selected_pattern=15;}
+            pseq_current->operator=(selected_pattern+1);
+           
+            /*seqStepValue=gateMaps[selected_pattern][step]*gain;
             lastSeqStepValue=smooth.getNextValue();
-            smooth.setTargetValue(seqStepValue);
-            //if (step==0) { lastSeqStepValue=gateMap[63]*gain; } else { lastSeqStepValue=gateMap[step-1]*gain;}
-            
+            smooth.setTargetValue(seqStepValue);*/
         }
+        seqStepValue=gateMaps[selected_pattern][step]*gain;
+        lastSeqStepValue=smooth.getNextValue();
+        smooth.setTargetValue(seqStepValue);
     }
     // In case we have more outputs than inputs, this code clears any output
     // channels that didn't contain input data, (because these aren't

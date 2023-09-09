@@ -56,6 +56,7 @@ public:
     void generateGateMap(int patternData) {
         int size=16;
         int step=4;
+        int pattern=pseq_current->get()-1;
         float gateMap_arr[size*step];
         const float envs[3][step]={
             {1.0,1.0,1.0,1.0}, // FLAT 
@@ -71,8 +72,10 @@ public:
             for (int j=0;j<step;j++) {
                 if(gates[i] == true) {
                   gateMap[i*4+j]=envs[env][j];
+                  gateMaps[pattern][i*4+j]=envs[env][j];
                 } else {
                   gateMap[i*4+j]=0.0;
+                  gateMaps[pattern][i*4+j]=0.0;
                 }
             }
         }
@@ -93,9 +96,9 @@ public:
     }
     void updatePattern(int patternIndex,int patternData)
     {
-        pattern_seqs[patternIndex]=patternData;
+        sequences[patternIndex]=patternData;
         pseq_current->operator=(patternIndex+1);
-        pseq_data->operator=(pattern_seqs[patternIndex]);
+        pseq_data->operator=(/*pattern_seqs[patternIndex]*/patternData);
         generateGateMap(patternData);
     }
     void updateEnv(int env)
@@ -105,9 +108,9 @@ public:
     }
     void initGatesMap()
     {
-        for (int i=0;i<sizeof(pattern_seqs)/sizeof(pattern_seqs[0]);i++)
+        for (int i=0;i<sizeof(sequences)/sizeof(sequences[0]);i++)
         {
-            generateGateMap(pattern_seqs[i]);
+            generateGateMap(sequences[i]);
             for (int j=0;j<sizeof(gateMap)/sizeof(gateMap[0]);j++) {
                 gateMaps[i][j]=gateMap[j];
             }
@@ -116,7 +119,7 @@ public:
     }
     void update_pat()
     {
-       int patternData=pattern_seqs[pseq_current->get()-1];
+       int patternData=sequences[pseq_current->get()-1];
        pseq_data->operator=(patternData); 
        generateGateMap(patternData);
     }
@@ -140,8 +143,12 @@ public:
 
     float gateMap[64];
     float gateMaps[16][64];
-    int sequences[16][16];
-    int pattern_seqs[16];
+    int sequences[16];
+    int pattern_seqs[16][16]/*={{0,1,0,2,0,1,0,2,0,1,0,2,0,1,0,2},{3,4,3,5,3,4,3,5,3,4,3,5,3,4,3,5},{6,7,6,8,6,7,6,8,6,7,6,8,6,7,6,8},{0,1,0,2,4,5,4,6,0,4,3,5,0,2,0,6},
+                           {0,1,0,2,4,5,4,6,0,4,3,5,0,2,0,6},{0,1,0,2,4,5,4,6,0,4,3,5,0,2,0,6},{0,1,0,2,4,5,4,6,0,4,3,5,0,2,0,6},{0,1,0,2,4,5,4,6,0,4,3,5,0,2,0,6},
+                           {0,1,0,2,4,5,4,6,0,4,3,5,0,2,0,6},{0,1,0,2,4,5,4,6,0,4,3,5,0,2,0,6},{0,1,0,2,4,5,4,6,0,4,3,5,0,2,0,6},{0,1,0,2,4,5,4,6,0,4,3,5,0,2,0,6},
+                           {0,1,0,2,4,5,4,6,0,4,3,5,0,2,0,6},{0,1,0,2,4,5,4,6,0,4,3,5,0,2,0,6},{0,1,0,2,4,5,4,6,0,4,3,5,0,2,0,6},{0,1,0,2,4,5,4,6,0,4,3,5,0,2,0,6}            
+                            }*/;
     
     
 private:

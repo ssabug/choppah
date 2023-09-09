@@ -49,7 +49,17 @@ So far, it has been tested and seen "working" on fedora.
 
   
 ## Change records
-### 0.02 09092023 Smoothing
+### v0.03 09092023 Sequence mode fixing
+#### Features
+- [x] sequence mode almost work as expected
+- [ ] do clean configure/build scripts
+- [ ] dry/wet processing implementation
+- [ ] gain slider custom range implementation
+#### Bugs
+- [ ] sequence mode : sequence 0 not init as expected
+- [ ] sequence mode : need to change patterns in pattern mode before switching to sequence mode
+- [ ] changes not consistent while using plugin params/plugin GUI
+### v0.02 09092023 Smoothing
 - [x] smooth chopped gain with juce::SmoothedValue
 - [x] images path defined in pluginProcessor.h
 - [ ] do clean configure/build scripts
@@ -58,7 +68,7 @@ So far, it has been tested and seen "working" on fedora.
 - [ ] pattern sequence management
 - [ ] problem with updating processor parameters via GUI // processor parameter change updating UI - ex : sometimes you try to change pattern on the GUI, it doesnt
 - [ ] cannot attach custom lambda function to processor parameter, ex : the pattern# change to trigger gateMap update 
-### 0.01 09092023 Initial release
+### v0.01 09092023 Initial release
 - [x] draft GUI design
 - [x] first implementation of basic chopper processing code
 - [x] main processor parameters and controls definition

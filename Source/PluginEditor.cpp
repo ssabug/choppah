@@ -318,10 +318,7 @@ ChopperAudioProcessorEditor::ChopperAudioProcessorEditor (ChopperAudioProcessor&
     debug.setColour(juce::TextEditor::outlineColourId,background_color);
     debug.setColour(juce::TextEditor::shadowColourId,background_color);
     
-    // PATTERN INIT FOR PROCESSOR;
-    for (int i=15;i<=0;i--) {
-        audioProcessor.updatePattern(i,bitArrayToInt32(patterns[i],16));
-    }
+    init_all_sequences();
 
     //////////////////////////////////////////////////////////////////////////////////
     addAndMakeVisible (gain__slider.get());

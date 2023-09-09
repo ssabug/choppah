@@ -32,7 +32,7 @@ JUCE Version 7.0.7
 
 gcc
 
-##Installation
+## Installation
 ### Linux
  - get the pre-built **chopper.vst3** folder in **Releases** or build it (see below).
  - put it in your VST3 folder

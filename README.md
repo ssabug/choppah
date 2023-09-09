@@ -13,13 +13,13 @@ The chopper has 2 modes : pattern & sequence.
 In **pattern** mode, the step seq current selected pattern is looping.It's the first line. 
 You can change the pattern to play/edit with the upper left combo box.
 
-In **sequence** mode, the choppers runs the combobox sequence of patterns.It's the second line.
+In **sequence** mode, the chopper runs the combobox sequence of patterns.It's the second line.
 The current sequence can be changed with the corresponding combobox to the left.
-Note that pattern & sequence have a fixed length of 16.
+Note that patterns have a fixed length of 16.
 
 You can adjust gate length, clock division for pattern mode only.
 
-**Clear** button erases current selected pattern.
+**Clear** erases current selected pattern.
 
 **Reset** erases all patterns.
 

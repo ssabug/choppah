@@ -2,6 +2,19 @@
 
 ## Change records
 
+### v0.05 09092023 Sequence mode polish
+#### Features
+- [x] better pattern default filling
+- [ ] do clean configure/build scripts
+- [ ] dry/wet processing implementation
+- [ ] gain slider custom range implementation
+- [ ] proper JUCE definition project (manufacturer,vendor ids, ...)
+- [ ] code cleaning + opti
+#### Bugs
+- [ ] sequence mode : sequence 0 not init as expected
+- [ ] sequence mode hard to switch
+- [ ] plugin parameters not in line with GUI values on start
+
 ### v0.04 09092023 Sequence mode fixing end?
 #### Features
 - [x] sequence mode works as expected

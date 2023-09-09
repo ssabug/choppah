@@ -20,6 +20,7 @@ ChopperAudioProcessor::ChopperAudioProcessor()
     addParameter(pseq_data= new juce::AudioParameterInt ("pseq_seq","Pattern data",0x0, 0xFFFF, 0xAAAA) );
     addParameter(seq_pos= new juce::AudioParameterInt ("seq_pos","Pattern position",1, 16, 1) );
     addParameter(sseq_length= new juce::AudioParameterInt ("sseq_length","Sequence length",2, 16, 4) );
+    addParameter(pseq_auto= new juce::AudioParameterInt ("pseq_auto","Pattern autorefresh",0, 1, 1) );
 
     addParameter (clock_div = new juce::AudioParameterChoice ("clock_div", "Clock division", { "1","1/2","1/4","1/8","1/16","1/32" }, 0));
     addParameter (seq_mode = new juce::AudioParameterChoice ("seq_mode", "Sequencer mode", { "Pattern","Sequence" }, 0));
@@ -28,9 +29,6 @@ ChopperAudioProcessor::ChopperAudioProcessor()
     addParameter (out_mix = new juce::AudioParameterFloat ("out_mix","Dry/Wet",0.0f, 1.0f, 0.5f));
     addParameter (out_gain = new juce::AudioParameterFloat ("out_gain","Gain Out",0.0f, 10.0f, 1.0f));
     
-    //pseq_current->valueChanged() = [this] { update_pat();};
-
-    //initGatesMap();
 }
 
 ChopperAudioProcessor::~ChopperAudioProcessor()
@@ -164,12 +162,9 @@ void ChopperAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce
            
             selected_pattern=pattern_seqs[sequenceNumber][seqIndex];
             if (selected_pattern>=15) {selected_pattern=15;}
-            pseq_current->operator=(selected_pattern+1);
-           
-            /*seqStepValue=gateMaps[selected_pattern][step]*gain;
-            lastSeqStepValue=smooth.getNextValue();
-            smooth.setTargetValue(seqStepValue);*/
+            if (pseq_auto->get()==1) {pseq_current->operator=(selected_pattern+1);}            
         }
+        pseq_data->operator=(sequences[selected_pattern]);
         seqStepValue=gateMaps[selected_pattern][step]*gain;
         lastSeqStepValue=smooth.getNextValue();
         smooth.setTargetValue(seqStepValue);
@@ -222,6 +217,7 @@ void ChopperAudioProcessor::getStateInformation (juce::MemoryBlock& destData)
     juce::MemoryOutputStream (destData, true).writeInt (*pseq_data);
     juce::MemoryOutputStream (destData, true).writeInt (*seq_pos);
     juce::MemoryOutputStream (destData, true).writeInt (*sseq_length);
+    juce::MemoryOutputStream (destData, true).writeInt (*pseq_auto);
 
     juce::MemoryOutputStream (destData, true).writeInt (*clock_div);
     juce::MemoryOutputStream (destData, true).writeInt (*seq_mode);
@@ -240,6 +236,7 @@ void ChopperAudioProcessor::setStateInformation (const void* data, int sizeInByt
     *sseq_current=juce::MemoryInputStream (data, static_cast<size_t> (sizeInBytes), false).readInt();
     *pseq_data=juce::MemoryInputStream (data, static_cast<size_t> (sizeInBytes), false).readInt();
     *sseq_length=juce::MemoryInputStream (data, static_cast<size_t> (sizeInBytes), false).readInt();
+    *pseq_auto=juce::MemoryInputStream (data, static_cast<size_t> (sizeInBytes), false).readInt();
     //*seq_pos=juce::MemoryInputStream (data, static_cast<size_t> (sizeInBytes), false).readInt();
 
     *clock_div=juce::MemoryInputStream (data, static_cast<size_t> (sizeInBytes), false).readInt();

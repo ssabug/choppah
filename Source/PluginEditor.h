@@ -39,21 +39,20 @@ public:
     void resized() override;
     void timerCallback() override
     {
-        int seqword=bitArrayToInt32(sequence,16);
         int clockdiv=seq_clock.getSelectedItemIndex();
-        int coeff=pow(2,2+clockdiv);
-        long int bar=audioProcessor.getDAWbarcount()/coeff;
+        int coeff=pow(2,2+clockdiv);  
         double ppq=audioProcessor.getDAWppq()/coeff;
         double ppqlastbar=audioProcessor.getDAWppqlastbar()/coeff;
-        int index=std::floor((ppq-ppqlastbar)*16);
-        int seqIndex;
+        int processorPattern=audioProcessor.pseq_current->get()-1;
         int seqLength=audioProcessor.sseq_length->get();
         int seqClock=audioProcessor.clock_div->getIndex();
-        int seqMode=audioProcessor.seq_mode->getIndex();
+        int seqMode=audioProcessor.seq_mode->getIndex(); 
+        int autoPattern=audioProcessor.pseq_auto->get();
+     
+        int index=std::floor((ppq-ppqlastbar)*16);
+        int seqIndex;
         if (ppq>=seqLength) {seqIndex=int(std::floor(ppq)-seqLength*std::floor(ppq/seqLength));} else {seqIndex=std::floor(ppq);}
-        //unsigned int seqStepValue=(seqword >> int(std::floor((ppq-ppqlastbar)*16))) & 1;
-        unsigned int seqStepValue=int(std::floor((ppq-ppqlastbar)*64));
-        int processorPattern=audioProcessor.pseq_current->get()-1;
+
 
         debug.setText ("ppq = " + std::__cxx11::to_string(ppq)+"\n"+
                        "pattern\t\t\t" + std::__cxx11::to_string(/*seq_pattern_selected.getSelectedItemIndex()+1*/audioProcessor.pseq_current->get())+
@@ -90,6 +89,12 @@ public:
             
             sseq_step[i].setColour(juce::ComboBox::outlineColourId ,juce::Colour (color_seq));
         }
+
+        if (autoPattern == 1) {
+            seq_auto.setImages (false, true, true,juce::ImageFileFormat::loadFrom(juce::File(imagePath+"/stepseq_on.png")), 1.000f, juce::Colour (0xFF00007F),juce::Image(), 1.000f, juce::Colour (0xFF0000FF),juce::ImageFileFormat::loadFrom(juce::File(imagePath+"/stepseq_off.png")), 1.000f, juce::Colour (0xFF00007F));
+        } else {
+            seq_auto.setImages (false, true, true,juce::ImageFileFormat::loadFrom(juce::File(imagePath+"/stepseq_off.png")), 1.000f, juce::Colour (0xFF00007F),juce::Image(), 1.000f, juce::Colour (0xFF0000FF),juce::ImageFileFormat::loadFrom(juce::File(imagePath+"/stepseq_on.png")), 1.000f, juce::Colour (0xFF00007F));
+        }
         
         if (seq_clock.getSelectedItemIndex() != seqClock) {
             seq_clock.setSelectedItemIndex(seqClock,juce::dontSendNotification);
@@ -97,8 +102,8 @@ public:
         if (seq_mode.getSelectedItemIndex() != seqMode) {
             seq_mode.setSelectedItemIndex(seqMode,juce::dontSendNotification);
         }
-        if (seq_pattern_selected.getSelectedItemIndex() !=  processorPattern ) {
-            seq_pattern_selected.setSelectedItemIndex(processorPattern,juce::dontSendNotification);
+        if (seq_pattern_selected.getSelectedItemIndex() !=  processorPattern && seqMode == 1) {
+            seq_pattern_selected.setSelectedItemIndex(processorPattern);
         }
         
     }
@@ -135,11 +140,7 @@ public:
                                   juce::ImageFileFormat::loadFrom(juce::File(imagePath+"/stepseq_on.png")), 1.000f, juce::Colour (0xFF00007F));
         }
         patterns[seq_pattern_selected.getSelectedItemIndex()][stepIndex]=sequence[stepIndex];
-        //debug_label.setText (std::__cxx11::to_string(bitArrayToInt32(sequence,16)), juce::dontSendNotification);
-        /*long int bar=audioProcessor.getDAWppqbar()/4;
-        if (bar>=4){
-            bar=std::floor(bar/(std::floor(bar/4)));
-        }*/
+
         audioProcessor.updatePattern(seq_pattern_selected.getSelectedItemIndex(),bitArrayToInt32(sequence,16));
         
        
@@ -187,12 +188,13 @@ public:
     void step_seq_change() 
     { 
         int seqIndex=seq_pattern_selected.getSelectedItemIndex();
-        audioProcessor.pseq_current->operator=(seqIndex+1);
+        
         for (int i=0;i<sizeof(sequence)/sizeof(sequence[0]);i++) 
             {
                 sequence[i]=patterns[seqIndex][i];
                 step_seq_update(i);
             }
+        audioProcessor.pseq_current->operator=(seqIndex+1);
     }
     void seq_seq_change(int step) 
     {   
@@ -247,18 +249,28 @@ public:
     }
     void init_all_sequences()
     {
-        for (int i;i<16;i++){
-            audioProcessor.sequences[i]=bitArrayToInt32(patterns[i],16);
+        for (int i=15;i>=0;i--){
+            //audioProcessor.sequences[i]=bitArrayToInt32(patterns[i],16);
+            seq_pattern_selected.setSelectedItemIndex(i);
             for (int j;j<16;j++){
                 audioProcessor.pattern_seqs[i][j]=patterns[i][j];
             }
-        }
-        // PATTERN INIT FOR PROCESSOR;
-       /* for (int i=15;i<=0;i--) {
+            
             audioProcessor.updatePattern(i,bitArrayToInt32(patterns[i],16));
-        }*/
+        }
         
-        audioProcessor.initGatesMap();
+        //audioProcessor.initGatesMap();
+    }
+
+    void seq_auto_click()
+    {
+        int value=0;
+        if ( audioProcessor.pseq_auto->get() == 0) {
+            value=1;
+        } else {
+            value=0;
+        }
+        audioProcessor.pseq_auto->operator=(value);
     }
 
 private:
@@ -288,6 +300,8 @@ private:
     juce::Label seq_env_label;
     juce::Slider seq_length;
     juce::Label seq_length_label;
+    juce::ImageButton seq_auto;
+    juce::Label seq_auto_label;
 
     juce::ImageButton seq_clear;
     juce::Label seq_clear_label;
@@ -300,6 +314,8 @@ private:
 
     juce::ImageButton banner;
     juce::TextEditor debug;
+
+    const int gui_refresh_rate=500;
     
     const std::string imagePath="/home/pwner/dev/chopper/Ressources/images";
 

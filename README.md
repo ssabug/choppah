@@ -17,6 +17,7 @@ Note that patterns have a fixed length of 16.
 In **sequence** mode, the chopper runs the combobox sequence of patterns.It's the second line.
 The current sequence can be changed with the corresponding combobox to the left.
 You can change the sequence length with the **seq length** left slider.
+To stop auto pattern change in this mode, disable **Auto** button.
 
 **Gate length**, **clock division** apply for pattern mode only.
 
@@ -28,7 +29,7 @@ You can change the sequence length with the **seq length** left slider.
 
 **Paste** pastes the clipboard content into current pattern.If no copy was done, it is an empty pattern.
 
-**NOTE :** Theres a bug on pattern/sequence/mode selection; sometimes the button doesnt change the value.The workaround is to click on the combobox (not on the arrow) then reclick here again,then you can change values with Up/Down keys.  
+**NOTE :** Theres a bug on some combo boxes : sometimes the button doesnt change the value.The workaround is to click on the combobox (not on the arrow) then reclick here again,then you can change values with Up/Down keys.  
 
 ## Requirements
 JUCE Version 7.0.7
@@ -50,40 +51,4 @@ gcc
 
 Tested OSs  : fedora
 
-Tested DAWs : bitwig  
-
-## Change records
-### v0.03 09092023 Sequence mode fixing
-#### Features
-- [x] sequence mode almost work as expected
-- [ ] do clean configure/build scripts
-- [ ] dry/wet processing implementation
-- [ ] gain slider custom range implementation
-- [ ] code cleaning + opti
-#### Bugs
-- [ ] sequence mode : sequence 0 not init as expected
-- [ ] sequence mode : need to change patterns in pattern mode before switching to sequence mode
-- [ ] changes not consistent while using plugin params/plugin GUI
-### v0.02 09092023 Smoothing
-- [x] smooth chopped gain with juce::SmoothedValue
-- [x] images path defined in pluginProcessor.h
-- [ ] do clean configure/build scripts
-- [ ] dry/wet processing implementation
-- [ ] gain slider custom range implementation
-- [ ] pattern sequence management
-- [ ] problem with updating processor parameters via GUI // processor parameter change updating UI - ex : sometimes you try to change pattern on the GUI, it doesnt
-- [ ] cannot attach custom lambda function to processor parameter, ex : the pattern# change to trigger gateMap update 
-### v0.01 09092023 Initial release
-- [x] draft GUI design
-- [x] first implementation of basic chopper processing code
-- [x] main processor parameters and controls definition
-- [ ] dry/wet processing implementation
-- [ ] gain slider custom range implementation
-- [ ] pattern sequence management
-- [ ] clicks as fuck : switch gateMap to pointer or LinearSmoothedValue
-- [ ] remove all absolute path and find an easy way to update them
-- [ ] problem with updating processor parameters via GUI // processor parameter change updating UI - ex : sometimes you try to change pattern on the GUI, it doesnt
-- [ ] cannot attach custom lambda function to processor parameter, ex : the pattern# change to trigger gateMap update 
-
-
-
+Tested DAWs : bitwig

@@ -23,23 +23,15 @@ ChopperAudioProcessorEditor::ChopperAudioProcessorEditor (ChopperAudioProcessor&
     int seq_sequence_count=16;
 
     // POSITIONS
-    int pseq_posx=100;
-    int pseq_posy=20; 
-    int sseq_posx=100;
-    int sseq_posy=70;
     int bottomy=130;
-    int pseq_params_posx=pseq_posx-80;
-    int pseq_params_posy=pseq_posy+bottomy;
-    int mix_posx=840;
-    int mix_posy=pseq_posy+bottomy;
-    int mix_label_posx=mix_posx+30;
-    int mix_label_posy=mix_posy-20;
-    int util_posx=500;
-    int util_posy=pseq_posy+bottomy;
-    int debug_posx=util_posx-210;
-    int debug_posy=pseq_posy+bottomy;
-    int banner_posx=640;
-    int banner_posy=bottomy-50;
+    int pseq_posx=100;int pseq_posy=20; 
+    int sseq_posx=100;int sseq_posy=70;   
+    int pseq_params_posx=pseq_posx-80;int pseq_params_posy=pseq_posy+bottomy;
+    int mix_posx=840;int mix_posy=pseq_posy+bottomy;
+    int mix_label_posx=mix_posx+30;int mix_label_posy=mix_posy-20;
+    int util_posx=500;int util_posy=pseq_posy+bottomy;
+    int debug_posx=util_posx-210+20;int debug_posy=pseq_posy+bottomy;
+    int banner_posx=640;int banner_posy=bottomy-50;
     //COLOURS
     juce::Colour color_text2=juce::Colours::blue;
     juce::Colour color_text1=juce::Colours::blue;
@@ -251,6 +243,19 @@ ChopperAudioProcessorEditor::ChopperAudioProcessorEditor (ChopperAudioProcessor&
     seq_length_label.setColour(juce::Label::textColourId,control_label_color);
     seq_length_label.setBounds (pseq_params_posx+100, pseq_params_posy-20+50, 86, 24);
 
+    seq_auto.setToggleable(true);
+    seq_auto.setImages (false, true, true,
+                              juce::ImageFileFormat::loadFrom(juce::File(imagePath+"/stepseq_off.png")), 1.000f, juce::Colour (color_stepseq_1),
+                                  juce::Image(), 1.000f, juce::Colour (color_stepseq_2),
+                                  juce::ImageFileFormat::loadFrom(juce::File(imagePath+"/stepseq_on.png")), 1.000f, juce::Colour (color_stepseq_1));
+    seq_auto.setBounds (pseq_params_posx+200, pseq_params_posy, 46, 16);
+    seq_auto.onClick = [this] { seq_auto_click();};
+
+    //seq_clear.addListener (this);
+    seq_auto_label.setColour(juce::Label::textColourId,control_label_color);
+    seq_auto_label.setText ("Auto", juce::dontSendNotification);
+    seq_auto_label.setBounds (pseq_params_posx+200, pseq_params_posy-20, 86, 24);
+
     ////////////////////////////// UTILITY ////////////////////////////////////// 
     seq_clear.setToggleable(true);
     seq_clear.setImages (false, true, true,
@@ -333,6 +338,8 @@ ChopperAudioProcessorEditor::ChopperAudioProcessorEditor (ChopperAudioProcessor&
     //addAndMakeVisible (seq_gate_length_label);
     addAndMakeVisible (seq_length);
     addAndMakeVisible (seq_length_label);
+    addAndMakeVisible (seq_auto);
+    addAndMakeVisible (seq_auto_label);
     addAndMakeVisible (seq_env);
     addAndMakeVisible (seq_env_label);
     addAndMakeVisible (seq_mode);
@@ -347,7 +354,7 @@ ChopperAudioProcessorEditor::ChopperAudioProcessorEditor (ChopperAudioProcessor&
     addAndMakeVisible (seq_paste_label);
     addAndMakeVisible (banner);
     addAndMakeVisible (debug);
-    startTimerHz(100);
+    startTimerHz(gui_refresh_rate);
     
 }
 /*void ChopperAudioProcessorEditor::sliderValueChanged (juce::Slider* slider)
@@ -381,10 +388,10 @@ void ChopperAudioProcessorEditor::paint (juce::Graphics& g)
     juce::Rectangle<int> spsqArea (5,5,85,50);
     juce::Rectangle<int> ssqArea (5,53,1050,50);
     juce::Rectangle<int> sssqArea (5,53,85,50);
-    juce::Rectangle<int> parArea (5,y2,218,120);
+    juce::Rectangle<int> parArea (5,y2,/*218*/275,120);
     juce::Rectangle<int> utilArea (485,y2,138,120);
     juce::Rectangle<int> outArea (845,y2,210,120);
-    juce::Rectangle<int> dbgArea (275,y2,180,120);
+    juce::Rectangle<int> dbgArea (275+20,y2,180,120);
 
     g.drawRect (psqArea, 2);
     g.drawRect (ssqArea, 2);

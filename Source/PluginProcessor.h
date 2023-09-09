@@ -115,7 +115,7 @@ public:
                 gateMaps[i][j]=gateMap[j];
             }
         }
-        pseq_current->operator=(1);
+        //pseq_current->operator=(1);
     }
     void update_pat()
     {
@@ -135,7 +135,8 @@ public:
     juce::AudioParameterInt* pseq_data;
     juce::AudioParameterInt* seq_pos;
     juce::AudioParameterInt* sseq_length;
-    
+    juce::AudioParameterInt* pseq_auto;
+
     juce::AudioParameterFloat* out_mix;
     juce::AudioParameterFloat* out_gain;
 

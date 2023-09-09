@@ -55,7 +55,8 @@ So far, it has been tested and seen "working" on fedora.
 - [ ] dry/wet processing implementation
 - [ ] gain slider custom range implementation
 - [ ] pattern sequence management
-- [ ] clicks as fuck : maybe its performance related, maybe switch gateMap to pointer or LinearSmoothedValue
+- [ ] clicks as fuck : switch gateMap to pointer or LinearSmoothedValue
+- [ ] remove all absolute path and find an easy way to update them
 - [ ] problem with updating processor parameters via GUI // processor parameter change updating UI - ex : sometimes you try to change pattern on the GUI, it doesnt
 - [ ] cannot attach custom lambda function to processor parameter, ex : the pattern# change to trigger gateMap update 
 

@@ -29,6 +29,7 @@ You can adjust gate length, clock division for pattern mode only.
 
 ## Requirements
 JUCE Version 7.0.7
+
 gcc
 
 ##Installation

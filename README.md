@@ -43,7 +43,7 @@ gcc
  - in file **Builds/LinuxMakefile/Makefile** modify variable **JUCE_MODULES_INSTALLATION_DIR** to point to your juce module directory
  - build with `cd Builds/LinuxMakefile/ && clear && make clean && make`
  - the VST3 is the  **Builds/LinuxMakefile/build/chopper.vst3** directory
- - 
+
 So far, it has been tested and seen "working" on fedora.
 
   

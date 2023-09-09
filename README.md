@@ -52,7 +52,7 @@ So far, it has been tested and seen "working" on fedora.
 ### 0.02 09092023 Smoothing
 - [x] smooth chopped gain with juce::SmoothedValue
 - [x] images path defined in pluginProcessor.h
-- [ ] do a build script that will modiffy images path, makefile and build automatically
+- [ ] do clean configure/build scripts
 - [ ] dry/wet processing implementation
 - [ ] gain slider custom range implementation
 - [ ] pattern sequence management

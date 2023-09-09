@@ -75,16 +75,16 @@ public:
             if (sequence[i]==true)
             {
                 seq_step[i].setImages (false, true, true,
-                                  juce::ImageFileFormat::loadFrom(juce::File("/home/pwner/dev/chopper/Ressources/images/stepseq_on.png")), 1.000f, juce::Colour (color),
+                                  juce::ImageFileFormat::loadFrom(juce::File(imagePath+"/stepseq_on.png")), 1.000f, juce::Colour (color),
                                   juce::Image(), 1.000f, juce::Colour (0xFF0000FF),
-                                  juce::ImageFileFormat::loadFrom(juce::File("/home/pwner/dev/chopper/Ressources/images/stepseq_off.png")), 1.000f, juce::Colour (color));
+                                  juce::ImageFileFormat::loadFrom(juce::File(imagePath+"/stepseq_off.png")), 1.000f, juce::Colour (color));
             }
             else
             {
                 seq_step[i].setImages (false, true, true,
-                                  juce::ImageFileFormat::loadFrom(juce::File("/home/pwner/dev/chopper/Ressources/images/stepseq_off.png")), 1.000f, juce::Colour (color),
+                                  juce::ImageFileFormat::loadFrom(juce::File(imagePath+"/stepseq_off.png")), 1.000f, juce::Colour (color),
                                   juce::Image(), 1.000f, juce::Colour (0xFF0000FF),
-                                  juce::ImageFileFormat::loadFrom(juce::File("/home/pwner/dev/chopper/Ressources/images/stepseq_on.png")), 1.000f, juce::Colour (color));
+                                  juce::ImageFileFormat::loadFrom(juce::File(imagePath+"/stepseq_on.png")), 1.000f, juce::Colour (color));
             }
             
             sseq_step[i].setColour(juce::ComboBox::outlineColourId ,juce::Colour (color_seq));
@@ -123,15 +123,15 @@ public:
         
         {
             seq_step[stepIndex].setImages (false, true, true,
-                                  juce::ImageFileFormat::loadFrom(juce::File("/home/pwner/dev/chopper/Ressources/images/stepseq_on.png")), 1.000f, juce::Colour (0xFF00007F),
+                                  juce::ImageFileFormat::loadFrom(juce::File(imagePath+"/stepseq_on.png")), 1.000f, juce::Colour (0xFF00007F),
                                   juce::Image(), 1.000f, juce::Colour (0xFF0000FF),
-                                  juce::ImageFileFormat::loadFrom(juce::File("/home/pwner/dev/chopper/Ressources/images/stepseq_off.png")), 1.000f, juce::Colour (0xFF00007F));
+                                  juce::ImageFileFormat::loadFrom(juce::File(imagePath+"/stepseq_off.png")), 1.000f, juce::Colour (0xFF00007F));
         } else 
         {
             seq_step[stepIndex].setImages (false, true, true,
-                                  juce::ImageFileFormat::loadFrom(juce::File("/home/pwner/dev/chopper/Ressources/images/stepseq_off.png")), 1.000f, juce::Colour (0xFF00007F),
+                                  juce::ImageFileFormat::loadFrom(juce::File(imagePath+"/stepseq_off.png")), 1.000f, juce::Colour (0xFF00007F),
                                   juce::Image(), 1.000f, juce::Colour (0xFF0000FF),
-                                  juce::ImageFileFormat::loadFrom(juce::File("/home/pwner/dev/chopper/Ressources/images/stepseq_on.png")), 1.000f, juce::Colour (0xFF00007F));
+                                  juce::ImageFileFormat::loadFrom(juce::File(imagePath+"/stepseq_on.png")), 1.000f, juce::Colour (0xFF00007F));
         }
         patterns[seq_pattern_selected.getSelectedItemIndex()][stepIndex]=sequence[stepIndex];
         //debug_label.setText (std::__cxx11::to_string(bitArrayToInt32(sequence,16)), juce::dontSendNotification);
@@ -279,6 +279,10 @@ private:
 
     juce::ImageButton banner;
     juce::TextEditor debug;
+    
+    
+
+    const std::string imagePath="/home/pwner/dev/chopper/Ressources/images";
 
     bool patterns[16][16]={{1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0},{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},{1,1,1,1,0,0,0,0,1,1,1,1,0,0,0,0},{1,1,0,0,1,1,0,0,1,1,0,0,1,1,0,0},
                            {1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0},{0,0,1,1,0,0,1,1,0,0,1,1,0,0,1,1},{0,0,0,0,1,1,1,1,0,0,0,0,1,1,1,1},{1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0},

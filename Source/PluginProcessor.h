@@ -136,6 +136,8 @@ public:
     juce::AudioParameterFloat* out_mix;
     juce::AudioParameterFloat* out_gain;
 
+    juce::SmoothedValue<float> smooth;
+
     float gateMap[64];
     float gateMaps[16][64];
     int sequences[16][16];

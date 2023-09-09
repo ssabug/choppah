@@ -96,9 +96,9 @@ ChopperAudioProcessorEditor::ChopperAudioProcessorEditor (ChopperAudioProcessor&
         //seq_step[i].setButtonText (TRANS("stepseq"<<i));
         seq_step[i].setToggleable(true);
         seq_step[i].setImages (false, true, true,
-                                  juce::ImageFileFormat::loadFrom(juce::File("/home/pwner/dev/chopper/Ressources/images/stepseq_off.png")), 1.000f, juce::Colour (color_stepseq_1),
+                                  juce::ImageFileFormat::loadFrom(juce::File(imagePath+"/stepseq_off.png")), 1.000f, juce::Colour (color_stepseq_1),
                                   juce::Image(), 1.000f, juce::Colour (color_stepseq_2),
-                                  juce::ImageFileFormat::loadFrom(juce::File("/home/pwner/dev/chopper/Ressources/images/stepseq_on.png")), 1.000f, juce::Colour (color_stepseq_1));
+                                  juce::ImageFileFormat::loadFrom(juce::File(imagePath+"/stepseq_on.png")), 1.000f, juce::Colour (color_stepseq_1));
         seq_step[i].setBounds (pseq_posx+i*60, pseq_posy, 46, 16);
         //juce::ImageButton* button=*seq_step[i];
          // Set the function to be triggered on button click
@@ -254,9 +254,9 @@ ChopperAudioProcessorEditor::ChopperAudioProcessorEditor (ChopperAudioProcessor&
     ////////////////////////////// UTILITY ////////////////////////////////////// 
     seq_clear.setToggleable(true);
     seq_clear.setImages (false, true, true,
-                              juce::ImageFileFormat::loadFrom(juce::File("/home/pwner/dev/chopper/Ressources/images/stepseq_off.png")), 1.000f, juce::Colour (color_stepseq_1),
+                              juce::ImageFileFormat::loadFrom(juce::File(imagePath+"/stepseq_off.png")), 1.000f, juce::Colour (color_stepseq_1),
                                   juce::Image(), 1.000f, juce::Colour (color_stepseq_2),
-                                  juce::ImageFileFormat::loadFrom(juce::File("/home/pwner/dev/chopper/Ressources/images/stepseq_on.png")), 1.000f, juce::Colour (color_stepseq_1));
+                                  juce::ImageFileFormat::loadFrom(juce::File(imagePath+"/stepseq_on.png")), 1.000f, juce::Colour (color_stepseq_1));
     seq_clear.setBounds (util_posx, util_posy, 46, 16);
     seq_clear.onClick = [this] { step_seq_clear();};
     //seq_clear.addListener (this);
@@ -266,9 +266,9 @@ ChopperAudioProcessorEditor::ChopperAudioProcessorEditor (ChopperAudioProcessor&
 
     seq_reset.setToggleable(true);
     seq_reset.setImages (false, true, true,
-                              juce::ImageFileFormat::loadFrom(juce::File("/home/pwner/dev/chopper/Ressources/images/stepseq_off.png")), 1.000f, juce::Colour (color_stepseq_1),
+                              juce::ImageFileFormat::loadFrom(juce::File(imagePath+"/stepseq_off.png")), 1.000f, juce::Colour (color_stepseq_1),
                                   juce::Image(), 1.000f, juce::Colour (color_stepseq_2),
-                                  juce::ImageFileFormat::loadFrom(juce::File("/home/pwner/dev/chopper/Ressources/images/stepseq_on.png")), 1.000f, juce::Colour (color_stepseq_1));
+                                  juce::ImageFileFormat::loadFrom(juce::File(imagePath+"/stepseq_on.png")), 1.000f, juce::Colour (color_stepseq_1));
     seq_reset.setBounds (util_posx, util_posy+40, 46, 16);
     seq_reset.onClick = [this] { step_seq_reset();};
     //seq_reset.addListener (this);
@@ -278,9 +278,9 @@ ChopperAudioProcessorEditor::ChopperAudioProcessorEditor (ChopperAudioProcessor&
 
     seq_copy.setToggleable(true);
     seq_copy.setImages (false, true, true,
-                              juce::ImageFileFormat::loadFrom(juce::File("/home/pwner/dev/chopper/Ressources/images/stepseq_off.png")), 1.000f, juce::Colour (color_stepseq_1),
+                              juce::ImageFileFormat::loadFrom(juce::File(imagePath+"/stepseq_off.png")), 1.000f, juce::Colour (color_stepseq_1),
                                   juce::Image(), 1.000f, juce::Colour (color_stepseq_2),
-                                  juce::ImageFileFormat::loadFrom(juce::File("/home/pwner/dev/chopper/Ressources/images/stepseq_on.png")), 1.000f, juce::Colour (color_stepseq_1));
+                                  juce::ImageFileFormat::loadFrom(juce::File(imagePath+"/stepseq_on.png")), 1.000f, juce::Colour (color_stepseq_1));
     seq_copy.setBounds (util_posx+60, util_posy, 46, 16);
     seq_copy.onClick = [this] { step_seq_copy();};
     //seq_copy.addListener (this);
@@ -290,9 +290,9 @@ ChopperAudioProcessorEditor::ChopperAudioProcessorEditor (ChopperAudioProcessor&
 
     seq_paste.setToggleable(true);
     seq_paste.setImages (false, true, true,
-                              juce::ImageFileFormat::loadFrom(juce::File("/home/pwner/dev/chopper/Ressources/images/stepseq_off.png")), 1.000f, juce::Colour (color_stepseq_1),
+                              juce::ImageFileFormat::loadFrom(juce::File(imagePath+"/stepseq_off.png")), 1.000f, juce::Colour (color_stepseq_1),
                                   juce::Image(), 1.000f, juce::Colour (color_stepseq_2),
-                                  juce::ImageFileFormat::loadFrom(juce::File("/home/pwner/dev/chopper/Ressources/images/stepseq_on.png")), 1.000f, juce::Colour (color_stepseq_1));
+                                  juce::ImageFileFormat::loadFrom(juce::File(imagePath+"/stepseq_on.png")), 1.000f, juce::Colour (color_stepseq_1));
     seq_paste.setBounds (util_posx+60, util_posy+40, 46, 16);
     seq_paste.onClick = [this] { step_seq_paste();};
     //seq_paste.addListener (this);
@@ -302,7 +302,7 @@ ChopperAudioProcessorEditor::ChopperAudioProcessorEditor (ChopperAudioProcessor&
     /////////////////////////////////////BANNER///////////////////////////////////////
     banner.setToggleable(true);
     banner.setImages (false, true, true,
-                              juce::ImageFileFormat::loadFrom(juce::File("/home/pwner/dev/chopper/Ressources/images/banner_4.png")), 1.000f,juce::Colour (color_stepseq_1),
+                              juce::ImageFileFormat::loadFrom(juce::File(imagePath+"/banner_4.png")), 1.000f,juce::Colour (color_stepseq_1),
                                   juce::Image(), 1.000f, control_label_color,
                                   juce::Image(), 1.000f, control_value_color);
     banner.setBounds (banner_posx,banner_posy+30, 190, 120);

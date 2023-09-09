@@ -12,7 +12,7 @@
 ChopperAudioProcessor::ChopperAudioProcessor()
      : AudioProcessor (BusesProperties().withInput  ("Input",  juce::AudioChannelSet::stereo(), true)                     
                                         .withOutput ("Output", juce::AudioChannelSet::stereo(), true)
-                       )
+                       )   
 {
     addParameter(pseq_current= new juce::AudioParameterInt ("pseq_current","Pattern#",1, 16, 1) );
     addParameter(sseq_current= new juce::AudioParameterInt ("sseq_current","Sequence#",1, 16, 1) );
@@ -173,7 +173,10 @@ void ChopperAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce
             if (step==0) { lastSeqStepValue=gateMap[63]*gain; } else { lastSeqStepValue=gateMap[seqIndex-1]*gain;}*/
         } else {
             seqStepValue=gateMap[step]*gain;
-            if (step==0) { lastSeqStepValue=gateMap[63]*gain; } else { lastSeqStepValue=gateMap[step-1]*gain;}
+            lastSeqStepValue=smooth.getNextValue();
+            smooth.setTargetValue(seqStepValue);
+            //if (step==0) { lastSeqStepValue=gateMap[63]*gain; } else { lastSeqStepValue=gateMap[step-1]*gain;}
+            
         }
     }
     // In case we have more outputs than inputs, this code clears any output
@@ -193,8 +196,9 @@ void ChopperAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce
     // interleaved by keeping the same state.
     for (int channel = 0; channel < totalNumInputChannels; ++channel)
     {   
-        //buffer.applyGain(seqStepValue);
-        buffer.applyGainRamp(channel,0,buffer.getNumSamples(),lastSeqStepValue,seqStepValue);
+        //buffer.applyGain(smooth.getNextValue());
+        buffer.applyGainRamp(channel,0,buffer.getNumSamples(),lastSeqStepValue,smooth.getNextValue());
+        //buffer.applyGainRamp(channel,0,buffer.getNumSamples(),lastSeqStepValue,seqStepValue);
         auto* channelData = buffer.getWritePointer (channel);
 
         // ..do something to the data...

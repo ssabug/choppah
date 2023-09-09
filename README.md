@@ -28,6 +28,8 @@ You can change the sequence length with the **seq length** left slider.
 
 **Paste** pastes the clipboard content into current pattern.If no copy was done, it is an empty pattern.
 
+**NOTE :** Theres a bug on pattern/sequence/mode selection; sometimes the button doesnt change the value.The workaround is to click on the combobox (not on the arrow) then reclick here again,then you can change values with Up/Down keys.  
+
 ## Requirements
 JUCE Version 7.0.7
 
@@ -41,13 +43,15 @@ gcc
 ## Building 
 ### Linux
  - git clone the repo or get a release zip. Extract if necessary.
+ - in file **Source/PluginEditor.h** modify variable **const std::string imagePath** to the **Ressources/images** path of the git installed
  - in file **Builds/LinuxMakefile/Makefile** modify variable **JUCE_MODULES_INSTALLATION_DIR** to point to your juce module directory
  - build with `cd Builds/LinuxMakefile/ && clear && make clean && make`
  - the VST3 is the  **Builds/LinuxMakefile/build/chopper.vst3** directory
 
-So far, it has been tested and seen "working" on fedora.
+Tested OSs  : fedora
 
-  
+Tested DAWs : bitwig  
+
 ## Change records
 ### v0.03 09092023 Sequence mode fixing
 #### Features
@@ -55,6 +59,7 @@ So far, it has been tested and seen "working" on fedora.
 - [ ] do clean configure/build scripts
 - [ ] dry/wet processing implementation
 - [ ] gain slider custom range implementation
+- [ ] code cleaning + opti
 #### Bugs
 - [ ] sequence mode : sequence 0 not init as expected
 - [ ] sequence mode : need to change patterns in pattern mode before switching to sequence mode

@@ -1,7 +1,7 @@
 # Choppah
 
 As I haven't found yet any trance gate VST for linux, DIY was the only way.
-**IMPORTANY** For the moment the processing part has just started, so it sounds **CRAP**.
+**IMPORTANT** For the moment the processing part has just started, so it sounds **CRAP**.
 It is my very first JUCE project and i suck at C++ so...apologies for the crappy code ^^ .
 
 ## Description

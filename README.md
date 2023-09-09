@@ -17,7 +17,8 @@ Note that patterns have a fixed length of 16.
 In **sequence** mode, the chopper runs the combobox sequence of patterns.It's the second line.
 The current sequence can be changed with the corresponding combobox to the left.
 You can change the sequence length with the **seq length** left slider.
-To stop auto pattern change in this mode, disable **Auto** button.
+
+To stop auto pattern display in **sequence** mode, disable **Auto** button.
 
 **Gate length**, **clock division** apply for pattern mode only.
 

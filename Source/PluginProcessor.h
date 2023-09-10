@@ -142,8 +142,8 @@ public:
     juce::AudioParameterFloat* out_mix;
     juce::AudioParameterFloat* out_gain;
 
-    juce::SmoothedValue<float> smoothChop;
-    juce::SmoothedValue<float> smoothMix;
+    juce::SmoothedValue<float,juce::ValueSmoothingTypes::Multiplicative> smoothChop;
+    juce::SmoothedValue<float,juce::ValueSmoothingTypes::Multiplicative> smoothMix;
     //juce::SmoothedValue<float> smoothOut;
     
     juce::AudioBuffer<float> drybuffer;

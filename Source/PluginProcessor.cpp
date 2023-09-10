@@ -33,6 +33,7 @@ ChopperAudioProcessor::ChopperAudioProcessor()
     out_mix->operator=(0.5);
     
     dryWetMixer.setWetMixProportion(out_mix->get());
+    dryWetMixer.setWetLatency(0.0f);
     
 }
 

@@ -9,10 +9,15 @@
 - [x] proper JUCE definition project (manufacturer,vendor ids, ...)
 - [x] removed standalone building
 - [x] added VisualStudio2017 and MacOSX built folders (but not used yet)
-- [ ] do clean configure/build scripts
+- [ ] configure/build scripts exists but not portable
 - [ ] save sequencer state variables
 - [ ] gain slider custom range implementation
 - [ ] code cleaning + opti
+#### Bugs
+- [ ] optimize/compensate latency
+- [ ] sequence mode : sequence 0 not init as expected
+- [ ] sequence mode/pattern&sequence change hard to switch
+- [ ] plugin parameters not in line with GUI values on start
 
 ### v0.05 09092023 Sequence mode polish
 #### Features

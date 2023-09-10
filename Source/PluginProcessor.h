@@ -9,6 +9,8 @@
 #pragma once
 
 #include <JuceHeader.h>
+#include <juce_dsp/juce_dsp.h>
+#include <juce_audio_processors/juce_audio_processors.h>
 
 //==============================================================================
 /**
@@ -141,6 +143,9 @@ public:
     juce::AudioParameterFloat* out_gain;
 
     juce::SmoothedValue<float> smooth;
+    juce::SmoothedValue<float> smoothMix;
+    
+    juce::AudioBuffer<float> drybuffer;
 
     float gateMap[64];
     float gateMaps[16][64];
@@ -149,7 +154,7 @@ public:
     
     
 private:
-    
+    juce::dsp::DryWetMixer<float> dryWetMixer;
     long int barcount;
     double ppq;
     double ppqlastbar;

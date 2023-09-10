@@ -28,6 +28,11 @@ ChopperAudioProcessor::ChopperAudioProcessor()
 
     addParameter (out_mix = new juce::AudioParameterFloat ("out_mix","Dry/Wet",0.0f, 1.0f, 0.5f));
     addParameter (out_gain = new juce::AudioParameterFloat ("out_gain","Gain Out",0.0f, 10.0f, 1.0f));
+
+    sseq_length->operator=(4);
+    out_mix->operator=(0.5);
+    
+    dryWetMixer.setWetMixProportion(out_mix->get());
     
 }
 
@@ -102,7 +107,7 @@ void ChopperAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBloc
 {
     // Use this method as the place to do any pre-playback
     // initialisation that you need..
-    
+    drybuffer.setSize(2, samplesPerBlock);
 }
 
 void ChopperAudioProcessor::releaseResources()
@@ -143,7 +148,8 @@ void ChopperAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce
     auto totalNumInputChannels  = getTotalNumInputChannels();
     auto totalNumOutputChannels = getTotalNumOutputChannels();
     float seqStepValue,lastSeqStepValue;
-
+    drybuffer.copyFrom(0, 0, buffer, 0, 0, buffer.getNumSamples());
+    
     juce::AudioPlayHead* phead = getPlayHead();
     if (phead != nullptr)
     {
@@ -184,12 +190,24 @@ void ChopperAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce
     // the samples and the outer loop is handling the channels.
     // Alternatively, you can process the samples with the channels
     // interleaved by keeping the same state.
+    float mixLevel=out_mix->get();
+    float lastDryValue=smoothMix.getNextValue();
+    dryWetMixer.setWetMixProportion(mixLevel);
+    
+    smoothMix.setTargetValue(1-mixLevel);
+
     for (int channel = 0; channel < totalNumInputChannels; ++channel)
     {   
-        //buffer.applyGain(smooth.getNextValue());
-        buffer.applyGainRamp(channel,0,buffer.getNumSamples(),lastSeqStepValue,smooth.getNextValue());
-        //buffer.applyGainRamp(channel,0,buffer.getNumSamples(),lastSeqStepValue,seqStepValue);
         auto* channelData = buffer.getWritePointer (channel);
+        
+        //drybuffer.copyFrom(channel, 0, buffer, channel, 0, buffer.getNumSamples());
+        //auto drybuffer=buffer.copyFrom (1, 0, buffer.getReadPointer (0), buffer.getNumSamples());
+        //buffer.applyGain(smooth.getNextValue());
+        drybuffer.applyGainRamp(channel,0,drybuffer.getNumSamples(),lastDryValue,smoothMix.getNextValue());
+        dryWetMixer.pushDrySamples(drybuffer ); // Push the unprocessed dry samples
+        buffer.applyGainRamp(channel,0,buffer.getNumSamples(),lastSeqStepValue,smooth.getNextValue());
+        dryWetMixer.mixWetSamples(buffer); // Mix the processed wet samples
+        buffer.addFrom(0, 0, drybuffer, 0, 0, buffer.getNumSamples());
 
         // ..do something to the data...
     }

@@ -2,6 +2,14 @@
 
 ## Change records
 
+### v0.10 10092023 DryWet implementation & project cleaning
+#### Features
+- [x] dry/wet processing implementation
+- [x] proper JUCE definition project (manufacturer,vendor ids, ...)
+- [ ] do clean configure/build scripts
+- [ ] gain slider custom range implementation
+- [ ] code cleaning + opti
+
 ### v0.05 09092023 Sequence mode polish
 #### Features
 - [x] better pattern default filling

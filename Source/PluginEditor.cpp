@@ -411,4 +411,3 @@ void ChopperAudioProcessorEditor::resized()
     // subcomponents in your editor..
 }
 
-

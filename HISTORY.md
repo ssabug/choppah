@@ -5,8 +5,12 @@
 ### v0.10 10092023 DryWet implementation & project cleaning
 #### Features
 - [x] dry/wet processing implementation
+- [x] out gain applies to mixed out
 - [x] proper JUCE definition project (manufacturer,vendor ids, ...)
+- [x] removed standalone building
+- [x] added VisualStudio2017 and MacOSX built folders (but not used yet)
 - [ ] do clean configure/build scripts
+- [ ] save sequencer state variables
 - [ ] gain slider custom range implementation
 - [ ] code cleaning + opti
 

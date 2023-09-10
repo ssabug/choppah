@@ -148,7 +148,15 @@ void ChopperAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce
     auto totalNumInputChannels  = getTotalNumInputChannels();
     auto totalNumOutputChannels = getTotalNumOutputChannels();
     float seqStepValue,lastSeqStepValue;
+    float gain=out_gain->get();
     drybuffer.copyFrom(0, 0, buffer, 0, 0, buffer.getNumSamples());
+    float mixLevel=out_mix->get();
+    float lastDryValue=smoothMix.getNextValue();
+    //float lastOutValue=smoothOut.getNextValue();
+    dryWetMixer.setWetMixProportion(mixLevel);
+    
+    smoothMix.setTargetValue((1-mixLevel)*gain);
+    //smoothOut.setTargetValue(gain);
     
     juce::AudioPlayHead* phead = getPlayHead();
     if (phead != nullptr)
@@ -157,7 +165,7 @@ void ChopperAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce
         ppq=*(*playposinfo).getPpqPosition();
         ppqlastbar=*(*playposinfo).getPpqPositionOfLastBarStart();
         int step=int(std::floor((ppq/4-ppqlastbar/4)*64));
-        float gain=out_gain->get();
+        
         int selected_pattern=pseq_current->get()-1;
 
         if (seq_mode->getIndex() == 1) {
@@ -172,29 +180,13 @@ void ChopperAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce
         }
         pseq_data->operator=(sequences[selected_pattern]);
         seqStepValue=gateMaps[selected_pattern][step]*gain;
-        lastSeqStepValue=smooth.getNextValue();
-        smooth.setTargetValue(seqStepValue);
+        lastSeqStepValue=smoothChop.getNextValue();
+        smoothChop.setTargetValue(seqStepValue);
     }
-    // In case we have more outputs than inputs, this code clears any output
-    // channels that didn't contain input data, (because these aren't
-    // guaranteed to be empty - they may contain garbage).
-    // This is here to avoid people getting screaming feedback
-    // when they first compile a plugin, but obviously you don't need to keep
-    // this code if your algorithm always overwrites all the output channels.
+
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
         buffer.clear (i, 0, buffer.getNumSamples());
 
-    // This is the place where you'd normally do the guts of your plugin's
-    // audio processing...
-    // Make sure to reset the state if your inner loop is processing
-    // the samples and the outer loop is handling the channels.
-    // Alternatively, you can process the samples with the channels
-    // interleaved by keeping the same state.
-    float mixLevel=out_mix->get();
-    float lastDryValue=smoothMix.getNextValue();
-    dryWetMixer.setWetMixProportion(mixLevel);
-    
-    smoothMix.setTargetValue(1-mixLevel);
 
     for (int channel = 0; channel < totalNumInputChannels; ++channel)
     {   
@@ -205,11 +197,10 @@ void ChopperAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce
         //buffer.applyGain(smooth.getNextValue());
         drybuffer.applyGainRamp(channel,0,drybuffer.getNumSamples(),lastDryValue,smoothMix.getNextValue());
         dryWetMixer.pushDrySamples(drybuffer ); // Push the unprocessed dry samples
-        buffer.applyGainRamp(channel,0,buffer.getNumSamples(),lastSeqStepValue,smooth.getNextValue());
+        buffer.applyGainRamp(channel,0,buffer.getNumSamples(),lastSeqStepValue,smoothChop.getNextValue());
         dryWetMixer.mixWetSamples(buffer); // Mix the processed wet samples
         buffer.addFrom(0, 0, drybuffer, 0, 0, buffer.getNumSamples());
-
-        // ..do something to the data...
+        //buffer.applyGainRamp(channel,0,buffer.getNumSamples(),lastOutValue,smoothOut.getNextValue());
     }
 }
 

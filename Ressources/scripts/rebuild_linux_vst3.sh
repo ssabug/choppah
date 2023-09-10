@@ -5,8 +5,8 @@ vstpath="${HOME}/VST/"
 pluginname=choppah.vst3
 currentpath=$(pwd)
 clear
-echo "moving to dir ${workingath}"
-cd "${workingath}"
+echo "moving to dir ${workingpath}"
+cd "${workingpath}"
 make clean
 make
 echo "removing old vst ${vstpath}${pluginname}/"

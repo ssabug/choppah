@@ -2,7 +2,7 @@
 
 ## Change records
 
-### v0.11 11092023 XML & control template class
+### v0.11 11092023 XML & control template class on going
 #### Features
 - [x] XML config implementation start : skin OK,patterns + seq missing
 - [x] XML skin implementation : just for colours, only in reloadGui(), control location/style missing 

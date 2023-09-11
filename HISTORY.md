@@ -2,6 +2,23 @@
 
 ## Change records
 
+### v0.11 11092023 XML & control template class
+#### Features
+- [x] XML config implementation start : skin OK,patterns + seq missing
+- [x] XML skin implementation : just for colours, only in reloadGui(), control location/style missing 
+- [x] GUI control template class : only in reloadGui(), missing on editor construction
+- [x] reloadGui() function to update controls skins/color/images on the fly (manual trigger for now)
+- [ ] configure/build scripts exists but not portable (dont forget to copy config.xml and default skin files)
+- [ ] save sequencer state variables
+- [ ] gain slider custom range implementation
+- [ ] code cleaning + opti
+#### Bugs
+- [ ] XML skin implementation : trigerred manually, rectangles re-draw missing,fine tune
+- [ ] optimize/compensate latency
+- [ ] sequence mode : sequence 0 not init as expected
+- [ ] sequence mode/pattern&sequence change hard to switch
+- [ ] plugin parameters not in line with GUI values on start
+
 ### v0.10 10092023 DryWet implementation & project cleaning
 #### Features
 - [x] dry/wet processing implementation

@@ -369,18 +369,6 @@ ChopperAudioProcessorEditor::ChopperAudioProcessorEditor (ChopperAudioProcessor&
     
     
 }
-/*void ChopperAudioProcessorEditor::sliderValueChanged (juce::Slider* slider)
-{
-    //audioProcessor.gui_out_mix = mix__slider->getValue();
-    //audioProcessor.getParameter("out_mix").setValue(mix__slider->getValue());
-    /*if (slider == mix__slider)
-        {
-            // Handle the slider value change
-            float sliderValue = mix__slider->getValue();
-            // ...
-        }
-}*/
-
 
 
 ChopperAudioProcessorEditor::~ChopperAudioProcessorEditor()
@@ -394,7 +382,7 @@ void ChopperAudioProcessorEditor::paint (juce::Graphics& g)
     g.setColour (juce::Colours::white);
     g.setFont (15.0f);
 
-    g.setColour (juce::Colour (0, 0, 50));
+    g.setColour (juce::Colour (0xFF323232 & stepseq_color));
     int y2=90+30;
     juce::Rectangle<int> psqArea (5,5,1050,50);
     juce::Rectangle<int> spsqArea (5,5,85,50);
@@ -426,15 +414,126 @@ void ChopperAudioProcessorEditor::resized()
 void ChopperAudioProcessorEditor::reloadGui()
 {
     //COLOURS
+    controlColorTemplate slider_1_colors[5];
+    controlColorTemplate combo_1_colors[4];
+    controlColorTemplate textbox_1_colors[4];
+    controlColorTemplate label_1_colors[1];
+    controlColorTemplate imagebutton_1_colors[2];
+    /*
     juce::Colour color_text2=juce::Colours::blue;
     juce::Colour color_text1=juce::Colours::blue;
     juce::Colour control_label_color=juce::Colour (0, 0, 200);
     juce::Colour control_value_color=juce::Colour (0, 0, 255);
     juce::Colour background_color=juce::Colours::black;
-    int color_stepseq_1=0xFF00007F;
-    int color_stepseq_2=0xFF0000FF;
-
+    juce::Colour color_stepseq_1=juce::Colour (0xFF00007F);
+    juce::Colour color_stepseq_2=juce::Colour (0xFF0000FF); 
+    slider_1_colors[0].init(juce::Slider::thumbColourId,juce::Colours::blue);
+    slider_1_colors[1].init(juce::Slider::rotarySliderOutlineColourId,juce::Colours::black);
+    slider_1_colors[2].init(juce::Slider::rotarySliderFillColourId,juce::Colours::blue);
+    slider_1_colors[3].init(juce::Slider::textBoxTextColourId,control_value_color);
+    slider_1_colors[4].init(juce::Slider::textBoxOutlineColourId,juce::Colours::blue);    
+    combo_1_colors[0].init(juce::ComboBox::backgroundColourId,juce::Colours::black);
+    combo_1_colors[1].init(juce::ComboBox::outlineColourId ,juce::Colours::blue);
+    combo_1_colors[2].init(juce::ComboBox::arrowColourId ,control_value_color);
+    combo_1_colors[3].init(juce::ComboBox::textColourId,control_value_color);    
+    textbox_1_colors[0].init(juce::TextEditor::textColourId,control_value_color);
+    textbox_1_colors[1].init(juce::TextEditor::backgroundColourId,background_color);
+    textbox_1_colors[2].init(juce::TextEditor::outlineColourId,background_color);
+    textbox_1_colors[3].init(juce::TextEditor::shadowColourId,background_color);   
+    label_1_colors[0].init(juce::Label::textColourId,control_label_color);   
+    imagebutton_1_colors[0].init(juce::Label::textColourId,color_stepseq_1);
+    imagebutton_1_colors[1].init(juce::Label::textColourId,color_stepseq_2);*/
+    
     LoadXMLConfig();
+
+    // LOAD SKIN XML DEF
+    std::string xmlFilePath=dataPath+"/skins/"+currentSkin+"/skin.xml"; 
+    if ( not std::filesystem::exists(std::string(xmlFilePath)) )  {
+        
+    } else {
+        juce::File xmlFile(xmlFilePath);
+        //juce::ScopedPointer<juce::XmlElement> xml(juce::XmlDocument::parse(xmlFile));
+        juce::XmlDocument xmlDoc(xmlFile);
+
+        if (juce::XmlDocument::parse(xmlFile))
+        {
+            // Access the root element of the XML document
+            auto rootElement = xmlDoc.getDocumentElement();
+            if (rootElement->hasTagName("skin")) {
+                for (auto* e : rootElement->getChildByName("templates")->getChildIterator())
+                    {                                               
+                        if (e->getTagName() == "slider1") {
+                            int i=0;
+                            std::string id,colorHexa;
+                            for (auto* f : e->getChildByName("colors")->getChildIterator()) {                              
+                                for (auto* g : f->getChildIterator()) {
+                                    const juce::String toto=g->getAllSubText();
+                                    if (g->getTagName() == "id") {id=toto.toStdString();}
+                                    if (g->getTagName() == "color") {colorHexa=toto.toStdString();}
+                                }
+                                slider_1_colors[i].init(std::stoi(id,nullptr,16),juce::Colour(std::stoul(colorHexa,nullptr,16)) );
+                                i++;
+                            }
+                        }
+                        if (e->getTagName() == "combo1") {
+                            int i=0;
+                            std::string id,colorHexa;
+                            for (auto* f : e->getChildByName("colors")->getChildIterator()) {                              
+                                for (auto* g : f->getChildIterator()) {
+                                    const juce::String toto=g->getAllSubText();
+                                    if (g->getTagName() == "id") {id=toto.toStdString();}
+                                    if (g->getTagName() == "color") {colorHexa=toto.toStdString();}
+                                }
+                                combo_1_colors[i].init(std::stoi(id,nullptr,16),juce::Colour(std::stoul(colorHexa,nullptr,16)) );
+                                i++;
+                            }
+                        }
+                        if (e->getTagName() == "textbox1") {
+                            int i=0;
+                            std::string id,colorHexa;
+                            for (auto* f : e->getChildByName("colors")->getChildIterator()) {                              
+                                for (auto* g : f->getChildIterator()) {
+                                    const juce::String toto=g->getAllSubText();
+                                    if (g->getTagName() == "id") {id=toto.toStdString();}
+                                    if (g->getTagName() == "color") {colorHexa=toto.toStdString();}
+                                }
+                                textbox_1_colors[i].init(std::stoi(id,nullptr,16),juce::Colour(std::stoul(colorHexa,nullptr,16)) );
+                                i++;
+                            }
+                        }
+                        if (e->getTagName() == "label1") {
+                            int i=0;
+                            std::string id,colorHexa;
+                            for (auto* f : e->getChildByName("colors")->getChildIterator()) {                              
+                                for (auto* g : f->getChildIterator()) {
+                                    const juce::String toto=g->getAllSubText();
+                                    if (g->getTagName() == "id") {id=toto.toStdString();}
+                                    if (g->getTagName() == "color") {colorHexa=toto.toStdString();}
+                                }
+                                label_1_colors[i].init(std::stoi(id,nullptr,16),juce::Colour(std::stoul(colorHexa,nullptr,16)) );
+                                i++;
+                            }
+                        }
+                        if (e->getTagName() == "imagebutton1") {
+                            int i=0;
+                            std::string id,colorHexa;
+                            for (auto* f : e->getChildByName("colors")->getChildIterator()) {                              
+                                for (auto* g : f->getChildIterator()) {
+                                    const juce::String toto=g->getAllSubText();
+                                    if (g->getTagName() == "id") {id=toto.toStdString();}
+                                    if (g->getTagName() == "color") {colorHexa=toto.toStdString();}
+                                }
+                                imagebutton_1_colors[i].init(std::stoi(id,nullptr,16),juce::Colour(std::stoul(colorHexa,nullptr,16)) );
+                                i++;
+                            }
+                        }
+                        
+                    }  
+			} 
+        }
+    }
+
+
     initDirectories();
 
     //IMAGES
@@ -442,108 +541,62 @@ void ChopperAudioProcessorEditor::reloadGui()
     stepseq_on=juce::ImageFileFormat::loadFrom(juce::File(imagePath+"/stepseq_on.png"));
     plugin_banner=juce::ImageFileFormat::loadFrom(juce::File(imagePath+"/banner_4.png"));
 
+    // IMAGEBUTTON 1 template
     for(int i = 0; i < 16;i++) {
-        seq_step[i].setImages (false, true, true,
-                                  stepseq_off, 1.000f, juce::Colour (color_stepseq_1),
-                                  juce::Image(), 1.000f, juce::Colour (color_stepseq_2),
-                                  stepseq_on, 1.000f, juce::Colour (color_stepseq_1));
+        seq_step[i].setImages (false, true, true,stepseq_off, 1.000f, imagebutton_1_colors[0].colorValue,juce::Image(), 1.000f, imagebutton_1_colors[1].colorValue,stepseq_on, 1.000f, imagebutton_1_colors[0].colorValue);
     } 
+    seq_clear.setImages (false, true, true,stepseq_off, 1.000f, imagebutton_1_colors[0].colorValue,juce::Image(), 1.000f, imagebutton_1_colors[1].colorValue,stepseq_on, 1.000f, imagebutton_1_colors[0].colorValue);
+    seq_reset.setImages (false, true, true,stepseq_off, 1.000f, imagebutton_1_colors[0].colorValue,juce::Image(), 1.000f, imagebutton_1_colors[1].colorValue,stepseq_on, 1.000f, imagebutton_1_colors[0].colorValue);
+    seq_copy.setImages (false, true, true,stepseq_off, 1.000f, imagebutton_1_colors[0].colorValue,juce::Image(), 1.000f, imagebutton_1_colors[1].colorValue,stepseq_on, 1.000f, imagebutton_1_colors[0].colorValue);
+    seq_paste.setImages (false, true, true,stepseq_off, 1.000f, imagebutton_1_colors[0].colorValue,juce::Image(), 1.000f, imagebutton_1_colors[1].colorValue,stepseq_on, 1.000f, imagebutton_1_colors[0].colorValue);
+    seq_auto.setImages (false, true, true,stepseq_off, 1.000f, imagebutton_1_colors[0].colorValue,juce::Image(), 1.000f, imagebutton_1_colors[1].colorValue,stepseq_on, 1.000f, imagebutton_1_colors[0].colorValue);
+    banner.setImages (false, true, true,plugin_banner, 1.000f,imagebutton_1_colors[0].colorValue,juce::Image(), 1.000f, imagebutton_1_colors[1].colorValue,juce::Image(), 1.000f, imagebutton_1_colors[0].colorValue);
+    stepseq_color=(long)imagebutton_1_colors[0].colorValue.getARGB();
 
-    seq_clear.setImages (false, true, true,
-                              stepseq_off, 1.000f, juce::Colour (color_stepseq_1),
-                                  juce::Image(), 1.000f, juce::Colour (color_stepseq_2),
-                                  stepseq_on, 1.000f, juce::Colour (color_stepseq_1));
-    seq_reset.setImages (false, true, true,
-                              stepseq_off, 1.000f, juce::Colour (color_stepseq_1),
-                                  juce::Image(), 1.000f, juce::Colour (color_stepseq_2),
-                                  stepseq_on, 1.000f, juce::Colour (color_stepseq_1));
-    seq_copy.setImages (false, true, true,
-                              stepseq_off, 1.000f, juce::Colour (color_stepseq_1),
-                                  juce::Image(), 1.000f, juce::Colour (color_stepseq_2),
-                                  stepseq_on, 1.000f, juce::Colour (color_stepseq_1));
-    seq_paste.setImages (false, true, true,
-                              stepseq_off, 1.000f, juce::Colour (color_stepseq_1),
-                                  juce::Image(), 1.000f, juce::Colour (color_stepseq_2),
-                                  stepseq_on, 1.000f, juce::Colour (color_stepseq_1));
-    seq_auto.setImages (false, true, true,
-                              stepseq_off, 1.000f, juce::Colour (color_stepseq_1),
-                                  juce::Image(), 1.000f, juce::Colour (color_stepseq_2),
-                                  stepseq_on, 1.000f, juce::Colour (color_stepseq_1));
-
-    banner.setImages (false, true, true,
-                              plugin_banner, 1.000f,juce::Colour (color_stepseq_1),
-                                  juce::Image(), 1.000f, control_label_color,
-                                  juce::Image(), 1.000f, control_value_color);
-    
-    gain__slider->setColour(juce::Slider::thumbColourId,juce::Colours::blue);
-    gain__slider->setColour(juce::Slider::rotarySliderOutlineColourId,juce::Colours::black);
-    gain__slider->setColour(juce::Slider::rotarySliderFillColourId,juce::Colours::blue);
-    gain__slider->setColour(juce::Slider::textBoxTextColourId,control_value_color);
-    gain__slider->setColour(juce::Slider::textBoxOutlineColourId,juce::Colours::blue);
-
-    mix_gain_label.setColour(juce::Label::textColourId,control_label_color);
-
-    mix__slider->setColour(juce::Slider::thumbColourId,juce::Colours::blue);
-    mix__slider->setColour(juce::Slider::rotarySliderOutlineColourId,juce::Colours::black);
-    mix__slider->setColour(juce::Slider::rotarySliderFillColourId,juce::Colours::blue);
-    mix__slider->setColour(juce::Slider::textBoxTextColourId,control_value_color);
-    mix__slider->setColour(juce::Slider::textBoxOutlineColourId,juce::Colours::blue);
-
-    mix_amnt_label.setColour(juce::Label::textColourId,control_label_color);
-    /*
-    for(int i = 0; i < 16;i++) {
-        seq_step_l[i].setColour(juce::Label::textColourId,color_text2);
+    // SLIDER 1 template
+    for(int i=0;i<sizeof(slider_1_colors)/sizeof(slider_1_colors[0]);i++) {
+        gain__slider->setColour(slider_1_colors[i].colorId,slider_1_colors[i].colorValue);
+        mix__slider->setColour(slider_1_colors[i].colorId,slider_1_colors[i].colorValue);
+        seq_gate_length.setColour(slider_1_colors[i].colorId,slider_1_colors[i].colorValue);
+        seq_length.setColour(slider_1_colors[i].colorId,slider_1_colors[i].colorValue);
     }
     
-    seq_pattern_selected.setColour(juce::Label::textColourId,color_text1);
-    seq_pattern_selected.setColour(juce::ComboBox::backgroundColourId,juce::Colours::black);
-    seq_pattern_selected.setColour(juce::ComboBox::outlineColourId ,juce::Colours::blue);
-    seq_pattern_selected.setColour(juce::ComboBox::arrowColourId ,control_value_color);
-    seq_pattern_selected.setColour(juce::ComboBox::textColourId,control_value_color);
+    // COMBO 1 TEMPLATE
+    for(int i=0;i<sizeof(combo_1_colors)/sizeof(combo_1_colors[0]);i++) {
+        seq_pattern_selected.setColour(combo_1_colors[i].colorId,combo_1_colors[i].colorValue);
+        seq_sequence_selected.setColour(combo_1_colors[i].colorId,combo_1_colors[i].colorValue);
+        seq_clock.setColour(combo_1_colors[i].colorId,combo_1_colors[i].colorValue);
+        seq_mode.setColour(combo_1_colors[i].colorId,combo_1_colors[i].colorValue);
+        seq_env.setColour(combo_1_colors[i].colorId,combo_1_colors[i].colorValue);
 
-    for(int i = 0; i < 16;i++) {
-        sseq_step[i].setColour(juce::ComboBox::backgroundColourId,juce::Colours::black);
-        sseq_step[i].setColour(juce::ComboBox::outlineColourId ,juce::Colours::blue);
-        sseq_step[i].setColour(juce::ComboBox::arrowColourId ,control_value_color);
-        sseq_step[i].setColour(juce::ComboBox::textColourId,control_value_color);
+        for(int j = 0; j < 16;j++) {
+            sseq_step[j].setColour(combo_1_colors[i].colorId,combo_1_colors[i].colorValue);
+        }
+    }    
+
+    // LABEL 1 TEMPLATE
+    for(int i=0;i<sizeof(label_1_colors)/sizeof(label_1_colors[0]);i++) {
+        mix_gain_label.setColour(label_1_colors[i].colorId,label_1_colors[i].colorValue);
+        mix_amnt_label.setColour(label_1_colors[i].colorId,label_1_colors[i].colorValue);
+        seq_clock_label.setColour(label_1_colors[i].colorId,label_1_colors[i].colorValue);
+        seq_mode_label.setColour(label_1_colors[i].colorId,label_1_colors[i].colorValue);
+        seq_env_label.setColour(label_1_colors[i].colorId,label_1_colors[i].colorValue);
+        seq_gate_length_label.setColour(label_1_colors[i].colorId,label_1_colors[i].colorValue);
+        seq_auto_label.setColour(label_1_colors[i].colorId,label_1_colors[i].colorValue);
+        seq_copy_label.setColour(label_1_colors[i].colorId,label_1_colors[i].colorValue);
+        seq_paste_label.setColour(label_1_colors[i].colorId,label_1_colors[i].colorValue);
+        seq_reset_label.setColour(label_1_colors[i].colorId,label_1_colors[i].colorValue);
+        seq_clear_label.setColour(label_1_colors[i].colorId,label_1_colors[i].colorValue);
+        seq_length_label.setColour(label_1_colors[i].colorId,label_1_colors[i].colorValue);
+
+        for(int j = 0; j < sizeof(seq_step_l)/sizeof(seq_step_l[0]);j	++) {
+            seq_step_l[j].setColour(label_1_colors[i].colorId,label_1_colors[i].colorValue);
+        }
     }
-
-    seq_sequence_selected.setColour(juce::ComboBox::backgroundColourId,juce::Colours::black);
-    seq_sequence_selected.setColour(juce::ComboBox::outlineColourId ,juce::Colours::blue);
-    seq_sequence_selected.setColour(juce::ComboBox::arrowColourId ,control_value_color);
-    seq_sequence_selected.setColour(juce::ComboBox::textColourId,control_value_color);
-
-    seq_clock.setColour(juce::ComboBox::backgroundColourId,juce::Colours::black);
-    seq_clock.setColour(juce::ComboBox::outlineColourId ,juce::Colours::blue);
-    seq_clock.setColour(juce::ComboBox::arrowColourId ,juce::Colours::blue);
-    seq_clock.setColour(juce::ComboBox::textColourId,control_value_color);
-    seq_clock_label.setColour(juce::Label::textColourId,control_label_color);
-
-    seq_mode.setColour(juce::ComboBox::backgroundColourId,juce::Colours::black);
-    seq_mode.setColour(juce::ComboBox::outlineColourId ,juce::Colours::blue);
-    seq_mode.setColour(juce::ComboBox::arrowColourId ,juce::Colours::blue);
-    seq_mode.setColour(juce::ComboBox::textColourId,control_value_color);
-    seq_mode_label.setColour(juce::Label::textColourId,control_label_color);
-
-    seq_env.setColour(juce::ComboBox::backgroundColourId,juce::Colours::black);
-    seq_env.setColour(juce::ComboBox::outlineColourId ,juce::Colours::blue);
-    seq_env.setColour(juce::ComboBox::arrowColourId ,juce::Colours::blue);
-    seq_env.setColour(juce::ComboBox::textColourId,control_value_color);
-    seq_env_label.setColour(juce::Label::textColourId,control_label_color);
-
-    seq_gate_length.setColour(juce::Slider::thumbColourId,juce::Colours::blue);
-    seq_gate_length.setColour(juce::Slider::rotarySliderOutlineColourId,juce::Colours::black);
-    seq_gate_length.setColour(juce::Slider::rotarySliderFillColourId,juce::Colours::blue);
-    seq_gate_length.setColour(juce::Slider::textBoxTextColourId,control_value_color);
-    seq_gate_length.setColour(juce::Slider::textBoxOutlineColourId,juce::Colours::blue);
-    seq_gate_length_label.setColour(juce::Label::textColourId,control_label_color);
-
-    seq_auto_label.setColour(juce::Label::textColourId,control_label_color);
-
-    debug.setColour(juce::TextEditor::textColourId,control_value_color);
-    debug.setColour(juce::TextEditor::backgroundColourId,background_color);
-    debug.setColour(juce::TextEditor::outlineColourId,background_color);
-    debug.setColour(juce::TextEditor::shadowColourId,background_color);*/
+    // TEXTBOX 1 TEMPLATE
+    for(int i=0;i<sizeof(textbox_1_colors)/sizeof(textbox_1_colors[0]);i++) {
+        debug.setColour(textbox_1_colors[i].colorId,textbox_1_colors[i].colorValue);
+    }
 
 }   
 
@@ -597,19 +650,19 @@ void ChopperAudioProcessorEditor::LoadXMLConfig()
             if (rootElement->hasTagName("choppah")) {
                 for (auto* e : rootElement->getChildByName("options")->getChildIterator())
                     {
-                        debug.setText(debug.getText()+"\n" +e->getTagName()  + " : " +  e->getAllSubText());
+                        //debug.setText(debug.getText()+"\n" +e->getTagName()  + " : " +  e->getAllSubText());
                         juce::String paramName = e->getAllSubText();
                                                
-                        if (e->getTagName() == "skin") { toto=paramName.toStdString(); currentSkin=toto;}
+                        if (e->getTagName() == "skin") { currentSkin=paramName.toStdString();}
                     }  
                 for (auto* e : rootElement->getChildByName("patterns")->getChildIterator())
                     {
-                        debug.setText(debug.getText()+"\n" +e->getTagName()  + " : " +  e->getAllSubText());
+                        //debug.setText(debug.getText()+"\n" +e->getTagName()  + " : " +  e->getAllSubText());
                         juce::String paramName = e->getAllSubText();
                     } 
                 for (auto* e : rootElement->getChildByName("sequences")->getChildIterator())
                     {
-                        debug.setText(debug.getText()+"\n" +e->getTagName()  + " : " +  e->getAllSubText());
+                        //debug.setText(debug.getText()+"\n" +e->getTagName()  + " : " +  e->getAllSubText());
                         juce::String paramName = e->getAllSubText();   
                     }
             
@@ -617,12 +670,12 @@ void ChopperAudioProcessorEditor::LoadXMLConfig()
         }
     }
     if (currentSkin == "" ) {currentSkin="default";}
-    debug.setText(debug.getText() + "\n" + 
+   /* debug.setText(debug.getText() + "\n" + 
                    "imagePath " + imagePath+ "\n" +  
                     "dataPath " + dataPath+ "\n" + 
                     "configPath " + configPath+ "\n" + 
                     "presetPath " + presetPath
-                    );
+                    );*/
 }
 
 

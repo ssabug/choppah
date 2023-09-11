@@ -15,19 +15,6 @@
 
 
 //==============================================================================
-/**
-*/
-/*class MySliderListener : public juce::Slider::Listener
-{
-public:
-    void sliderValueChanged(juce::Slider* slider) override
-    {
-        // Handle the value change here
-        double value = slider->getValue();
-        // Use the value in the PluginProcessor part
-    }
-};*/
-
 
 class ChopperAudioProcessorEditor  : public juce::AudioProcessorEditor,
                                      public juce::Timer
@@ -41,6 +28,11 @@ public:
     void resized() override;
     void timerCallback() override
     {
+        juce::Colour step_color_full=juce::Colour (0xFFFFFFFF & stepseq_color);
+        juce::Colour step_color_dim=juce::Colour  (0xFF7F7F7F & stepseq_color);
+        juce::Colour step_color_dimm=juce::Colour (0xFF3F3F3F & stepseq_color);
+        juce::Colour step_color_off=juce::Colour  (0xFF000000 & stepseq_color);
+
         int clockdiv=seq_clock.getSelectedItemIndex();
         int coeff=pow(2,2+clockdiv);  
         double ppq=audioProcessor.getDAWppq()/coeff;
@@ -50,7 +42,6 @@ public:
         int seqClock=audioProcessor.clock_div->getIndex();
         int seqMode=audioProcessor.seq_mode->getIndex(); 
         int autoPattern=audioProcessor.pseq_auto->get();
-     
         int index=std::floor((ppq-ppqlastbar)*16);
         int seqIndex;
         if (ppq>=seqLength) {seqIndex=int(std::floor(ppq)-seqLength*std::floor(ppq/seqLength));} else {seqIndex=std::floor(ppq);}
@@ -66,9 +57,9 @@ public:
 
         for (int i=0;i<sizeof(sequence)/sizeof(sequence[0]);i++)
         {
-            int color,color_seq;
-            if (i == index){color=0xFF0000FF;} else {color=0xFF00007F;}
-            if (i == seqIndex){color_seq=0xFF0000FF;} else if (i>=seqLength) {color_seq=0xFF000000;} else {color_seq=0xFF00003F;}
+            juce::Colour color,color_seq;
+            if (i == index){color=step_color_full;} else {color=step_color_dim;}
+            if (i == seqIndex){color_seq=step_color_full;} else if (i>=seqLength) {color_seq=step_color_off;} else {color_seq=step_color_dimm;}
             
             if (seq_pattern_selected.getSelectedItemIndex() !=  processorPattern ) {
                 sequence[i]=patterns[processorPattern][i];
@@ -76,26 +67,20 @@ public:
 
             if (sequence[i]==true)
             {
-                seq_step[i].setImages (false, true, true,
-                                  stepseq_on, 1.000f, juce::Colour (color),
-                                  juce::Image(), 1.000f, juce::Colour (0xFF0000FF),
-                                  stepseq_off, 1.000f, juce::Colour (color));
+                seq_step[i].setImages (false, true, true,stepseq_on, 1.000f, color,juce::Image(), 1.000f, step_color_full,stepseq_off, 1.000f, color);
             }
             else
             {
-                seq_step[i].setImages (false, true, true,
-                                  stepseq_off, 1.000f, juce::Colour (color),
-                                  juce::Image(), 1.000f, juce::Colour (0xFF0000FF),
-                                  stepseq_on, 1.000f, juce::Colour (color));
+                seq_step[i].setImages (false, true, true,stepseq_off, 1.000f, color,juce::Image(), 1.000f, step_color_full,stepseq_on, 1.000f, color);
             }
             
-            sseq_step[i].setColour(juce::ComboBox::outlineColourId ,juce::Colour (color_seq));
+            sseq_step[i].setColour(juce::ComboBox::outlineColourId ,color_seq);
         }
 
         if (autoPattern == 1) {
-            seq_auto.setImages (false, true, true,stepseq_on, 1.000f, juce::Colour (0xFF00007F),juce::Image(), 1.000f, juce::Colour (0xFF0000FF),stepseq_off, 1.000f, juce::Colour (0xFF00007F));
+            seq_auto.setImages (false, true, true,stepseq_on, 1.000f, step_color_dim,juce::Image(), 1.000f, step_color_full,stepseq_off, 1.000f, step_color_dim);
         } else {
-            seq_auto.setImages (false, true, true,stepseq_off, 1.000f, juce::Colour (0xFF00007F),juce::Image(), 1.000f, juce::Colour (0xFF0000FF),stepseq_on, 1.000f, juce::Colour (0xFF00007F));
+            seq_auto.setImages (false, true, true,stepseq_off, 1.000f, step_color_dim,juce::Image(), 1.000f, step_color_full,stepseq_on, 1.000f, step_color_dim);
         }
         
         if (seq_clock.getSelectedItemIndex() != seqClock) {
@@ -126,26 +111,18 @@ public:
     }
     void step_seq_update(int stepIndex)
     {
+        juce::Colour step_color_full=juce::Colour (0xFFFFFFFF& stepseq_color);
+        juce::Colour step_color_dim=juce::Colour (0xFF7F7F7F& stepseq_color);
         
-        if ( sequence[stepIndex] == true) 
-        
+        if ( sequence[stepIndex] == true)        
         {
-            seq_step[stepIndex].setImages (false, true, true,
-                                  stepseq_on, 1.000f, juce::Colour (0xFF00007F),
-                                  juce::Image(), 1.000f, juce::Colour (0xFF0000FF),
-                                  stepseq_off, 1.000f, juce::Colour (0xFF00007F));
+            seq_step[stepIndex].setImages (false, true, true,stepseq_on, 1.000f, step_color_dim,juce::Image(), 1.000f, step_color_full,stepseq_off, 1.000f, step_color_dim);
         } else 
         {
-            seq_step[stepIndex].setImages (false, true, true,
-                                  stepseq_off, 1.000f, juce::Colour (0xFF00007F),
-                                  juce::Image(), 1.000f, juce::Colour (0xFF0000FF),
-                                  stepseq_on, 1.000f, juce::Colour (0xFF00007F));
+            seq_step[stepIndex].setImages (false, true, true,stepseq_off, 1.000f, step_color_dim,juce::Image(), 1.000f, step_color_full,stepseq_on, 1.000f, step_color_dim);
         }
         patterns[seq_pattern_selected.getSelectedItemIndex()][stepIndex]=sequence[stepIndex];
-
-        audioProcessor.updatePattern(seq_pattern_selected.getSelectedItemIndex(),bitArrayToInt32(sequence,16));
-        
-       
+        audioProcessor.updatePattern(seq_pattern_selected.getSelectedItemIndex(),bitArrayToInt32(sequence,16));       
     }
     void step_seq_click(int stepIndex)
     {
@@ -279,6 +256,15 @@ public:
     void initDirectories();  
     void reloadGui(); 
 
+    class controlColorTemplate 
+    {
+        public:
+            void init (int ref,juce::Colour color) { this->colorId = ref; this->colorValue=color;}
+            int colorId=juce::Label::textColourId;
+            juce::Colour colorValue=juce::Colour(juce::Colours::white);
+                       
+    };
+
 private:
     // This reference is provided as a quick way for your editor to
     // access the processor object that created it.
@@ -324,9 +310,9 @@ private:
 
     const int gui_refresh_rate=500;
 
-    std::string imagePath,dataPath,configPath,presetPath;
-    std::string currentSkin,toto;
+    std::string imagePath,dataPath,configPath,presetPath,currentSkin;
     juce::Image stepseq_on,stepseq_off,plugin_banner;
+    long int stepseq_color=0xFF0000FF;
     
     bool patterns[16][16]={{1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0},{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},{1,1,0,0,1,1,0,0,1,1,0,0,1,1,0,0},{1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0},
                            {1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0},{1,0,0,0,1,0,1,0,1,1,1,0,1,0,1,0},{1,1,1,1,0,0,0,0,1,1,1,1,0,0,0,0},{1,1,0,0,1,1,1,1,1,1,0,0,1,1,1,1},

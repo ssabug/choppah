@@ -150,15 +150,15 @@ void ChopperAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce
     auto totalNumOutputChannels = getTotalNumOutputChannels();
     float seqStepValue,lastSeqStepValue;
     float gain=out_gain->get();
-    drybuffer.copyFrom(0, 0, buffer, 0, 0, buffer.getNumSamples());
     float mixLevel=out_mix->get();
     float lastDryValue=smoothMix.getNextValue();
     //float lastOutValue=smoothOut.getNextValue();
-    dryWetMixer.setWetMixProportion(mixLevel);
-    
     smoothMix.setTargetValue((1-mixLevel)*gain);
     //smoothOut.setTargetValue(gain);
-    
+    drybuffer.copyFrom(0, 0, buffer, 0, 0, buffer.getNumSamples());
+    drybuffer.copyFrom(1, 0, buffer, 1, 0, buffer.getNumSamples());
+    dryWetMixer.setWetMixProportion(mixLevel);
+
     juce::AudioPlayHead* phead = getPlayHead();
     if (phead != nullptr)
     {
@@ -188,7 +188,6 @@ void ChopperAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
         buffer.clear (i, 0, buffer.getNumSamples());
 
-
     for (int channel = 0; channel < totalNumInputChannels; ++channel)
     {   
         auto* channelData = buffer.getWritePointer (channel);
@@ -196,13 +195,16 @@ void ChopperAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce
         //drybuffer.copyFrom(channel, 0, buffer, channel, 0, buffer.getNumSamples());
         //auto drybuffer=buffer.copyFrom (1, 0, buffer.getReadPointer (0), buffer.getNumSamples());
         //buffer.applyGain(smooth.getNextValue());
+        
         drybuffer.applyGainRamp(channel,0,drybuffer.getNumSamples(),lastDryValue,smoothMix.getNextValue());
-        dryWetMixer.pushDrySamples(drybuffer ); // Push the unprocessed dry samples
+        dryWetMixer.pushDrySamples(drybuffer); // Push the unprocessed dry samples
         buffer.applyGainRamp(channel,0,buffer.getNumSamples(),lastSeqStepValue,smoothChop.getNextValue());
         dryWetMixer.mixWetSamples(buffer); // Mix the processed wet samples
-        buffer.addFrom(0, 0, drybuffer, 0, 0, buffer.getNumSamples());
+        
         //buffer.applyGainRamp(channel,0,buffer.getNumSamples(),lastOutValue,smoothOut.getNextValue());
     }
+    buffer.addFrom(0, 0, drybuffer, 0, 0, buffer.getNumSamples());
+    buffer.addFrom(1, 0, drybuffer, 1, 0, buffer.getNumSamples());
 }
 
 //==============================================================================

@@ -11,6 +11,8 @@
 #include <JuceHeader.h>
 #include "PluginProcessor.h"
 #include <juce_gui_extra/juce_gui_extra.h>
+#include <filesystem>
+
 
 //==============================================================================
 /**
@@ -53,14 +55,14 @@ public:
         int seqIndex;
         if (ppq>=seqLength) {seqIndex=int(std::floor(ppq)-seqLength*std::floor(ppq/seqLength));} else {seqIndex=std::floor(ppq);}
 
-
         debug.setText ("ppq = " + std::__cxx11::to_string(ppq)+"\n"+
-                       "pattern\t\t\t" + std::__cxx11::to_string(/*seq_pattern_selected.getSelectedItemIndex()+1*/audioProcessor.pseq_current->get())+
+                       "pattern\t\t\t" + std::__cxx11::to_string(audioProcessor.pseq_current->get())+
                        " step " +std::__cxx11::to_string(index+1)+"\n" +
                        "sequence\t" +std::__cxx11::to_string(seq_sequence_selected.getSelectedItemIndex()+1)+ 
                        " step " +std::__cxx11::to_string(seqIndex+1) +"\n"/*+
-                       " stepIndex " + std::__cxx11::to_string(audioProcessor.pseq_current->get())*/
-                       , juce::dontSendNotification);     
+                       "toto ="+ toto +"\n"+
+                        "tata : " + tata*/
+                       , juce::dontSendNotification);  
 
         for (int i=0;i<sizeof(sequence)/sizeof(sequence[0]);i++)
         {
@@ -75,25 +77,25 @@ public:
             if (sequence[i]==true)
             {
                 seq_step[i].setImages (false, true, true,
-                                  juce::ImageFileFormat::loadFrom(juce::File(imagePath+"/stepseq_on.png")), 1.000f, juce::Colour (color),
+                                  stepseq_on, 1.000f, juce::Colour (color),
                                   juce::Image(), 1.000f, juce::Colour (0xFF0000FF),
-                                  juce::ImageFileFormat::loadFrom(juce::File(imagePath+"/stepseq_off.png")), 1.000f, juce::Colour (color));
+                                  stepseq_off, 1.000f, juce::Colour (color));
             }
             else
             {
                 seq_step[i].setImages (false, true, true,
-                                  juce::ImageFileFormat::loadFrom(juce::File(imagePath+"/stepseq_off.png")), 1.000f, juce::Colour (color),
+                                  stepseq_off, 1.000f, juce::Colour (color),
                                   juce::Image(), 1.000f, juce::Colour (0xFF0000FF),
-                                  juce::ImageFileFormat::loadFrom(juce::File(imagePath+"/stepseq_on.png")), 1.000f, juce::Colour (color));
+                                  stepseq_on, 1.000f, juce::Colour (color));
             }
             
             sseq_step[i].setColour(juce::ComboBox::outlineColourId ,juce::Colour (color_seq));
         }
 
         if (autoPattern == 1) {
-            seq_auto.setImages (false, true, true,juce::ImageFileFormat::loadFrom(juce::File(imagePath+"/stepseq_on.png")), 1.000f, juce::Colour (0xFF00007F),juce::Image(), 1.000f, juce::Colour (0xFF0000FF),juce::ImageFileFormat::loadFrom(juce::File(imagePath+"/stepseq_off.png")), 1.000f, juce::Colour (0xFF00007F));
+            seq_auto.setImages (false, true, true,stepseq_on, 1.000f, juce::Colour (0xFF00007F),juce::Image(), 1.000f, juce::Colour (0xFF0000FF),stepseq_off, 1.000f, juce::Colour (0xFF00007F));
         } else {
-            seq_auto.setImages (false, true, true,juce::ImageFileFormat::loadFrom(juce::File(imagePath+"/stepseq_off.png")), 1.000f, juce::Colour (0xFF00007F),juce::Image(), 1.000f, juce::Colour (0xFF0000FF),juce::ImageFileFormat::loadFrom(juce::File(imagePath+"/stepseq_on.png")), 1.000f, juce::Colour (0xFF00007F));
+            seq_auto.setImages (false, true, true,stepseq_off, 1.000f, juce::Colour (0xFF00007F),juce::Image(), 1.000f, juce::Colour (0xFF0000FF),stepseq_on, 1.000f, juce::Colour (0xFF00007F));
         }
         
         if (seq_clock.getSelectedItemIndex() != seqClock) {
@@ -129,15 +131,15 @@ public:
         
         {
             seq_step[stepIndex].setImages (false, true, true,
-                                  juce::ImageFileFormat::loadFrom(juce::File(imagePath+"/stepseq_on.png")), 1.000f, juce::Colour (0xFF00007F),
+                                  stepseq_on, 1.000f, juce::Colour (0xFF00007F),
                                   juce::Image(), 1.000f, juce::Colour (0xFF0000FF),
-                                  juce::ImageFileFormat::loadFrom(juce::File(imagePath+"/stepseq_off.png")), 1.000f, juce::Colour (0xFF00007F));
+                                  stepseq_off, 1.000f, juce::Colour (0xFF00007F));
         } else 
         {
             seq_step[stepIndex].setImages (false, true, true,
-                                  juce::ImageFileFormat::loadFrom(juce::File(imagePath+"/stepseq_off.png")), 1.000f, juce::Colour (0xFF00007F),
+                                  stepseq_off, 1.000f, juce::Colour (0xFF00007F),
                                   juce::Image(), 1.000f, juce::Colour (0xFF0000FF),
-                                  juce::ImageFileFormat::loadFrom(juce::File(imagePath+"/stepseq_on.png")), 1.000f, juce::Colour (0xFF00007F));
+                                  stepseq_on, 1.000f, juce::Colour (0xFF00007F));
         }
         patterns[seq_pattern_selected.getSelectedItemIndex()][stepIndex]=sequence[stepIndex];
 
@@ -272,6 +274,9 @@ public:
         }
         audioProcessor.pseq_auto->operator=(value);
     }
+    
+    void LoadXMLConfig();
+    void initDirectories();   
 
 private:
     // This reference is provided as a quick way for your editor to
@@ -316,9 +321,11 @@ private:
     juce::TextEditor debug;
 
     const int gui_refresh_rate=500;
-    
-    const std::string imagePath="/home/pwner/dev/chopper/Ressources/images";
 
+    std::string imagePath,dataPath,configPath,presetPath;
+    std::string currentSkin,toto;
+    juce::Image stepseq_on,stepseq_off,plugin_banner;
+    
     bool patterns[16][16]={{1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0},{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},{1,1,0,0,1,1,0,0,1,1,0,0,1,1,0,0},{1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0},
                            {1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0},{1,0,0,0,1,0,1,0,1,1,1,0,1,0,1,0},{1,1,1,1,0,0,0,0,1,1,1,1,0,0,0,0},{1,1,0,0,1,1,1,1,1,1,0,0,1,1,1,1},
                            {0,0,0,0,1,1,1,1,0,0,0,0,1,1,1,1},{0,0,1,1,0,0,1,1,0,0,1,1,0,0,1,1},{0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1},{0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1},

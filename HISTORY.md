@@ -6,10 +6,12 @@
 #### Features
 - [x] dry/wet processing implementation
 - [x] out gain applies to mixed out
+- [x] plugin data directories defined & automatically created (linux only)
+- [ ] XML file defined but unable to copy XML elements to variable
 - [x] proper JUCE definition project (manufacturer,vendor ids, ...)
 - [x] removed standalone building
 - [x] added VisualStudio2017 and MacOSX built folders (but not used yet)
-- [ ] configure/build scripts exists but not portable
+- [ ] configure/build scripts exists but not portable (dont forget to copy config.xml and default skin files)
 - [ ] save sequencer state variables
 - [ ] gain slider custom range implementation
 - [ ] code cleaning + opti

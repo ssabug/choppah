@@ -13,6 +13,8 @@
 ChopperAudioProcessorEditor::ChopperAudioProcessorEditor (ChopperAudioProcessor& p)
     : AudioProcessorEditor (&p), audioProcessor (p)
 {
+    LoadXMLConfig();
+    initDirectories();
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.
     setSize (1060, 250);
@@ -40,6 +42,10 @@ ChopperAudioProcessorEditor::ChopperAudioProcessorEditor (ChopperAudioProcessor&
     juce::Colour background_color=juce::Colours::black;
     int color_stepseq_1=0xFF00007F;
     int color_stepseq_2=0xFF0000FF;
+    //IMAGES
+    stepseq_off= juce::ImageFileFormat::loadFrom(juce::File(imagePath+"/stepseq_off.png"));
+    stepseq_on=juce::ImageFileFormat::loadFrom(juce::File(imagePath+"/stepseq_on.png"));
+    plugin_banner=juce::ImageFileFormat::loadFrom(juce::File(imagePath+"/banner_4.png"));
 
     //////////////////////////////// OUT SETTINGS///////////////////////////////
     gain__slider.reset (new juce::Slider ("mix_gain"));
@@ -88,9 +94,9 @@ ChopperAudioProcessorEditor::ChopperAudioProcessorEditor (ChopperAudioProcessor&
         //seq_step[i].setButtonText (TRANS("stepseq"<<i));
         seq_step[i].setToggleable(true);
         seq_step[i].setImages (false, true, true,
-                                  juce::ImageFileFormat::loadFrom(juce::File(imagePath+"/stepseq_off.png")), 1.000f, juce::Colour (color_stepseq_1),
+                                  stepseq_off, 1.000f, juce::Colour (color_stepseq_1),
                                   juce::Image(), 1.000f, juce::Colour (color_stepseq_2),
-                                  juce::ImageFileFormat::loadFrom(juce::File(imagePath+"/stepseq_on.png")), 1.000f, juce::Colour (color_stepseq_1));
+                                  stepseq_on, 1.000f, juce::Colour (color_stepseq_1));
         seq_step[i].setBounds (pseq_posx+i*60, pseq_posy, 46, 16);
         //juce::ImageButton* button=*seq_step[i];
          // Set the function to be triggered on button click
@@ -245,9 +251,9 @@ ChopperAudioProcessorEditor::ChopperAudioProcessorEditor (ChopperAudioProcessor&
 
     seq_auto.setToggleable(true);
     seq_auto.setImages (false, true, true,
-                              juce::ImageFileFormat::loadFrom(juce::File(imagePath+"/stepseq_off.png")), 1.000f, juce::Colour (color_stepseq_1),
+                              stepseq_off, 1.000f, juce::Colour (color_stepseq_1),
                                   juce::Image(), 1.000f, juce::Colour (color_stepseq_2),
-                                  juce::ImageFileFormat::loadFrom(juce::File(imagePath+"/stepseq_on.png")), 1.000f, juce::Colour (color_stepseq_1));
+                                  stepseq_on, 1.000f, juce::Colour (color_stepseq_1));
     seq_auto.setBounds (pseq_params_posx+200, pseq_params_posy, 46, 16);
     seq_auto.onClick = [this] { seq_auto_click();};
 
@@ -259,9 +265,9 @@ ChopperAudioProcessorEditor::ChopperAudioProcessorEditor (ChopperAudioProcessor&
     ////////////////////////////// UTILITY ////////////////////////////////////// 
     seq_clear.setToggleable(true);
     seq_clear.setImages (false, true, true,
-                              juce::ImageFileFormat::loadFrom(juce::File(imagePath+"/stepseq_off.png")), 1.000f, juce::Colour (color_stepseq_1),
+                              stepseq_off, 1.000f, juce::Colour (color_stepseq_1),
                                   juce::Image(), 1.000f, juce::Colour (color_stepseq_2),
-                                  juce::ImageFileFormat::loadFrom(juce::File(imagePath+"/stepseq_on.png")), 1.000f, juce::Colour (color_stepseq_1));
+                                  stepseq_on, 1.000f, juce::Colour (color_stepseq_1));
     seq_clear.setBounds (util_posx, util_posy, 46, 16);
     seq_clear.onClick = [this] { step_seq_clear();};
     //seq_clear.addListener (this);
@@ -271,9 +277,9 @@ ChopperAudioProcessorEditor::ChopperAudioProcessorEditor (ChopperAudioProcessor&
 
     seq_reset.setToggleable(true);
     seq_reset.setImages (false, true, true,
-                              juce::ImageFileFormat::loadFrom(juce::File(imagePath+"/stepseq_off.png")), 1.000f, juce::Colour (color_stepseq_1),
+                              stepseq_off, 1.000f, juce::Colour (color_stepseq_1),
                                   juce::Image(), 1.000f, juce::Colour (color_stepseq_2),
-                                  juce::ImageFileFormat::loadFrom(juce::File(imagePath+"/stepseq_on.png")), 1.000f, juce::Colour (color_stepseq_1));
+                                  stepseq_on, 1.000f, juce::Colour (color_stepseq_1));
     seq_reset.setBounds (util_posx, util_posy+40, 46, 16);
     seq_reset.onClick = [this] { step_seq_reset();};
     //seq_reset.addListener (this);
@@ -283,9 +289,9 @@ ChopperAudioProcessorEditor::ChopperAudioProcessorEditor (ChopperAudioProcessor&
 
     seq_copy.setToggleable(true);
     seq_copy.setImages (false, true, true,
-                              juce::ImageFileFormat::loadFrom(juce::File(imagePath+"/stepseq_off.png")), 1.000f, juce::Colour (color_stepseq_1),
+                              stepseq_off, 1.000f, juce::Colour (color_stepseq_1),
                                   juce::Image(), 1.000f, juce::Colour (color_stepseq_2),
-                                  juce::ImageFileFormat::loadFrom(juce::File(imagePath+"/stepseq_on.png")), 1.000f, juce::Colour (color_stepseq_1));
+                                  stepseq_on, 1.000f, juce::Colour (color_stepseq_1));
     seq_copy.setBounds (util_posx+60, util_posy, 46, 16);
     seq_copy.onClick = [this] { step_seq_copy();};
     //seq_copy.addListener (this);
@@ -295,9 +301,9 @@ ChopperAudioProcessorEditor::ChopperAudioProcessorEditor (ChopperAudioProcessor&
 
     seq_paste.setToggleable(true);
     seq_paste.setImages (false, true, true,
-                              juce::ImageFileFormat::loadFrom(juce::File(imagePath+"/stepseq_off.png")), 1.000f, juce::Colour (color_stepseq_1),
+                              stepseq_off, 1.000f, juce::Colour (color_stepseq_1),
                                   juce::Image(), 1.000f, juce::Colour (color_stepseq_2),
-                                  juce::ImageFileFormat::loadFrom(juce::File(imagePath+"/stepseq_on.png")), 1.000f, juce::Colour (color_stepseq_1));
+                                  stepseq_on, 1.000f, juce::Colour (color_stepseq_1));
     seq_paste.setBounds (util_posx+60, util_posy+40, 46, 16);
     seq_paste.onClick = [this] { step_seq_paste();};
     //seq_paste.addListener (this);
@@ -307,7 +313,7 @@ ChopperAudioProcessorEditor::ChopperAudioProcessorEditor (ChopperAudioProcessor&
     /////////////////////////////////////BANNER///////////////////////////////////////
     banner.setToggleable(true);
     banner.setImages (false, true, true,
-                              juce::ImageFileFormat::loadFrom(juce::File(imagePath+"/banner_4.png")), 1.000f,juce::Colour (color_stepseq_1),
+                              plugin_banner, 1.000f,juce::Colour (color_stepseq_1),
                                   juce::Image(), 1.000f, control_label_color,
                                   juce::Image(), 1.000f, control_value_color);
     banner.setBounds (banner_posx,banner_posy+30, 190, 120);
@@ -317,12 +323,13 @@ ChopperAudioProcessorEditor::ChopperAudioProcessorEditor (ChopperAudioProcessor&
 
     //////////////////////////////////////DEBUG///////////////////////////////////////
     debug.setColour(juce::TextEditor::textColourId,control_value_color);
-    debug.setText ("debug", juce::dontSendNotification);
+    //debug.setText ("debug", juce::dontSendNotification);
     debug.setBounds (debug_posx, debug_posy-20, 160, 100);
     debug.setColour(juce::TextEditor::backgroundColourId,background_color);
     debug.setColour(juce::TextEditor::outlineColourId,background_color);
     debug.setColour(juce::TextEditor::shadowColourId,background_color);
-    
+    //debug.setScrollbarsShown(true);
+
     init_all_sequences();
 
     //////////////////////////////////////////////////////////////////////////////////
@@ -355,6 +362,8 @@ ChopperAudioProcessorEditor::ChopperAudioProcessorEditor (ChopperAudioProcessor&
     addAndMakeVisible (banner);
     addAndMakeVisible (debug);
     startTimerHz(gui_refresh_rate);
+
+    
     
 }
 /*void ChopperAudioProcessorEditor::sliderValueChanged (juce::Slider* slider)
@@ -410,4 +419,69 @@ void ChopperAudioProcessorEditor::resized()
     // This is generally where you'll want to lay out the positions of any
     // subcomponents in your editor..
 }
+
+
+void ChopperAudioProcessorEditor::initDirectories()
+{
+    juce::File homeDir = juce::File(juce::File::getSpecialLocation (juce::File::userHomeDirectory));
+    const std::string homePath=homeDir.getFullPathName().toStdString();
+    
+    std::string skinsPath,defaultSkinPath,rootPath;
+    
+   //SystemStats::getOperatingSystemType()
+    rootPath=homePath + "/.ssabug";
+    dataPath=rootPath + "/choppah";
+    configPath=dataPath+"/config";
+    presetPath=dataPath+"/presets";
+    skinsPath=dataPath+"/skins";
+    defaultSkinPath=skinsPath+"/"+currentSkin;
+    imagePath=dataPath+ "/skins/" + currentSkin + "/images/";
+
+    if ( not std::filesystem::exists(std::string(rootPath)) )  {
+        std::filesystem::create_directory(rootPath);
+    }
+
+    if ( not std::filesystem::exists(std::string(dataPath)) )  {
+        std::filesystem::create_directory(dataPath);
+        std::filesystem::create_directory(configPath);
+        std::filesystem::create_directory(presetPath);
+        std::filesystem::create_directory(skinsPath);
+
+        std::filesystem::create_directory(defaultSkinPath);
+        std::filesystem::create_directory(defaultSkinPath+ "/images");
+    }
+   
+}
+
+void ChopperAudioProcessorEditor::LoadXMLConfig()
+{
+    
+    std::string xmlFilePath=configPath+"/config.xml";
+    if ( not std::filesystem::exists(std::string(xmlFilePath)) )  {
+
+    } else {
+        juce::File xmlFile(xmlFilePath);
+        //juce::ScopedPointer<juce::XmlElement> xml(juce::XmlDocument::parse(xmlFile));
+        juce::XmlDocument xmlDoc(xmlFile);
+
+        if (juce::XmlDocument::parse(xmlFile))
+        {
+            // Access the root element of the XML document
+            auto rootElement = xmlDoc.getDocumentElement();
+            if (rootElement->hasTagName("choppah")) {
+                for (auto* e : rootElement->getChildByName("options")->getChildIterator())
+                    {
+                        //toto+="\n" + e->getTagName()  + " : " +  e->getAllSubText();
+                        juce::String paramName = e->getAllSubText();
+                        toto=paramName.toStdString();
+                        
+                        if (e->getTagName() == "skin") { }
+                    }  
+                
+			} 
+        }
+    }
+    currentSkin="default";
+}
+
 

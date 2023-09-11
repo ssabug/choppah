@@ -658,7 +658,17 @@ void ChopperAudioProcessorEditor::LoadXMLConfig()
                 for (auto* e : rootElement->getChildByName("patterns")->getChildIterator())
                     {
                         //debug.setText(debug.getText()+"\n" +e->getTagName()  + " : " +  e->getAllSubText());
-                        juce::String paramName = e->getAllSubText();
+                        std::string paramName = e->getTagName().toStdString();
+                        std::string paramValue = e->getAllSubText().toStdString();
+                        
+                        /*if (paramName.find(pattern) != stdstring::npos) {
+                            int patternNumber=
+                        }
+                           
+
+                        for (int i= ;i<16;i++) {
+                            patterns[i][i]=
+                        }*/
                     } 
                 for (auto* e : rootElement->getChildByName("sequences")->getChildIterator())
                     {

@@ -328,6 +328,8 @@ ChopperAudioProcessorEditor::ChopperAudioProcessorEditor (ChopperAudioProcessor&
     debug.setColour(juce::TextEditor::backgroundColourId,background_color);
     debug.setColour(juce::TextEditor::outlineColourId,background_color);
     debug.setColour(juce::TextEditor::shadowColourId,background_color);
+    debugB.setBounds (debug_posx-20, debug_posy-20, 15, 15);
+    debugB.onClick = [this] { LoadXMLConfig();};
     //debug.setScrollbarsShown(true);
 
     init_all_sequences();
@@ -361,6 +363,7 @@ ChopperAudioProcessorEditor::ChopperAudioProcessorEditor (ChopperAudioProcessor&
     addAndMakeVisible (seq_paste_label);
     addAndMakeVisible (banner);
     addAndMakeVisible (debug);
+    addAndMakeVisible (debugB);
     startTimerHz(gui_refresh_rate);
 
     
@@ -471,7 +474,7 @@ void ChopperAudioProcessorEditor::LoadXMLConfig()
             if (rootElement->hasTagName("choppah")) {
                 for (auto* e : rootElement->getChildByName("options")->getChildIterator())
                     {
-                        //toto+="\n" + e->getTagName()  + " : " +  e->getAllSubText();
+                        debug.setText(toto+="\n" + e->getTagName()  + " : " +  e->getAllSubText());
                         juce::String paramName = e->getAllSubText();
                         toto=paramName.toStdString();
                         

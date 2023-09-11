@@ -319,6 +319,7 @@ private:
 
     juce::ImageButton banner;
     juce::TextEditor debug;
+    juce:Button debugB;
 
     const int gui_refresh_rate=500;
 

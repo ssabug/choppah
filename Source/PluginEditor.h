@@ -55,14 +55,14 @@ public:
         int seqIndex;
         if (ppq>=seqLength) {seqIndex=int(std::floor(ppq)-seqLength*std::floor(ppq/seqLength));} else {seqIndex=std::floor(ppq);}
 
-        debug.setText ("ppq = " + std::__cxx11::to_string(ppq)+"\n"+
+        /*debug.setText ("ppq = " + std::__cxx11::to_string(ppq)+"\n"+
                        "pattern\t\t\t" + std::__cxx11::to_string(audioProcessor.pseq_current->get())+
                        " step " +std::__cxx11::to_string(index+1)+"\n" +
                        "sequence\t" +std::__cxx11::to_string(seq_sequence_selected.getSelectedItemIndex()+1)+ 
                        " step " +std::__cxx11::to_string(seqIndex+1) +"\n"/*+
                        "toto ="+ toto +"\n"+
-                        "tata : " + tata*/
-                       , juce::dontSendNotification);  
+                        "tata : " + tata
+                       , juce::dontSendNotification);  */
 
         for (int i=0;i<sizeof(sequence)/sizeof(sequence[0]);i++)
         {
@@ -276,7 +276,8 @@ public:
     }
     
     void LoadXMLConfig();
-    void initDirectories();   
+    void initDirectories();  
+    void reloadGui(); 
 
 private:
     // This reference is provided as a quick way for your editor to
@@ -319,7 +320,7 @@ private:
 
     juce::ImageButton banner;
     juce::TextEditor debug;
-    juce:Button debugB;
+    juce::TextButton debugB;
 
     const int gui_refresh_rate=500;
 

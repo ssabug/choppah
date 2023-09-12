@@ -43,7 +43,7 @@ gcc
  - put it in your VST3 folder
  - run the script ` ./Ressources/scripts/copy_plugin_data.sh [path to downloaded github stuff]` .
 
-It will copy the plugin data in ${HOME}/.ssabug/choppah/
+It will create the folders and copy the plugin data in **${HOME}/.ssabug/choppah/**
 
  - load the plugin in your daw
 

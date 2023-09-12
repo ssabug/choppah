@@ -41,12 +41,11 @@ gcc
 ### Linux
  - get the pre-built **chopper.vst3** folder in **Releases** or build it (see below).
  - put it in your VST3 folder
- - run it. images should be missing but folders have been created in **~/.ssabug/choppa/**,
- - so, copy the following:
- - **{GIT_PACKAGE}/Ressources/config_files/config.xml** in **~/.ssabug/choppa/config/**
- - **{GIT_PACKAGE}/Ressources/config_files/skin.xml**   in **~/.ssabug/choppa/skins/default/**
- - all files of **{GIT_PACKAGE}/Ressources/images/**    in **~/.ssabug/choppa/skins/default/images/**
- - reload the plugin
+ - run the script ` ./Ressources/scripts/copy_plugin_data.sh [path to downloaded github stuff]` .
+
+It will copy the plugin data in ${HOME}/.ssabug/choppah/
+
+ - load the plugin in your daw
 
 ## Building 
 ### Linux

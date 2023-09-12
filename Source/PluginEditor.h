@@ -44,16 +44,17 @@ public:
         int autoPattern=audioProcessor.pseq_auto->get();
         int index=std::floor((ppq-ppqlastbar)*16);
         int seqIndex;
+        //bool ptrn[16];for (int i=0;i<16;i++) {ptrn[i]=patterns[processorPattern][15-i];} //FOR PATTERN CODE BUILDING
+        
         if (ppq>=seqLength) {seqIndex=int(std::floor(ppq)-seqLength*std::floor(ppq/seqLength));} else {seqIndex=std::floor(ppq);}
 
-        /*debug.setText ("ppq = " + std::__cxx11::to_string(ppq)+"\n"+
+        debug.setText ("ppq = " + std::__cxx11::to_string(ppq)+"\n"+
                        "pattern\t\t\t" + std::__cxx11::to_string(audioProcessor.pseq_current->get())+
                        " step " +std::__cxx11::to_string(index+1)+"\n" +
                        "sequence\t" +std::__cxx11::to_string(seq_sequence_selected.getSelectedItemIndex()+1)+ 
-                       " step " +std::__cxx11::to_string(seqIndex+1) +"\n"/*+
-                       "toto ="+ toto +"\n"+
-                        "tata : " + tata
-                       , juce::dontSendNotification);  */
+                       " step " +std::__cxx11::to_string(seqIndex+1) +"\n"
+                       /*+"patterndata " + std::__cxx11::to_string(bitArrayToInt32(ptrn,16))*///FOR PATTERN CODE BUILDING
+                       , juce::dontSendNotification);  
 
         for (int i=0;i<sizeof(sequence)/sizeof(sequence[0]);i++)
         {
@@ -226,7 +227,7 @@ public:
     {
         debug.setText (text, juce::dontSendNotification);
     }
-    void init_all_sequences()
+    void init_all_sequences(int returnToPattern=0,int returnToSeq=0)
     {
         for (int i=15;i>=0;i--){
             //audioProcessor.sequences[i]=bitArrayToInt32(patterns[i],16);
@@ -237,7 +238,8 @@ public:
             
             audioProcessor.updatePattern(i,bitArrayToInt32(patterns[i],16));
         }
-        
+        if (returnToPattern>0) {seq_pattern_selected.setSelectedItemIndex(returnToPattern-1);}
+        if (returnToSeq>0) {seq_sequence_selected.setSelectedItemIndex(returnToSeq-1);}
         //audioProcessor.initGatesMap();
     }
 
@@ -310,9 +312,9 @@ private:
 
     const int gui_refresh_rate=500;
 
-    std::string imagePath,dataPath,configPath,presetPath,currentSkin;
+    std::string imagePath,dataPath,configPath,presetPath,currentSkin="default";
     juce::Image stepseq_on,stepseq_off,plugin_banner;
-    long int stepseq_color=0xFF0000FF;
+    long int stepseq_color=0xFF0000FF,background_color=0xFF000000;
     
     bool patterns[16][16]={{1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0},{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},{1,1,0,0,1,1,0,0,1,1,0,0,1,1,0,0},{1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0},
                            {1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0},{1,0,0,0,1,0,1,0,1,1,1,0,1,0,1,0},{1,1,1,1,0,0,0,0,1,1,1,1,0,0,0,0},{1,1,0,0,1,1,1,1,1,1,0,0,1,1,1,1},

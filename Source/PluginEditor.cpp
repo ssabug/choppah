@@ -13,7 +13,7 @@
 ChopperAudioProcessorEditor::ChopperAudioProcessorEditor (ChopperAudioProcessor& p)
     : AudioProcessorEditor (&p), audioProcessor (p)
 {
-    LoadXMLConfig();
+    //LoadXMLConfig();
     initDirectories();
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.
@@ -32,7 +32,7 @@ ChopperAudioProcessorEditor::ChopperAudioProcessorEditor (ChopperAudioProcessor&
     int mix_posx=840;int mix_posy=pseq_posy+bottomy;
     int mix_label_posx=mix_posx+30;int mix_label_posy=mix_posy-20;
     int util_posx=500;int util_posy=pseq_posy+bottomy;
-    int debug_posx=util_posx-210+20;int debug_posy=pseq_posy+bottomy;
+    int debug_posx=util_posx-210+10;int debug_posy=pseq_posy+bottomy;
     int banner_posx=640;int banner_posy=bottomy-50;
     //COLOURS
     juce::Colour color_text2=juce::Colours::blue;
@@ -78,13 +78,10 @@ ChopperAudioProcessorEditor::ChopperAudioProcessorEditor (ChopperAudioProcessor&
     mix__slider->setColour(juce::Slider::textBoxOutlineColourId,juce::Colours::blue);
     mix__slider->onValueChange = [this] { out_mix_change(); };
     mix__slider->setValue (1.0);
-    //mix__slider_attachment.attachToSlider(mix__slider.get());
-    //mix__slider->addListener (this);
     mix_amnt_label.setText ("Dry/Wet", juce::dontSendNotification);
     mix_amnt_label.setBounds(mix_label_posx+100,mix_label_posy,150,24);
     mix_amnt_label.setColour(juce::Label::textColourId,control_label_color);
     
-
     //juce::AudioProcessorParameter::getValueForText("out_mix")
     /*auto& param = processor.getParameter(ChopperAudioProcessor::out_mix);
     auto* attachment = new juce::AudioProcessorValueTreeState::SliderAttachment(processor.getParameterTree(), param, mix__slider);*/
@@ -98,9 +95,6 @@ ChopperAudioProcessorEditor::ChopperAudioProcessorEditor (ChopperAudioProcessor&
                                   juce::Image(), 1.000f, juce::Colour (color_stepseq_2),
                                   stepseq_on, 1.000f, juce::Colour (color_stepseq_1));
         seq_step[i].setBounds (pseq_posx+i*60, pseq_posy, 46, 16);
-        //juce::ImageButton* button=*seq_step[i];
-         // Set the function to be triggered on button click
-        //seq_step[i].addListener (this);
         addAndMakeVisible (seq_step[i]);
         sequence[i]=false;
     } 
@@ -324,7 +318,7 @@ ChopperAudioProcessorEditor::ChopperAudioProcessorEditor (ChopperAudioProcessor&
     //////////////////////////////////////DEBUG///////////////////////////////////////
     debug.setColour(juce::TextEditor::textColourId,control_value_color);
     //debug.setText ("debug", juce::dontSendNotification);
-    debug.setBounds (debug_posx, debug_posy-20, 160, 100);
+    debug.setBounds (debug_posx, debug_posy-20, 170, 100);
     debug.setColour(juce::TextEditor::backgroundColourId,background_color);
     debug.setColour(juce::TextEditor::outlineColourId,background_color);
     debug.setColour(juce::TextEditor::shadowColourId,background_color);
@@ -365,9 +359,6 @@ ChopperAudioProcessorEditor::ChopperAudioProcessorEditor (ChopperAudioProcessor&
     addAndMakeVisible (debug);
     addAndMakeVisible (debugB);
     startTimerHz(gui_refresh_rate);
-
-    
-    
 }
 
 
@@ -378,7 +369,7 @@ ChopperAudioProcessorEditor::~ChopperAudioProcessorEditor()
 //==============================================================================
 void ChopperAudioProcessorEditor::paint (juce::Graphics& g)
 {
-    g.fillAll (juce::Colours::black);
+    g.fillAll (juce::Colour (background_color) );
     g.setColour (juce::Colours::white);
     g.setFont (15.0f);
 
@@ -461,7 +452,21 @@ void ChopperAudioProcessorEditor::reloadGui()
             auto rootElement = xmlDoc.getDocumentElement();
             if (rootElement->hasTagName("skin")) {
                 for (auto* e : rootElement->getChildByName("templates")->getChildIterator())
-                    {                                               
+                    {   
+                        if (e->getTagName() == "background") {
+                            int i=0;
+                            std::string id,colorHexa;
+                            for (auto* f : e->getChildByName("colors")->getChildIterator()) {                              
+                                for (auto* g : f->getChildIterator()) {
+                                    const juce::String toto=g->getAllSubText();
+                                    if (g->getTagName() == "id") {id=toto.toStdString();}
+                                    if (g->getTagName() == "color") {colorHexa=toto.toStdString();}
+                                }
+                                // BACKGROUND 
+                                background_color=std::stoul(colorHexa,nullptr,16);
+                                i++;
+                            }
+                        }                                            
                         if (e->getTagName() == "slider1") {
                             int i=0;
                             std::string id,colorHexa;
@@ -545,12 +550,12 @@ void ChopperAudioProcessorEditor::reloadGui()
     for(int i = 0; i < 16;i++) {
         seq_step[i].setImages (false, true, true,stepseq_off, 1.000f, imagebutton_1_colors[0].colorValue,juce::Image(), 1.000f, imagebutton_1_colors[1].colorValue,stepseq_on, 1.000f, imagebutton_1_colors[0].colorValue);
     } 
-    seq_clear.setImages (false, true, true,stepseq_off, 1.000f, imagebutton_1_colors[0].colorValue,juce::Image(), 1.000f, imagebutton_1_colors[1].colorValue,stepseq_on, 1.000f, imagebutton_1_colors[0].colorValue);
-    seq_reset.setImages (false, true, true,stepseq_off, 1.000f, imagebutton_1_colors[0].colorValue,juce::Image(), 1.000f, imagebutton_1_colors[1].colorValue,stepseq_on, 1.000f, imagebutton_1_colors[0].colorValue);
-    seq_copy.setImages (false, true, true,stepseq_off, 1.000f, imagebutton_1_colors[0].colorValue,juce::Image(), 1.000f, imagebutton_1_colors[1].colorValue,stepseq_on, 1.000f, imagebutton_1_colors[0].colorValue);
-    seq_paste.setImages (false, true, true,stepseq_off, 1.000f, imagebutton_1_colors[0].colorValue,juce::Image(), 1.000f, imagebutton_1_colors[1].colorValue,stepseq_on, 1.000f, imagebutton_1_colors[0].colorValue);
-    seq_auto.setImages (false, true, true,stepseq_off, 1.000f, imagebutton_1_colors[0].colorValue,juce::Image(), 1.000f, imagebutton_1_colors[1].colorValue,stepseq_on, 1.000f, imagebutton_1_colors[0].colorValue);
-    banner.setImages (false, true, true,plugin_banner, 1.000f,imagebutton_1_colors[0].colorValue,juce::Image(), 1.000f, imagebutton_1_colors[1].colorValue,juce::Image(), 1.000f, imagebutton_1_colors[0].colorValue);
+    seq_clear.setImages (false, true, true,stepseq_off, 1.000f, imagebutton_1_colors[1].colorValue,juce::Image(), 1.000f, imagebutton_1_colors[0].colorValue,stepseq_on, 1.000f, imagebutton_1_colors[0].colorValue);
+    seq_reset.setImages (false, true, true,stepseq_off, 1.000f, imagebutton_1_colors[1].colorValue,juce::Image(), 1.000f, imagebutton_1_colors[0].colorValue,stepseq_on, 1.000f, imagebutton_1_colors[0].colorValue);
+    seq_copy.setImages (false, true, true,stepseq_off, 1.000f, imagebutton_1_colors[1].colorValue,juce::Image(), 1.000f, imagebutton_1_colors[0].colorValue,stepseq_on, 1.000f, imagebutton_1_colors[0].colorValue);
+    seq_paste.setImages (false, true, true,stepseq_off, 1.000f, imagebutton_1_colors[1].colorValue,juce::Image(), 1.000f, imagebutton_1_colors[0].colorValue,stepseq_on, 1.000f, imagebutton_1_colors[0].colorValue);
+    seq_auto.setImages (false, true, true,stepseq_off, 1.000f, imagebutton_1_colors[1].colorValue,juce::Image(), 1.000f, imagebutton_1_colors[1].colorValue,stepseq_on, 1.000f, imagebutton_1_colors[0].colorValue);
+    banner.setImages (false, true, true,plugin_banner, 1.000f,imagebutton_1_colors[1].colorValue,juce::Image(), 1.000f, imagebutton_1_colors[0].colorValue,juce::Image(), 1.000f, imagebutton_1_colors[0].colorValue);
     stepseq_color=(long)imagebutton_1_colors[0].colorValue.getARGB();
 
     // SLIDER 1 template
@@ -596,7 +601,10 @@ void ChopperAudioProcessorEditor::reloadGui()
     // TEXTBOX 1 TEMPLATE
     for(int i=0;i<sizeof(textbox_1_colors)/sizeof(textbox_1_colors[0]);i++) {
         debug.setColour(textbox_1_colors[i].colorId,textbox_1_colors[i].colorValue);
+        debug.applyColourToAllText(textbox_1_colors[i].colorValue);
     }
+
+    repaint();
 
 }   
 
@@ -640,7 +648,6 @@ void ChopperAudioProcessorEditor::LoadXMLConfig()
 
     } else {
         juce::File xmlFile(xmlFilePath);
-        //juce::ScopedPointer<juce::XmlElement> xml(juce::XmlDocument::parse(xmlFile));
         juce::XmlDocument xmlDoc(xmlFile);
 
         if (juce::XmlDocument::parse(xmlFile))
@@ -654,32 +661,42 @@ void ChopperAudioProcessorEditor::LoadXMLConfig()
                         juce::String paramName = e->getAllSubText();
                                                
                         if (e->getTagName() == "skin") { currentSkin=paramName.toStdString();}
-                    }  
+                    } 
+                int patternNum=0; 
                 for (auto* e : rootElement->getChildByName("patterns")->getChildIterator())
                     {
                         //debug.setText(debug.getText()+"\n" +e->getTagName()  + " : " +  e->getAllSubText());
                         std::string paramName = e->getTagName().toStdString();
                         std::string paramValue = e->getAllSubText().toStdString();
                         
-                        /*if (paramName.find(pattern) != stdstring::npos) {
-                            int patternNumber=
-                        }
-                           
-
-                        for (int i= ;i<16;i++) {
-                            patterns[i][i]=
-                        }*/
+                        if (paramName.find("pattern") != std::string::npos) {
+                             for (int i=0;i<16;i++) {
+                                patterns[patternNum][15-i]=( stoi(paramValue) >> i) & 1;
+                             }
+                        patternNum++;
+                        } 
+                        
                     } 
+                int sequenceNum=0;
                 for (auto* e : rootElement->getChildByName("sequences")->getChildIterator())
                     {
-                        //debug.setText(debug.getText()+"\n" +e->getTagName()  + " : " +  e->getAllSubText());
-                        juce::String paramName = e->getAllSubText();   
+                        std::string paramName = e->getTagName().toStdString();
+                        std::string paramValue = e->getAllSubText().toStdString();
+                        
+                        if (paramName.find("sequence") != std::string::npos) {
+                             for (int i=0;i<16;i++) {
+                                int bit=i*4;
+                                sequences[sequenceNum][15-i]=(int)( ((stoul(paramValue) >> bit) & 1)*1+ ((stoul(paramValue) >> bit+1) & 1)*2  +((stoul(paramValue) >> bit+2) & 1) *4 + ((stoul(paramValue) >> bit+3) & 1)*8 );
+                             }
+                        sequenceNum++;
+                        } 
                     }
             
 			} 
         }
     }
-    if (currentSkin == "" ) {currentSkin="default";}
+    init_all_sequences(0,seq_sequence_selected.getSelectedItemIndex()+1); // update all patterns & sequencesof processor
+   // if (currentSkin == "" ) {currentSkin="default";}
    /* debug.setText(debug.getText() + "\n" + 
                    "imagePath " + imagePath+ "\n" +  
                     "dataPath " + dataPath+ "\n" + 

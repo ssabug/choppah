@@ -20,7 +20,7 @@ You can change the sequence length with the **seq length** left slider.
 
 To stop auto pattern display in **sequence** mode, disable **Auto** button.
 
-**Gate length**, **clock division** apply for pattern mode only.
+**clock division** apply for pattern mode only.
 
 **Clear** erases current selected pattern.
 

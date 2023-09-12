@@ -410,30 +410,6 @@ void ChopperAudioProcessorEditor::reloadGui()
     controlColorTemplate textbox_1_colors[4];
     controlColorTemplate label_1_colors[1];
     controlColorTemplate imagebutton_1_colors[2];
-    /*
-    juce::Colour color_text2=juce::Colours::blue;
-    juce::Colour color_text1=juce::Colours::blue;
-    juce::Colour control_label_color=juce::Colour (0, 0, 200);
-    juce::Colour control_value_color=juce::Colour (0, 0, 255);
-    juce::Colour background_color=juce::Colours::black;
-    juce::Colour color_stepseq_1=juce::Colour (0xFF00007F);
-    juce::Colour color_stepseq_2=juce::Colour (0xFF0000FF); 
-    slider_1_colors[0].init(juce::Slider::thumbColourId,juce::Colours::blue);
-    slider_1_colors[1].init(juce::Slider::rotarySliderOutlineColourId,juce::Colours::black);
-    slider_1_colors[2].init(juce::Slider::rotarySliderFillColourId,juce::Colours::blue);
-    slider_1_colors[3].init(juce::Slider::textBoxTextColourId,control_value_color);
-    slider_1_colors[4].init(juce::Slider::textBoxOutlineColourId,juce::Colours::blue);    
-    combo_1_colors[0].init(juce::ComboBox::backgroundColourId,juce::Colours::black);
-    combo_1_colors[1].init(juce::ComboBox::outlineColourId ,juce::Colours::blue);
-    combo_1_colors[2].init(juce::ComboBox::arrowColourId ,control_value_color);
-    combo_1_colors[3].init(juce::ComboBox::textColourId,control_value_color);    
-    textbox_1_colors[0].init(juce::TextEditor::textColourId,control_value_color);
-    textbox_1_colors[1].init(juce::TextEditor::backgroundColourId,background_color);
-    textbox_1_colors[2].init(juce::TextEditor::outlineColourId,background_color);
-    textbox_1_colors[3].init(juce::TextEditor::shadowColourId,background_color);   
-    label_1_colors[0].init(juce::Label::textColourId,control_label_color);   
-    imagebutton_1_colors[0].init(juce::Label::textColourId,color_stepseq_1);
-    imagebutton_1_colors[1].init(juce::Label::textColourId,color_stepseq_2);*/
     
     LoadXMLConfig(1);
 

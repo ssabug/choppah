@@ -7,8 +7,9 @@
 - [x] XML config (READ ONLY) : skin, patterns & seq implemented,**plugin controls values to be implemented**
 - [x] XML skin (READ ONLY): colours implemented, only in reloadGui(), **control location/style to be implemented** 
 - [ ] XML skin & config write 
-- [x] GUI control template class created (to be better defined) : only in reloadGui(), missing on editor construction
-- [x] reloadGui() function to update controls skins/color/images on the fly (manual trigger for now)
+- [x] GUI control template class created **(to be better defined)** : only in reloadGui(), **missing on editor construction**
+- [x] reloadGui() function to update controls skins/color/images on the fly 
+- [ ] find a safe way to trigger reloadGui() once at startup (manual trigger for now)
 - [ ] configure/build scripts exists but not portable **dont forget to copy config.xml and default skin files**
 - [ ] save sequencer state variables
 - [ ] gain slider custom range implementation

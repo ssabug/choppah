@@ -15,8 +15,8 @@
 - [ ] gain slider custom range implementation
 - [ ] code cleaning + opti
 #### Bugs
-- [ ] reloadGui() crashes when triggered sometimes
-- [ ] reloadGui() causes dry/wet value change
+- [ ] reloadSkinFromXML() crashes when triggered sometimes
+- [ ] reloadSkinFromXML() causes dry/wet value change
 - [ ] sequences dont update after loadXMLConfig
 - [ ] optimize/compensate latency
 - [ ] sequence mode : sequence 0 not init as expected

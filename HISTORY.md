@@ -5,11 +5,11 @@
 ### v0.11 11092023 XML & control template class on going
 #### Features
 - [x] XML config (READ ONLY) : skin, patterns & seq implemented,**plugin controls values to be implemented**
-- [x] XML skin (READ ONLY): colours implemented, only in reloadGui(), **control location/style to be implemented** 
+- [x] XML skin (READ ONLY): colours implemented, only in reloadSkinFromXML(), **control location/style to be implemented** 
 - [ ] XML skin & config write 
-- [x] GUI control template class created **(to be better defined)** : only in reloadGui(), **implementation on editor construction in progress**
-- [x] reloadGui() function to update controls skins/color/images on the fly 
-- [ ] find a safe way to trigger reloadGui(1) once at startup (manual trigger for now)
+- [x] GUI control template class created **(to be better defined)** : only in reloadSkinFromXML(), **implementation on editor construction in progress**
+- [x] reloadSkinFromXML() function to update controls skins/color/images on the fly 
+- [ ] find a safe way to trigger reloadSkinFromXML(1) once at startup (manual trigger for now)
 - [ ] configure/build scripts exists but not portable
 - [ ] save sequencer state variables
 - [ ] gain slider custom range implementation

@@ -1,17 +1,22 @@
 <skin>
     <info>
         <name>default</name>
-        <version>0.10</version>
+        <version>0.11</version>
         <date>11092023</version>
     </info>
     <templates>
+        <background>
+            <colors>
+                <entry><id>0x1001300</id><color>0xFF000000</color></entry> <!--juce::Slider::thumbColourId -->
+            </colors>
+        </background>
         <slider1>
             <colors>
                 <entry><id>0x1001300</id><color>0xFF0000FF</color></entry> <!--juce::Slider::thumbColourId -->
                 <entry><id>0x1001312</id><color>0xFF000000</color></entry><!--juce::Slider::rotarySliderOutlineColourId -->
                 <entry><id>0x1001311</id><color>0xFF0000FF</color></entry><!--juce::Slider::rotarySliderFillColourId -->
                 <entry><id>0x1001400</id><color>0xFF0000FF</color></entry><!--juce::Slider::textBoxTextColourId -->
-                <entry><id>0x1001700</id><color>0xFF0000FF</color></entry><!--juce::Slider::textBoxOutlineColourId -->
+                <entry><id>0x1001700</id><color>0xFF000000</color></entry><!--juce::Slider::textBoxOutlineColourId -->
             </colors>
         </slider1>
         <combo1>

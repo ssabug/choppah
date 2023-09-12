@@ -435,7 +435,7 @@ void ChopperAudioProcessorEditor::reloadGui()
     imagebutton_1_colors[0].init(juce::Label::textColourId,color_stepseq_1);
     imagebutton_1_colors[1].init(juce::Label::textColourId,color_stepseq_2);*/
     
-    LoadXMLConfig();
+    LoadXMLConfig(1);
 
     // LOAD SKIN XML DEF
     std::string xmlFilePath=dataPath+"/skins/"+currentSkin+"/skin.xml"; 
@@ -601,7 +601,7 @@ void ChopperAudioProcessorEditor::reloadGui()
     // TEXTBOX 1 TEMPLATE
     for(int i=0;i<sizeof(textbox_1_colors)/sizeof(textbox_1_colors[0]);i++) {
         debug.setColour(textbox_1_colors[i].colorId,textbox_1_colors[i].colorValue);
-        debug.applyColourToAllText(textbox_1_colors[i].colorValue);
+        //debug.applyColourToAllText(textbox_1_colors[i].colorValue);
     }
 
     repaint();
@@ -640,7 +640,7 @@ void ChopperAudioProcessorEditor::initDirectories()
    
 }
 
-void ChopperAudioProcessorEditor::LoadXMLConfig()
+void ChopperAudioProcessorEditor::LoadXMLConfig(bool reloadAll=false)
 {
     
     std::string xmlFilePath=configPath+"/config.xml";
@@ -662,40 +662,43 @@ void ChopperAudioProcessorEditor::LoadXMLConfig()
                                                
                         if (e->getTagName() == "skin") { currentSkin=paramName.toStdString();}
                     } 
-                int patternNum=0; 
-                for (auto* e : rootElement->getChildByName("patterns")->getChildIterator())
-                    {
-                        //debug.setText(debug.getText()+"\n" +e->getTagName()  + " : " +  e->getAllSubText());
-                        std::string paramName = e->getTagName().toStdString();
-                        std::string paramValue = e->getAllSubText().toStdString();
-                        
-                        if (paramName.find("pattern") != std::string::npos) {
-                             for (int i=0;i<16;i++) {
-                                patterns[patternNum][15-i]=( stoi(paramValue) >> i) & 1;
-                             }
-                        patternNum++;
+                if (reloadAll) {
+                    int patternNum=0; 
+                    for (auto* e : rootElement->getChildByName("patterns")->getChildIterator())
+                        {
+                            //debug.setText(debug.getText()+"\n" +e->getTagName()  + " : " +  e->getAllSubText());
+                            std::string paramName = e->getTagName().toStdString();
+                            std::string paramValue = e->getAllSubText().toStdString();
+                            
+                            if (paramName.find("pattern") != std::string::npos) {
+                                 for (int i=0;i<16;i++) {
+                                    patterns[patternNum][15-i]=( stoi(paramValue) >> i) & 1;
+                                 }
+                            patternNum++;
+                            } 
+                            
                         } 
-                        
-                    } 
-                int sequenceNum=0;
-                for (auto* e : rootElement->getChildByName("sequences")->getChildIterator())
-                    {
-                        std::string paramName = e->getTagName().toStdString();
-                        std::string paramValue = e->getAllSubText().toStdString();
-                        
-                        if (paramName.find("sequence") != std::string::npos) {
-                             for (int i=0;i<16;i++) {
-                                int bit=i*4;
-                                sequences[sequenceNum][15-i]=(int)( ((stoul(paramValue) >> bit) & 1)*1+ ((stoul(paramValue) >> bit+1) & 1)*2  +((stoul(paramValue) >> bit+2) & 1) *4 + ((stoul(paramValue) >> bit+3) & 1)*8 );
-                             }
-                        sequenceNum++;
-                        } 
-                    }
-            
+                    int sequenceNum=0;
+                    for (auto* e : rootElement->getChildByName("sequences")->getChildIterator())
+                        {
+                            std::string paramName = e->getTagName().toStdString();
+                            std::string paramValue = e->getAllSubText().toStdString();
+                            
+                            if (paramName.find("sequence") != std::string::npos) {
+                                 for (int i=0;i<16;i++) {
+                                    int bit=i*4;
+                                    sequences[sequenceNum][15-i]=(int)( ((stoul(paramValue) >> bit) & 1)*1+ ((stoul(paramValue) >> bit+1) & 1)*2  +((stoul(paramValue) >> bit+2) & 1) *4 + ((stoul(paramValue) >> bit+3) & 1)*8 );
+                                 }
+                            sequenceNum++;
+                            } 
+                        }
+                   }
 			} 
         }
     }
-    init_all_sequences(0,seq_sequence_selected.getSelectedItemIndex()+1); // update all patterns & sequencesof processor
+    if (reloadAll) {
+        init_all_sequences(0,seq_sequence_selected.getSelectedItemIndex()+1);
+    } // update all patterns & sequencesof processor
    // if (currentSkin == "" ) {currentSkin="default";}
    /* debug.setText(debug.getText() + "\n" + 
                    "imagePath " + imagePath+ "\n" +  

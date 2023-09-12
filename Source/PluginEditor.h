@@ -254,9 +254,10 @@ public:
         audioProcessor.pseq_auto->operator=(value);
     }
     
-    void LoadXMLConfig();
+    void LoadXMLConfig(bool reloadAll);
     void initDirectories();  
     void reloadGui(); 
+    
 
     class controlColorTemplate 
     {

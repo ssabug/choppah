@@ -9,13 +9,12 @@
 - [ ] XML skin & config write 
 - [x] GUI control template class created **(to be better defined)** : only in reloadGui(), **implementation on editor construction in progress**
 - [x] reloadGui() function to update controls skins/color/images on the fly 
-- [ ] find a safe way to trigger reloadGui() once at startup (manual trigger for now)
+- [ ] find a safe way to trigger reloadGui(1) once at startup (manual trigger for now)
 - [ ] configure/build scripts exists but not portable
 - [ ] save sequencer state variables
 - [ ] gain slider custom range implementation
 - [ ] code cleaning + opti
 #### Bugs
-- [ ] XML skin implementation : trigerred manually,differences on default skin between init and load
 - [ ] reloadGui() crashes when triggered sometimes
 - [ ] reloadGui() causes dry/wet value change
 - [ ] sequences dont update after loadXMLConfig

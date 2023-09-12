@@ -359,9 +359,9 @@ ChopperAudioProcessorEditor::ChopperAudioProcessorEditor (ChopperAudioProcessor&
     debug.setColour(juce::TextEditor::backgroundColourId,background_color);
     debug.setColour(juce::TextEditor::outlineColourId,background_color);
     debug.setColour(juce::TextEditor::shadowColourId,background_color);
-    debugB.setBounds (debug_posx-20, debug_posy-20, 15, 15);
+    debugB.setBounds (debug_posx-20-60, debug_posy-20+70, 15, 15);
     debugB.onClick = [this] { reloadSkinFromXML(0);};
-    debugBB.setBounds (debug_posx-20, debug_posy-20+50, 15, 15);
+    debugBB.setBounds (debug_posx-20-30, debug_posy-20+70, 15, 15);
     debugBB.onClick = [this] { reloadSkinFromXML(1);};
 
     init_all_sequences();

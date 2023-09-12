@@ -256,17 +256,7 @@ public:
     
     void LoadXMLConfig(bool reloadAll);
     void initDirectories();  
-    void reloadGui(); 
-    
-
-    class controlColorTemplate 
-    {
-        public:
-            void init (int ref,juce::Colour color) { this->colorId = ref; this->colorValue=color;}
-            int colorId=juce::Label::textColourId;
-            juce::Colour colorValue=juce::Colour(juce::Colours::white);
-                       
-    };
+    void reloadSkinFromXML(bool reloadAll);
 
 private:
     // This reference is provided as a quick way for your editor to
@@ -309,11 +299,11 @@ private:
 
     juce::ImageButton banner;
     juce::TextEditor debug;
-    juce::TextButton debugB;
+    juce::TextButton debugB,debugBB;
 
     const int gui_refresh_rate=500;
 
-    std::string imagePath,dataPath,configPath,presetPath,currentSkin="default";
+    std::string imagePath,dataPath,configPath,presetPath,currentSkin="default",currentSkinPath;
     juce::Image stepseq_on,stepseq_off,plugin_banner;
     long int stepseq_color=0xFF0000FF,background_color=0xFF000000;
     
@@ -330,7 +320,59 @@ private:
     int ssequence[16]={0,1,0,2,4,5,4,6,0,4,3,5,0,2,0,6};
     bool sequence[16];
     bool sequence_clipboard[16];
-    //juce::SliderParameterAttachment mix__slider_attachment;
+
+    void initSlider1(juce::Slider slider, int x,int y,int w,int h,float min,float max,float def)
+    {   slider.setSliderStyle (juce::Slider::Rotary);
+        slider.setRange (min, max, def);
+        slider.setTextBoxStyle (juce::Slider::TextBoxBelow, true, 80, 20);
+        slider.setBounds (x, y, w, h);
+        slider.setColour(juce::Slider::thumbColourId,juce::Colours::blue);
+        slider.setColour(juce::Slider::rotarySliderOutlineColourId,juce::Colours::black);
+        slider.setColour(juce::Slider::rotarySliderFillColourId,juce::Colours::blue);
+        slider.setColour(juce::Slider::textBoxTextColourId,juce::Colour(0xFF0000FF));
+        slider.setColour(juce::Slider::textBoxOutlineColourId,juce::Colours::blue);
+    }
+    
+    void initSlider2(juce::Slider slider,int x,int y,int w,int h,float min,float max,float def)
+    {   slider.setSliderStyle (juce::Slider::LinearHorizontal );
+        slider.setRange (min, max, def);
+        slider.setTextBoxStyle (juce::Slider::TextBoxBelow, true, 80, 20);
+        slider.setBounds (x, y, w, h);        
+        slider.setColour(juce::Slider::thumbColourId,juce::Colours::blue);
+        slider.setColour(juce::Slider::rotarySliderOutlineColourId,juce::Colours::black);
+        slider.setColour(juce::Slider::rotarySliderFillColourId,juce::Colours::blue);
+        slider.setColour(juce::Slider::textBoxTextColourId,juce::Colour(0xFF0000FF));
+        slider.setColour(juce::Slider::textBoxOutlineColourId,juce::Colours::black);
+    }
+    
+    void initCombo1(juce::ComboBox comboBox, int x,int y,int w,int h)
+    {   comboBox.setEditableText (false);
+        comboBox.setJustificationType (juce::Justification::centredLeft);
+        comboBox.setColour(juce::ComboBox::backgroundColourId,juce::Colours::black);
+        comboBox.setColour(juce::ComboBox::outlineColourId ,juce::Colours::blue);
+        comboBox.setColour(juce::ComboBox::arrowColourId ,juce::Colours::blue);
+        comboBox.setColour(juce::ComboBox::textColourId,juce::Colour(0xFF0000FF));
+        comboBox.setBounds (x, y, w, h);    
+    }
+    void initLabel1(juce::Label label,std::string text, int x,int y,int w,int h)
+    {   label.setText (text, juce::dontSendNotification);
+        label.setColour(juce::Label::textColourId,juce::Colour(0xFF0000FF));
+        label.setBounds (x, y, w, h);
+    }
+    
+    class controlColorTemplate 
+    {
+        public:
+            void init (int ref,juce::Colour color) { this->colorId = ref; this->colorValue=color;}
+            int colorId=juce::Label::textColourId;
+            juce::Colour colorValue=juce::Colour(juce::Colours::white);
+                       
+    };
+    class Control
+    {
+         int a;   
+    };
+
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ChopperAudioProcessorEditor)
 };

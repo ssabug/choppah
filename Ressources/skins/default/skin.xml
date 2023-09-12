@@ -7,7 +7,7 @@
     <templates>
         <background>
             <colors>
-                <entry><id>0x1001300</id><color>0xFF000000</color></entry> <!--juce::Slider::thumbColourId -->
+                <entry><id>0x1001300</id><color>0xFF000009</color></entry> <!--juce::Slider::thumbColourId -->
             </colors>
         </background>
         <slider1>

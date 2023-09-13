@@ -568,12 +568,6 @@ void ChopperAudioProcessorEditor::timerCallback()
     
 }
 
-void ChopperAudioProcessorEditor::debugF(bool reloadFromFile=false)
-{
-    if (reloadFromFile) { LoadXMLConfig(true,true,true); }
-    reloadSkinFromXML();
-}
-
 void ChopperAudioProcessorEditor::reloadSkinFromXML()
 {
     //COLOURS
@@ -876,38 +870,35 @@ void ChopperAudioProcessorEditor::seq_auto_click()
     audioProcessor.pseq_auto->operator=(value);
 }
 
-
-void ChopperAudioProcessorEditor::initDirectories()
+void ChopperAudioProcessorEditor::debugF(bool reloadFromFile=false)
 {
-    juce::File homeDir = juce::File(juce::File::getSpecialLocation (juce::File::userHomeDirectory));
-    const std::string homePath=homeDir.getFullPathName().toStdString();
-    
-    std::string skinsPath,defaultSkinPath,rootPath;
-    
-   //SystemStats::getOperatingSystemType()
-    rootPath=homePath + "/.ssabug";
-    dataPath=rootPath + "/choppah";
-    configPath=dataPath+"/config/";
-    presetPath=dataPath+"/presets";
-    skinsPath=dataPath+"/skins";
-    defaultSkinPath=skinsPath+"/"+currentSkin;
-    currentSkinPath=defaultSkinPath+"/";
-    imagePath=dataPath+ "/skins/" + currentSkin + "/images/";
+    if (reloadFromFile) { LoadXMLConfig(true,true,true); }
+    reloadSkinFromXML();
+}
 
-    if ( not std::filesystem::exists(std::string(rootPath)) )  {
-        std::filesystem::create_directory(rootPath);
+void ChopperAudioProcessorEditor::switch_skins()
+{
+    std::string skinsPath=dataPath+ "/skins"; // get skins folder path    
+    auto folders=get_directories(skinsPath);//get available folders in /skins
+    std::vector<std::string> skinList;//={"default","red","green","yellow","purple","turquoise"};
+    for (auto folder : folders) {      
+        if ( std::filesystem::exists(folder+"/skin.xml") ) {            // look for skin file
+            std::string folderShort=folder.substr(skinsPath.length()+1); // get skin folder name
+            //debug.setText(debug.getText()+"\nfound skin "+folderShort);
+            skinList.push_back(folderShort);  // add to skin list
+        }        
     }
-
-    if ( not std::filesystem::exists(std::string(dataPath)) )  {
-        std::filesystem::create_directory(dataPath);
-        std::filesystem::create_directory(configPath);
-        std::filesystem::create_directory(presetPath);
-        std::filesystem::create_directory(skinsPath);
-
-        std::filesystem::create_directory(defaultSkinPath);
-        std::filesystem::create_directory(defaultSkinPath+ "/images");
+    int currentSkinIndex=0; 
+    for (int i=0;i<skinList.size();i++) {  // find current skin index
+        if (skinList[i] == currentSkin) { currentSkinIndex=i;break; }
     }
-   
+    if (currentSkinIndex == skinList.size()-1) {currentSkinIndex=0;}  // increment skin index
+    else {currentSkinIndex++;}
+    
+    currentSkin=skinList[currentSkinIndex]; 
+  
+    reloadSkinFromXML();
+    
 }
 
 void ChopperAudioProcessorEditor::LoadXMLConfig(bool reloadSkin=true,bool reloadPatternsAndSequences=false,bool reloadParameters=true)
@@ -1081,30 +1072,40 @@ void ChopperAudioProcessorEditor::writeXMLConfig(bool updateSkin=true,bool updat
     //debug.setText(xmlString);
 }
 
-void ChopperAudioProcessorEditor::switch_skins()
+
+void ChopperAudioProcessorEditor::initDirectories()
 {
-    std::string skinsPath=dataPath+ "/skins"; // get skins folder path    
-    auto folders=get_directories(skinsPath);//get available folders in /skins
-    std::vector<std::string> skinList;//={"default","red","green","yellow","purple","turquoise"};
-    for (auto folder : folders) {      
-        if ( std::filesystem::exists(folder+"/skin.xml") ) {            // look for skin file
-            std::string folderShort=folder.substr(skinsPath.length()+1); // get skin folder name
-            //debug.setText(debug.getText()+"\nfound skin "+folderShort);
-            skinList.push_back(folderShort);  // add to skin list
-        }        
-    }
-    int currentSkinIndex=0; 
-    for (int i=0;i<skinList.size();i++) {  // find current skin index
-        if (skinList[i] == currentSkin) { currentSkinIndex=i;break; }
-    }
-    if (currentSkinIndex == skinList.size()-1) {currentSkinIndex=0;}  // increment skin index
-    else {currentSkinIndex++;}
+    juce::File homeDir = juce::File(juce::File::getSpecialLocation (juce::File::userHomeDirectory));
+    const std::string homePath=homeDir.getFullPathName().toStdString();
     
-    currentSkin=skinList[currentSkinIndex]; 
-  
-    reloadSkinFromXML();
+    std::string skinsPath,defaultSkinPath,rootPath;
     
+   //SystemStats::getOperatingSystemType()
+    rootPath=homePath + "/.ssabug";
+    dataPath=rootPath + "/choppah";
+    configPath=dataPath+"/config/";
+    presetPath=dataPath+"/presets";
+    skinsPath=dataPath+"/skins";
+    defaultSkinPath=skinsPath+"/"+currentSkin;
+    currentSkinPath=defaultSkinPath+"/";
+    imagePath=dataPath+ "/skins/" + currentSkin + "/images/";
+
+    if ( not std::filesystem::exists(std::string(rootPath)) )  {
+        std::filesystem::create_directory(rootPath);
+    }
+
+    if ( not std::filesystem::exists(std::string(dataPath)) )  {
+        std::filesystem::create_directory(dataPath);
+        std::filesystem::create_directory(configPath);
+        std::filesystem::create_directory(presetPath);
+        std::filesystem::create_directory(skinsPath);
+
+        std::filesystem::create_directory(defaultSkinPath);
+        std::filesystem::create_directory(defaultSkinPath+ "/images");
+    }
+   
 }
+
 
 std::vector<std::string> ChopperAudioProcessorEditor::get_directories(const std::string& s)
 {

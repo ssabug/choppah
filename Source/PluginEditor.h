@@ -25,10 +25,11 @@ public:
 
     //==============================================================================
     void paint (juce::Graphics&) override;
-    void resized() override;
-    
+    void resized() override;    
     void timerCallback() override;
+
     int bitArrayToInt32(bool arrr[], int count);
+    
     void step_seq_update(int stepIndex);
     void step_seq_click(int stepIndex);
     void step_seq_clear();
@@ -47,11 +48,13 @@ public:
     void seq_gate_length_change();
     void ui_debug(std::string text);
     void init_all_sequences(int returnToPattern,int returnToSeq);
-    void seq_auto_click();    
+    void seq_auto_click();
+    
+    void reloadSkinFromXML();
     void LoadXMLConfig(bool reloadSkin,bool reloadPatternsAndSequences,bool reloadParameters);
     void writeXMLConfig(bool updateSkin,bool updatePatternsAndSequences,bool updateParameters);
-    void initDirectories();  
-    void reloadSkinFromXML();
+
+    void initDirectories();     
     void debugF(bool reloadFromFile);   
     std::vector<std::string> get_directories(const std::string& s);
 

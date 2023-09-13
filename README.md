@@ -30,6 +30,8 @@ To stop auto pattern display in **sequence** mode, disable **Auto** button.
 
 **Paste** pastes the clipboard content into current pattern.If no copy was done, it is an empty pattern.
 
+Click on the logo to switch between skins.
+
 **NOTE :** Theres a bug on some combo boxes : sometimes the button doesnt change the value.The workaround is to click on the combobox (not on the arrow) then reclick here again,then you can change values with Up/Down keys.  
 
 ## Requirements

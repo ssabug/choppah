@@ -350,7 +350,7 @@ ChopperAudioProcessorEditor::ChopperAudioProcessorEditor (ChopperAudioProcessor&
     banner.setToggleable(true);
     banner.setImages (false, true, true,plugin_banner, 1.000f,juce::Colour (color_stepseq_1),juce::Image(), 1.000f, control_label_color,juce::Image(), 1.000f, control_value_color);
     banner.setBounds (banner_posx,banner_posy+30, 190, 120);
-    //banner.onClick = [this] { step_seq_paste();};
+    banner.onClick = [this] { switch_skins();};
 
     //////////////////////////////////////DEBUG///////////////////////////////////////
     debug.setColour(juce::TextEditor::textColourId,control_value_color);
@@ -360,9 +360,9 @@ ChopperAudioProcessorEditor::ChopperAudioProcessorEditor (ChopperAudioProcessor&
     debug.setColour(juce::TextEditor::outlineColourId,background_color);
     debug.setColour(juce::TextEditor::shadowColourId,background_color);
     debugB.setBounds (debug_posx-20-60, debug_posy-20+70, 15, 15);
-    debugB.onClick = [this] { reloadSkinFromXML(0);};
+    debugB.onClick = [this] { debugF(true);};
     debugBB.setBounds (debug_posx-20-30, debug_posy-20+70, 15, 15);
-    debugBB.onClick = [this] { reloadSkinFromXML(1);};
+    debugBB.onClick = [this] { writeXMLConfig(true,true,true);};
 
     init_all_sequences();
 
@@ -441,7 +441,13 @@ void ChopperAudioProcessorEditor::resized()
     // subcomponents in your editor..
 }
 
-void ChopperAudioProcessorEditor::reloadSkinFromXML(bool reloadAll=0)
+void ChopperAudioProcessorEditor::debugF(bool reloadFromFile=false)
+{
+    if (reloadFromFile) { LoadXMLConfig(true,true,true); }
+    reloadSkinFromXML();
+}
+
+void ChopperAudioProcessorEditor::reloadSkinFromXML()
 {
     //COLOURS
     controlColorTemplate slider_1_colors[5];
@@ -450,7 +456,6 @@ void ChopperAudioProcessorEditor::reloadSkinFromXML(bool reloadAll=0)
     controlColorTemplate label_1_colors[1];
     controlColorTemplate imagebutton_1_colors[2];
     
-    LoadXMLConfig(reloadAll);
     initDirectories();
 
     // LOAD SKIN XML DEF
@@ -653,9 +658,8 @@ void ChopperAudioProcessorEditor::initDirectories()
    
 }
 
-void ChopperAudioProcessorEditor::LoadXMLConfig(bool reloadAll=false)
-{
-    
+void ChopperAudioProcessorEditor::LoadXMLConfig(bool reloadSkin=true,bool reloadPatternsAndSequences=false,bool reloadParameters=true)
+{    
     std::string xmlFilePath=configPath+"config.xml";
     if ( not std::filesystem::exists(std::string(xmlFilePath)) )  {
 
@@ -673,9 +677,9 @@ void ChopperAudioProcessorEditor::LoadXMLConfig(bool reloadAll=false)
                         //debug.setText(debug.getText()+"\n" +e->getTagName()  + " : " +  e->getAllSubText());
                         juce::String paramName = e->getAllSubText();
                                                
-                        if (e->getTagName() == "skin") { currentSkin=paramName.toStdString(); /*e->setText("red");*/}
+                        if ( (e->getTagName() == "skin") and reloadSkin) { currentSkin=paramName.toStdString(); /*e->setText("red");*/}
                     } 
-                if (reloadAll) {
+                if (reloadPatternsAndSequences) {
                     int patternNum=0; 
                     for (auto* e : rootElement->getChildByName("patterns")->getChildIterator())
                         {
@@ -688,8 +692,7 @@ void ChopperAudioProcessorEditor::LoadXMLConfig(bool reloadAll=false)
                                     patterns[patternNum][15-i]=( stoi(paramValue) >> i) & 1;
                                  }
                             patternNum++;
-                            } 
-                            
+                            }                             
                         } 
                     int sequenceNum=0;
                     for (auto* e : rootElement->getChildByName("sequences")->getChildIterator())
@@ -706,11 +709,33 @@ void ChopperAudioProcessorEditor::LoadXMLConfig(bool reloadAll=false)
                             } 
                         }
                    }
+                   if (reloadParameters) {
+                    for (auto* e : rootElement->getChildByName("parameters")->getChildIterator())
+                        {
+                            //debug.setText(debug.getText()+"\n" +e->getTagName()  + " : " +  e->getAllSubText());
+                            std::string paramName = e->getTagName().toStdString();
+                            std::string paramValue = e->getAllSubText().toStdString();
+                            if (paramName ==  "currentPattern" ) {audioProcessor.pseq_current->operator=(stoi(paramValue));/*step_seq_change();*/}
+                            if (paramName ==  "currentSequence" ) {audioProcessor.sseq_current->operator=(stoi(paramValue));/*seq_pattern_change();*/}
+                            if (paramName ==  "currenPatternData" ) {audioProcessor.pseq_data->operator=(stoi(paramValue));}
+                            if (paramName ==  "sequencePosition" ) {}
+                            if (paramName ==  "sequenceLength" ) {audioProcessor.sseq_length->operator=(stoi(paramValue));}
+                            if (paramName ==  "patternDisplayRefresh" ) {audioProcessor.pseq_auto->operator=(stoi(paramValue));}
+    
+                            if (paramName ==  "clockDivision" ) {audioProcessor.clock_div->operator=(stoi(paramValue));}
+                            if (paramName ==  "mode" ) {audioProcessor.seq_mode->operator=(stoi(paramValue));}
+                            if (paramName ==  "enveloppeType" ) {audioProcessor.seq_env->operator=(stoi(paramValue));}
+
+                            if (paramName ==  "gateLength" ) {audioProcessor.pseq_gate_length->operator=(stof(paramValue));}
+                            if (paramName ==  "dryWet" ) {audioProcessor.out_mix->operator=(stof(paramValue));}
+                            if (paramName ==  "outputGain" ) {audioProcessor.out_gain->operator=(stof(paramValue));}
+                        }
+                    }
                // rootElement.writeTo (xmlFile(xmlFilePath)):
 			} 
         }
     }
-    if (reloadAll) {
+    if (reloadPatternsAndSequences) {
         init_all_sequences(0,seq_sequence_selected.getSelectedItemIndex()+1);
     } // update all patterns & sequencesof processor
    // if (currentSkin == "" ) {currentSkin="default";}
@@ -722,4 +747,118 @@ void ChopperAudioProcessorEditor::LoadXMLConfig(bool reloadAll=false)
                     );*/
 }
 
+void ChopperAudioProcessorEditor::writeXMLConfig(bool updateSkin=true,bool updatePatternsAndSequences=true,bool updateParameters=true)
+{
+    LoadXMLConfig(not updateSkin,not updatePatternsAndSequences,not updateParameters);
+   
+    juce::XmlElement configFile ("choppah");// create root
+    //////////////////////// OPTIONS ///////////////////////////////////////////
+    juce::XmlElement* options = new juce::XmlElement ("options"); // create options
+    juce::XmlElement* skin = new juce::XmlElement ("skin");      // create skin
+    skin->addTextElement (currentSkin);                         // add value to skin
+    options->addChildElement(skin);                             // add skin to options
+    juce::XmlElement* version = new juce::XmlElement ("version");// create version
+    version->addTextElement ("0.11");       // add value to version
+    options->addChildElement(version);  // add version to options
+    configFile.addChildElement (options); // add options to root
+    /////////////////////// PLUGIN PARAMETERS ///////////////////////////////////////////
+    juce::XmlElement* parameters = new juce::XmlElement ("parameters"); // create parameters collection    
+    juce::XmlElement* par_pseq_current = new juce::XmlElement ("currentPattern"); // Init xmlElements
+    juce::XmlElement* par_sseq_current= new juce::XmlElement ("currentSequence");
+    juce::XmlElement* par_pseq_data= new juce::XmlElement ("currenPatternData");
+    juce::XmlElement* par_seq_pos= new juce::XmlElement ("sequencePosition");
+    juce::XmlElement* par_sseq_length= new juce::XmlElement ("sequenceLength");
+    juce::XmlElement* par_pseq_auto= new juce::XmlElement ("patternDisplayRefresh");
+    juce::XmlElement* par_clock_div= new juce::XmlElement ("clockDivision");
+    juce::XmlElement* par_seq_mode= new juce::XmlElement ("mode");
+    juce::XmlElement* par_seq_env= new juce::XmlElement ("enveloppeType");  
+    juce::XmlElement* par_pseq_gate_length = new juce::XmlElement ("gateLength");
+    juce::XmlElement* par_out_mix = new juce::XmlElement ("dryWet");
+    juce::XmlElement* par_out_gain= new juce::XmlElement ("outputGain");
+    par_pseq_current->addTextElement (std::__cxx11::to_string(audioProcessor.pseq_current->get())); // INTEGERS
+    par_sseq_current->addTextElement (std::__cxx11::to_string(audioProcessor.sseq_current->get())); //copy values to XmlElements
+    par_pseq_data->addTextElement (std::__cxx11::to_string(audioProcessor.pseq_data->get()));
+    par_seq_pos->addTextElement (std::__cxx11::to_string(audioProcessor.seq_pos->get()));
+    par_sseq_length->addTextElement (std::__cxx11::to_string(audioProcessor.sseq_length->get()));
+    par_pseq_auto->addTextElement (std::__cxx11::to_string(audioProcessor.pseq_auto->get()));
+    par_clock_div->addTextElement (std::__cxx11::to_string(audioProcessor.clock_div->getIndex())); // CHOICES (INTEGERS)
+    par_seq_mode->addTextElement (std::__cxx11::to_string(audioProcessor.seq_mode->getIndex()));
+    par_seq_env->addTextElement (std::__cxx11::to_string(audioProcessor.seq_env->getIndex()));  
+    par_pseq_gate_length->addTextElement (std::__cxx11::to_string(audioProcessor.pseq_gate_length->get()));   // FLOATS
+    par_out_mix->addTextElement (std::__cxx11::to_string(audioProcessor.out_mix->get()));
+    par_out_gain->addTextElement (std::__cxx11::to_string(audioProcessor.out_gain->get()));
+    parameters->addChildElement(par_pseq_current);
+    parameters->addChildElement(par_sseq_current); //copy values to parameter collection
+    parameters->addChildElement(par_pseq_data);
+    parameters->addChildElement(par_seq_pos);
+    parameters->addChildElement(par_sseq_length);
+    parameters->addChildElement(par_pseq_auto);
+    parameters->addChildElement(par_clock_div); // CHOICES (INTEGERS)
+    parameters->addChildElement(par_seq_mode);
+    parameters->addChildElement(par_seq_env);
+    parameters->addChildElement(par_pseq_gate_length);   // FLOATS
+    parameters->addChildElement(par_out_mix);
+    parameters->addChildElement(par_out_gain);
+    configFile.addChildElement (parameters);// add parameters collection to root
+    //////////////////////// PATTERNS ///////////////////////////////////////////
+    juce::XmlElement* patternes = new juce::XmlElement ("patterns");  // create pattern collection
+    for (int i=0;i<16;i++) {
+        juce::XmlElement* pattern = new juce::XmlElement ("pattern");  // create pattern
+        pattern->setTagName("pattern" + std::__cxx11::to_string(i+1)); // change pattern tag to numbered one
+        bool ptrn[16];for (int j=0;j<16;j++) {ptrn[j]=patterns[i][15-j];}  //get & invert pattern[i]             
+        pattern->addTextElement (std::__cxx11::to_string(bitArrayToInt32(ptrn,16))); // compute & add pattern int
+        patternes->addChildElement(pattern); //add pattern to pattern collection
+    } 
+    configFile.addChildElement (patternes);// add pattern collection to root
+    //////////////////////// SEQUENCES ///////////////////////////////////////////
+    juce::XmlElement* sequencess = new juce::XmlElement ("sequences"); // create sequence collection
+    for (int i=0;i<16;i++) {
+        juce::XmlElement* seq = new juce::XmlElement ("sequence");  // create sequence
+        seq->setTagName("sequence" + std::__cxx11::to_string(i+1)); // change sequence tag name to numbered one
+        long int sequenceCode=0;//  init sequence code
+        for (int k=0;k<16;k++) { sequenceCode+=((long)(sequences[i][15-k]) << 4*k );} // calculate sequence code : each sequence step is stored on 4 bits so we create a (16 steps x 4 bits = ) 64 bit int 
+        seq->addTextElement (std::__cxx11::to_string(sequenceCode)); // write in sequence
+        sequencess->addChildElement(seq); // add sequence to sequence collection
+    } 
+    configFile.addChildElement (sequencess);// add sequence collection to root
+           
+    auto xmlString = configFile.toString();// now we can turn the whole thing into textual XML
+    std::ofstream file(configPath+"config.xml"); // create output file
+    file<<xmlString; // append xml data to file
 
+    //debug.setText(xmlString);
+}
+
+void ChopperAudioProcessorEditor::switch_skins()
+{
+    std::string skinsPath=dataPath+ "/skins"; // get skins folder path    
+    auto folders=get_directories(skinsPath);//get available folders in /skins
+    std::vector<std::string> skinList;//={"default","red","green","yellow","purple","turquoise"};
+    for (auto folder : folders) {      
+        if ( std::filesystem::exists(folder+"/skin.xml") ) {            // look for skin file
+            std::string folderShort=folder.substr(skinsPath.length()+1); // get skin folder name
+            //debug.setText(debug.getText()+"\nfound skin "+folderShort);
+            skinList.push_back(folderShort);  // add to skin list
+        }        
+    }
+    int currentSkinIndex=0; 
+    for (int i=0;i<skinList.size();i++) {  // find current skin index
+        if (skinList[i] == currentSkin) { currentSkinIndex=i;break; }
+    }
+    if (currentSkinIndex == skinList.size()-1) {currentSkinIndex=0;}  // increment skin index
+    else {currentSkinIndex++;}
+    
+    currentSkin=skinList[currentSkinIndex]; 
+  
+    reloadSkinFromXML();
+    
+}
+
+std::vector<std::string> ChopperAudioProcessorEditor::get_directories(const std::string& s)
+{
+    std::vector<std::string> r;
+    for(auto& p : std::filesystem::recursive_directory_iterator(s))
+        if (p.is_directory())
+            r.push_back(p.path().string());
+    return r;
+}

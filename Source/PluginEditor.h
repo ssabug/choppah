@@ -12,7 +12,7 @@
 #include "PluginProcessor.h"
 #include <juce_gui_extra/juce_gui_extra.h>
 #include <filesystem>
-
+#include <fstream>
 
 //==============================================================================
 
@@ -54,7 +54,7 @@ public:
                        "sequence\t" +std::__cxx11::to_string(seq_sequence_selected.getSelectedItemIndex()+1)+ 
                        " step " +std::__cxx11::to_string(seqIndex+1) +"\n"
                        /*+"patterndata " + std::__cxx11::to_string(bitArrayToInt32(ptrn,16))*///FOR PATTERN CODE BUILDING
-                       , juce::dontSendNotification);  
+                      , juce::dontSendNotification);  
 
         for (int i=0;i<sizeof(sequence)/sizeof(sequence[0]);i++)
         {
@@ -254,9 +254,13 @@ public:
         audioProcessor.pseq_auto->operator=(value);
     }
     
-    void LoadXMLConfig(bool reloadAll);
+    void LoadXMLConfig(bool reloadSkin,bool reloadPatternsAndSequences,bool reloadParameters);
+    void writeXMLConfig(bool updateSkin,bool updatePatternsAndSequences,bool updateParameters);
     void initDirectories();  
-    void reloadSkinFromXML(bool reloadAll);
+    void reloadSkinFromXML();
+    void debugF(bool reloadFromFile);
+    
+    std::vector<std::string> get_directories(const std::string& s);
 
 private:
     // This reference is provided as a quick way for your editor to
@@ -359,6 +363,8 @@ private:
         label.setColour(juce::Label::textColourId,juce::Colour(0xFF0000FF));
         label.setBounds (x, y, w, h);
     }
+    
+    void switch_skins();
     
     class controlColorTemplate 
     {

@@ -2,19 +2,21 @@
 
 ## Change records
 
-### v0.11 11092023 XML & control template class on going
+### v0.11 13092023 XML & control template class on going
 #### Features
-- [x] XML config (READ ONLY) : skin, patterns & seq implemented,**plugin controls values to be implemented**
-- [x] XML skin (READ ONLY): colours implemented, only in reloadSkinFromXML(), **control location/style to be implemented** 
-- [ ] XML skin & config write 
+- [x] XML config file read/write : patterns, sequences, plugin controls values implemented
+- [x] XML skin colours definition **control location/style to be implemented** 
 - [x] GUI control template class created **(to be better defined)** : only in reloadSkinFromXML(), **implementation on editor construction in progress**
-- [x] reloadSkinFromXML() function to update controls skins/color/images on the fly 
-- [ ] find a safe way to trigger reloadSkinFromXML(1) once at startup (manual trigger for now)
+- [x] click on logo switches between available skins
+- [x] added load and write XML config buttons
+- [ ] find a safe way to trigger reloadSkinFromXML() once at startup (manual trigger for now)
 - [ ] configure/build scripts exists but not portable
 - [ ] save sequencer state variables
 - [ ] gain slider custom range implementation
 - [ ] code cleaning + opti
 #### Bugs
+- [ ] clock division applied to GUI but not implemented in sequencer
+- [ ] does not come back to selected pattern after XML load
 - [ ] reloadSkinFromXML() crashes when triggered sometimes
 - [ ] reloadSkinFromXML() causes dry/wet value change
 - [ ] sequences dont update after loadXMLConfig

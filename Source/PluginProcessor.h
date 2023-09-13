@@ -55,76 +55,16 @@ public:
     //==============================================================================
     void getStateInformation (juce::MemoryBlock& destData) override;
     void setStateInformation (const void* data, int sizeInBytes) override;
-    void generateGateMap(int patternData) {
-        int size=16;
-        int step=4;
-        int pattern=pseq_current->get()-1;
-        float gateMap_arr[size*step];
-        const float envs[3][step]={
-            {1.0,1.0,1.0,1.0}, // FLAT 
-            {1.0,1.0,0.66,0.33}, // SHARP
-            {1.0,0.66,0.33,0.0} // TRI                  
-        };
-        int env=seq_env->getIndex(); 
-        bool gates[size];
 
-        for (int i=0;i<size;i++)
-        {
-            gates[i]=((patternData >> i) & 1);
-            for (int j=0;j<step;j++) {
-                if(gates[i] == true) {
-                  gateMap[i*4+j]=envs[env][j];
-                  gateMaps[pattern][i*4+j]=envs[env][j];
-                } else {
-                  gateMap[i*4+j]=0.0;
-                  gateMaps[pattern][i*4+j]=0.0;
-                }
-            }
-        }
+    void generateGateMap(int patternData);
+    long int getDAWbarcount() const;
+    double getDAWppqlastbar() const;
+    double getDAWppq() const;
+    void updatePattern(int patternIndex,int patternData);
+    void updateEnv(int env);
+    void initGatesMap();
+    void update_pat();
 
-       // for (int i=0;i<size*step;i++)
-    }
-    long int getDAWbarcount() const
-    {
-        return barcount;
-    }
-    double getDAWppqlastbar() const
-    {
-        return ppqlastbar;
-    }
-    double getDAWppq() const
-    {
-        return ppq;
-    }
-    void updatePattern(int patternIndex,int patternData)
-    {
-        sequences[patternIndex]=patternData;
-        pseq_current->operator=(patternIndex+1);
-        pseq_data->operator=(/*pattern_seqs[patternIndex]*/patternData);
-        generateGateMap(patternData);
-    }
-    void updateEnv(int env)
-    {
-        seq_env->operator=(env);
-        generateGateMap(pseq_data->get());
-    }
-    void initGatesMap()
-    {
-        for (int i=0;i<sizeof(sequences)/sizeof(sequences[0]);i++)
-        {
-            generateGateMap(sequences[i]);
-            for (int j=0;j<sizeof(gateMap)/sizeof(gateMap[0]);j++) {
-                gateMaps[i][j]=gateMap[j];
-            }
-        }
-        //pseq_current->operator=(1);
-    }
-    void update_pat()
-    {
-       int patternData=sequences[pseq_current->get()-1];
-       pseq_data->operator=(patternData); 
-       generateGateMap(patternData);
-    }
     //GUI controls
     float gui_out_mix;
     //parameters
@@ -152,8 +92,6 @@ public:
     float gateMaps[16][64];
     int sequences[16];
     int pattern_seqs[16][16];
-    
-    
 private:
     juce::dsp::DryWetMixer<float> dryWetMixer;
     long int barcount;

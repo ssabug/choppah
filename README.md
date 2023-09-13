@@ -32,6 +32,8 @@ To stop auto pattern display in **sequence** mode, disable **Auto** button.
 
 Click on the logo to switch between skins.
 
+The two small unnamed buttons are XMLconfig **load** (left) and **write** (right)
+
 **NOTE :** Theres a bug on some combo boxes : sometimes the button doesnt change the value.The workaround is to click on the combobox (not on the arrow) then reclick here again,then you can change values with Up/Down keys.  
 
 ## Requirements

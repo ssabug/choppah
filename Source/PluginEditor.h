@@ -46,10 +46,10 @@ public:
     void seq_mode_change();
     void seq_clock_change();
     void seq_gate_length_change();
+    void seq_auto_click();
     void ui_debug(std::string text);
     void init_all_sequences(int returnToPattern,int returnToSeq);
-    void seq_auto_click();
-    
+
     void reloadSkinFromXML();
     void LoadXMLConfig(bool reloadSkin,bool reloadPatternsAndSequences,bool reloadParameters);
     void writeXMLConfig(bool updateSkin,bool updatePatternsAndSequences,bool updateParameters);

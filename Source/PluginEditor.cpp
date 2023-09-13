@@ -72,9 +72,9 @@ ChopperAudioProcessorEditor::ChopperAudioProcessorEditor (ChopperAudioProcessor&
     initCombo1(seq_clock,pseq_params_posx,pseq_params_posy,118,83);                     // CLOCK SELECT
     initLabel1(seq_clock_label,"Clock div",pseq_params_posx+20,pseq_params_posy-20,150,24);
     seq_clock.onChange = [this] { seq_clock_change(); };
-    seq_clock.addItem (TRANS("1"), 1);seq_clock.addItem (TRANS("1/2"), 2);seq_clock.addItem (TRANS("1/4"), 3);
-    seq_clock.addItem (TRANS("1/8"), 4);seq_clock.addItem (TRANS("1/16"), 5);seq_clock.addItem (TRANS("1/32"), 6);
-    seq_clock.setSelectedItemIndex(0);
+    seq_clock.addItem (TRANS("4"), 1);seq_clock.addItem (TRANS("2"), 2);seq_clock.addItem (TRANS("1"), 3);seq_clock.addItem (TRANS("1/2"), 4);
+    seq_clock.addItem (TRANS("1/4"), 5);seq_clock.addItem (TRANS("1/8"), 6);seq_clock.addItem (TRANS("1/16"), 7);seq_clock.addItem (TRANS("1/32"), 8);
+    seq_clock.setSelectedItemIndex(2);
 
     initCombo1(seq_mode,pseq_params_posx,pseq_params_posy+50,86,24);                     // MODE SELECT
     initLabel1(seq_mode_label,"Mode",pseq_params_posx+20,pseq_params_posy-20+50,150,24);
@@ -222,13 +222,9 @@ ChopperAudioProcessorEditor::ChopperAudioProcessorEditor (ChopperAudioProcessor&
     seq_clock.setEditableText (false);
     seq_clock.setJustificationType (juce::Justification::centredLeft);
     seq_clock.onChange = [this] { seq_clock_change(); };
-    seq_clock.addItem (TRANS("1"), 1);
-    seq_clock.addItem (TRANS("1/2"), 2);
-    seq_clock.addItem (TRANS("1/4"), 3);
-    seq_clock.addItem (TRANS("1/8"), 4);
-    seq_clock.addItem (TRANS("1/16"), 5);
-    seq_clock.addItem (TRANS("1/32"), 6);
-    seq_clock.setSelectedItemIndex(0);
+    seq_clock.addItem (TRANS("4"), 1);seq_clock.addItem (TRANS("2"), 2);seq_clock.addItem (TRANS("1"), 3);seq_clock.addItem (TRANS("1/2"), 4);
+    seq_clock.addItem (TRANS("1/4"), 5);seq_clock.addItem (TRANS("1/8"), 6);seq_clock.addItem (TRANS("1/16"), 7);seq_clock.addItem (TRANS("1/32"), 8);
+    seq_clock.setSelectedItemIndex(2);
     seq_clock.setColour(juce::ComboBox::backgroundColourId,juce::Colours::black);
     seq_clock.setColour(juce::ComboBox::outlineColourId ,juce::Colours::blue);
     seq_clock.setColour(juce::ComboBox::arrowColourId ,juce::Colours::blue);
@@ -506,7 +502,7 @@ void ChopperAudioProcessorEditor::timerCallback()
     juce::Colour step_color_off=juce::Colour  (0xFF000000 & stepseq_color);
 
     int clockdiv=seq_clock.getSelectedItemIndex();
-    int coeff=pow(2,2+clockdiv);  
+    int coeff=pow(2,clockdiv);  
     double ppq=audioProcessor.getDAWppq()/coeff;
     double ppqlastbar=audioProcessor.getDAWppqlastbar()/coeff;
     int processorPattern=audioProcessor.pseq_current->get()-1;
@@ -514,10 +510,10 @@ void ChopperAudioProcessorEditor::timerCallback()
     int seqClock=audioProcessor.clock_div->getIndex();
     int seqMode=audioProcessor.seq_mode->getIndex(); 
     int autoPattern=audioProcessor.pseq_auto->get();
-    int index=std::floor((ppq-ppqlastbar)*16);
+    int index=std::floor((ppq-std::floor(ppqlastbar))*16);
     int seqIndex;
     //bool ptrn[16];for (int i=0;i<16;i++) {ptrn[i]=patterns[processorPattern][15-i];} //FOR PATTERN CODE BUILDING
-    
+    if (index>16) {index-=16*int(std::floor(index/16));}
     if (ppq>=seqLength) {seqIndex=int(std::floor(ppq)-seqLength*std::floor(ppq/seqLength));} else {seqIndex=std::floor(ppq);}
 
     debug.setText ("ppq = " + std::__cxx11::to_string(ppq)+"\n"+
@@ -556,12 +552,12 @@ void ChopperAudioProcessorEditor::timerCallback()
         seq_auto.setImages (false, true, true,stepseq_off, 1.000f, step_color_dim,juce::Image(), 1.000f, step_color_full,stepseq_on, 1.000f, step_color_dim);
     }
     
-    if (seq_clock.getSelectedItemIndex() != seqClock) {
+    /*if (seq_clock.getSelectedItemIndex() != seqClock) {
         seq_clock.setSelectedItemIndex(seqClock,juce::dontSendNotification);
     }
     if (seq_mode.getSelectedItemIndex() != seqMode) {
         seq_mode.setSelectedItemIndex(seqMode,juce::dontSendNotification);
-    }
+    }*/
     if (seq_pattern_selected.getSelectedItemIndex() !=  processorPattern && seqMode == 1) {
         seq_pattern_selected.setSelectedItemIndex(processorPattern);
     }

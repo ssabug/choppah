@@ -8,21 +8,21 @@
 - [x] XML skin colours definition **control location/style to be implemented** 
 - [x] GUI control template class created **(to be better defined)** : only in reloadSkinFromXML(), **implementation on editor construction in progress**
 - [x] click on logo switches between available skins
-- [x] added load and write XML config buttons
+- [x] added load and write XML config buttons (debug)
 - [ ] find a safe way to trigger reloadSkinFromXML() once at startup (manual trigger for now)
 - [ ] configure/build scripts exists but not portable
 - [ ] save sequencer state variables
 - [ ] gain slider custom range implementation
 - [ ] code cleaning + opti
 #### Bugs
-- [ ] clock division applied to GUI but not implemented in sequencer
+- [x] clock division applied to GUI but not implemented in sequencer
 - [ ] does not come back to selected pattern after XML load
 - [ ] reloadSkinFromXML() crashes when triggered sometimes
 - [ ] reloadSkinFromXML() causes dry/wet value change
 - [ ] sequences dont update after loadXMLConfig
 - [ ] optimize/compensate latency
 - [ ] sequence mode : sequence 0 not init as expected
-- [ ] sequence mode/pattern/sequence change hard to switch
+- [x] sequence mode/pattern/sequence change hard to switch
 - [ ] plugin parameters not in line with GUI values on start
 
 ### v0.10 10092023 DryWet implementation & project cleaning

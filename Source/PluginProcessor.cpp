@@ -22,7 +22,7 @@ ChopperAudioProcessor::ChopperAudioProcessor()
     addParameter(sseq_length= new juce::AudioParameterInt ("sseq_length","Sequence length",2, 16, 4) );
     addParameter(pseq_auto= new juce::AudioParameterInt ("pseq_auto","Pattern autorefresh",0, 1, 1) );
 
-    addParameter (clock_div = new juce::AudioParameterChoice ("clock_div", "Clock division", { "1","1/2","1/4","1/8","1/16","1/32" }, 0));
+    addParameter (clock_div = new juce::AudioParameterChoice ("clock_div", "Clock division", { "4","2","1","1/2","1/4","1/8","1/16","1/32" }, 2));
     addParameter (seq_mode = new juce::AudioParameterChoice ("seq_mode", "Sequencer mode", { "Pattern","Sequence" }, 0));
     addParameter (seq_env = new juce::AudioParameterChoice ("seq_env", "Step enveloppe", { "flat","sharp","tri" }, 0));
 
@@ -30,7 +30,8 @@ ChopperAudioProcessor::ChopperAudioProcessor()
     addParameter (out_gain = new juce::AudioParameterFloat ("out_gain","Gain Out",0.0f, 10.0f, 1.0f));
 
     sseq_length->operator=(4);
-    out_mix->operator=(0.5);
+    out_mix->operator=(1.0);
+    out_gain->operator=(1.0);
     
     dryWetMixer.setWetMixProportion(out_mix->get());
     dryWetMixer.setWetLatency(0.0f);
@@ -165,15 +166,17 @@ void ChopperAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce
         auto playposinfo=phead->getPosition();
         ppq=*(*playposinfo).getPpqPosition();
         ppqlastbar=*(*playposinfo).getPpqPositionOfLastBarStart();
-        int step=int(std::floor((ppq/4-ppqlastbar/4)*64));
-        
+        int coeff=pow(2,clock_div->getIndex());
         int selected_pattern=pseq_current->get()-1;
+        int step=int(std::floor( (ppq/coeff-std::floor(ppqlastbar)/coeff)*(64) ));
+
+        if (step>63) {step-=64*int(std::floor(step/64));}
 
         if (seq_mode->getIndex() == 1) {
             const int seqLength=sseq_length->get(); 
             int sequenceNumber=sseq_current->get()-1;
             int seqIndex;
-            if (int(ppq/4)>=seqLength) {seqIndex=int(std::floor(ppq/4)-seqLength*std::floor(ppq/(4*seqLength)));} else {seqIndex=int(std::floor(ppq/4));}
+            if (int(ppq/coeff)>=seqLength) {seqIndex=int(std::floor(ppq/coeff)-seqLength*std::floor(ppq/(coeff*seqLength)));} else {seqIndex=int(std::floor(ppq/coeff));}
            
             selected_pattern=pattern_seqs[sequenceNumber][seqIndex];
             if (selected_pattern>=15) {selected_pattern=15;}

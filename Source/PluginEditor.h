@@ -27,6 +27,19 @@ public:
     void paint (juce::Graphics&) override;
     void resized() override;    
     void timerCallback() override;
+    
+    class controlColorTemplate 
+    {
+        public:
+            void init (int ref,juce::Colour color) { this->colorId = ref; this->colorValue=color;}
+            int colorId=juce::Label::textColourId;
+            juce::Colour colorValue=juce::Colour(juce::Colours::white);
+                       
+    };
+    class Control
+    {
+         int a;   
+    };
 
     int bitArrayToInt32(bool arrr[], int count);
     
@@ -65,6 +78,8 @@ private:
 
     std::unique_ptr<juce::Slider> mix__slider;
     std::unique_ptr<juce::Slider> gain__slider;
+    //juce::Slider mix__slider;
+    //juce::Slider gain__slider;
     juce::Label  mix_gain_label;
     juce::Label  mix_amnt_label;
 
@@ -106,40 +121,26 @@ private:
     juce::Image stepseq_on,stepseq_off,plugin_banner;
     long int stepseq_color=0xFF0000FF,background_color=0xFF000000;
     
-    bool patterns[16][16]={{1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0},{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},{1,1,0,0,1,1,0,0,1,1,0,0,1,1,0,0},{1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0},
+    bool patterns[16][16]/*={{1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0},{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},{1,1,0,0,1,1,0,0,1,1,0,0,1,1,0,0},{1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0},
                            {1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0},{1,0,0,0,1,0,1,0,1,1,1,0,1,0,1,0},{1,1,1,1,0,0,0,0,1,1,1,1,0,0,0,0},{1,1,0,0,1,1,1,1,1,1,0,0,1,1,1,1},
                            {0,0,0,0,1,1,1,1,0,0,0,0,1,1,1,1},{0,0,1,1,0,0,1,1,0,0,1,1,0,0,1,1},{0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1},{0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1},
                            {0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0},{0,0,1,1,0,0,0,1,1,0,1,1,0,0,0,1},{1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1},{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1} 
-                            };
-    int sequences[16][16]={{0,1,0,2,0,1,0,2,0,1,0,2,0,1,0,2},{3,4,3,5,3,4,3,5,3,4,3,5,3,4,3,5},{6,7,6,8,6,7,6,8,6,7,6,8,6,7,6,8},{0,1,0,2,4,5,4,6,0,4,3,5,0,2,0,6},
+                            }*/;
+    int sequences[16][16]/*={{0,1,0,2,0,1,0,2,0,1,0,2,0,1,0,2},{3,4,3,5,3,4,3,5,3,4,3,5,3,4,3,5},{6,7,6,8,6,7,6,8,6,7,6,8,6,7,6,8},{0,1,0,2,4,5,4,6,0,4,3,5,0,2,0,6},
                            {0,1,0,2,4,5,4,6,0,4,3,5,0,2,0,6},{0,1,0,2,4,5,4,6,0,4,3,5,0,2,0,6},{0,1,0,2,4,5,4,6,0,4,3,5,0,2,0,6},{0,1,0,2,4,5,4,6,0,4,3,5,0,2,0,6},
                            {0,1,0,2,4,5,4,6,0,4,3,5,0,2,0,6},{0,1,0,2,4,5,4,6,0,4,3,5,0,2,0,6},{0,1,0,2,4,5,4,6,0,4,3,5,0,2,0,6},{0,1,0,2,4,5,4,6,0,4,3,5,0,2,0,6},
                            {0,1,0,2,4,5,4,6,0,4,3,5,0,2,0,6},{0,1,0,2,4,5,4,6,0,4,3,5,0,2,0,6},{0,1,0,2,4,5,4,6,0,4,3,5,0,2,0,6},{0,1,0,2,4,5,4,6,0,4,3,5,0,2,0,6}            
-                            };
+                            }*/;
     int ssequence[16]={0,1,0,2,4,5,4,6,0,4,3,5,0,2,0,6};
     bool sequence[16];
     bool sequence_clipboard[16];
 
-    void initSlider1(juce::Slider slider, int x,int y,int w,int h,float min,float max,float def);    
+    void initSlider1(std::unique_ptr<juce::Slider> slider,controlColorTemplate slider_colors[],int colorCount,int x,int y,int w,int h,float min,float max,float def);    
     void initSlider2(juce::Slider slider,int x,int y,int w,int h,float min,float max,float def);   
     void initCombo1(juce::ComboBox comboBox, int x,int y,int w,int h);
-    void initLabel1(juce::Label label,std::string text, int x,int y,int w,int h);
+    void initLabel1(juce::Label label,std::string text,controlColorTemplate label_colors[],int colorCount,int x,int y,int w,int h);
     
     void switch_skins();
-    
-    class controlColorTemplate 
-    {
-        public:
-            void init (int ref,juce::Colour color) { this->colorId = ref; this->colorValue=color;}
-            int colorId=juce::Label::textColourId;
-            juce::Colour colorValue=juce::Colour(juce::Colours::white);
-                       
-    };
-    class Control
-    {
-         int a;   
-    };
-
-
+   
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ChopperAudioProcessorEditor)
 };

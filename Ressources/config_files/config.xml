@@ -6,18 +6,18 @@
     <version>0.11</version>
   </options>
   <parameters>
-    <currentPattern>3</currentPattern>
-    <currentSequence>4</currentSequence>
-    <currenPatternData>43690</currenPatternData>
+    <currentPattern>14</currentPattern>
+    <currentSequence>1</currentSequence>
+    <currenPatternData>36236</currenPatternData>
     <sequencePosition>1</sequencePosition>
-    <sequenceLength>4</sequenceLength>
+    <sequenceLength>2</sequenceLength>
     <patternDisplayRefresh>1</patternDisplayRefresh>
-    <clockDivision>0</clockDivision>
+    <clockDivision>2</clockDivision>
     <mode>0</mode>
-    <enveloppeType>1</enveloppeType>
-    <gateLength>1.000000</gateLength>
+    <enveloppeType>0</enveloppeType>
+    <gateLength>0.000000</gateLength>
     <dryWet>1.000000</dryWet>
-    <outputGain>1.000000</outputGain>
+    <outputGain>1.060000</outputGain>
   </parameters>
   <patterns>
     <pattern1>43690</pattern1>
@@ -38,7 +38,7 @@
     <pattern16>65535</pattern16>
   </patterns>
   <sequences>
-    <sequence1>72696711011959302</sequence1>
+    <sequence1>72621652109820162</sequence1>
     <sequence2>3761970466851730485</sequence2>
     <sequence3>7451319281593640808</sequence3>
     <sequence4>72696711011959302</sequence4>

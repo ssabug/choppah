@@ -15,6 +15,13 @@ ChopperAudioProcessorEditor::ChopperAudioProcessorEditor (ChopperAudioProcessor&
 {
     //LoadXMLConfig();
     initDirectories();
+    for (int j=0;j<16;j++) {
+        //std::string bitarray;
+        //debug.setText (debug.getText() + "\n" + std::__cxx11::to_string(audioProcessor.sequences[j]), juce::dontSendNotification);
+        for (int i=0;i<16;i++) {patterns[j][i]=(audioProcessor.sequences[j] >> i)&1 ;sequences[j][i]=audioProcessor.pattern_seqs[j][i];}
+        //ui_debug( std::__cxx11::to_string( bitArrayToInt32(patterns[j],16) ) );
+    }
+
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.
     setSize (1060, 250);
@@ -49,16 +56,27 @@ ChopperAudioProcessorEditor::ChopperAudioProcessorEditor (ChopperAudioProcessor&
 
     //////////////////////////////// OUT SETTINGS///////////////////////////////
      /*°NEW IMPL 
-    initSlider1(gain__slider->get(),mix_posx,mix_posy,118,83,0.0,10.0,0.01);            //OUT GAIN
-    initLabel1(mix_gain_label,"Out Gain",mix_posx,mix_posy,150,24);
-    gain__slider->onValueChange = [this] { out_gain_change(); };
-    gain__slider->setValue (1.0);
+    controlColorTemplate slider_1_colors[5];
+    slider_1_colors[0].init(0x1001300,juce::Colour(0xFF0000FF));
+    slider_1_colors[1].init(0x1001312,juce::Colour(0xFF000000));
+    slider_1_colors[2].init(0x1001311,juce::Colour(0xFF0000FF));
+    slider_1_colors[3].init(0x1001400,juce::Colour(0xFF0000FF));
+    slider_1_colors[4].init(0x1001700,juce::Colour(0xFF000000));
+
+    controlColorTemplate label_1_colors[1];
+    label_1_colors[0].init(0x1000281,juce::Colour(0xFF0000FF));
+
+    gain__slider.reset (new juce::Slider ("mix_gain"));
+    initSlider1(gain__slider,slider_1_colors,mix_posx,mix_posy,118,83,0.0,10.0,0.01);            //OUT GAIN
+    //initLabel1(mix_gain_label.get(),"Out Gain",label_1_colors,sizeof(label_1_colors)/sizeof(label_1_colors[0]),mix_posx,mix_posy,150,24);
+    //gain__slider.onValueChange = [this] { out_gain_change(); };
+    //gain__slider.setValue (1.0);
  
-    initSlider1(mix__slider->get(),mix_posx+100, mix_posy, 118, 83,0.0,1.0,0.01);       // DRY/WET
-    initLabel1(mix_amnt_label,"Dry/Wet",mix_posx,mix_posy,150,24);
-    mix__slider->onValueChange = [this] { out_mix_change(); };
-    mix__slider->setValue (1.0);
-    
+    //initSlider1(mix__slider,slider_1_colors,mix_posx+100, mix_posy, 118, 83,0.0,1.0,0.01);       // DRY/WET
+    //initLabel1(mix_amnt_label,"Dry/Wet",label_1_colors,mix_posx+100,mix_posy,150,24);
+    //mix__slider.onValueChange = [this] { out_mix_change(); };
+    //mix__slider.setValue (1.0);
+    /*
     initCombo1(seq_pattern_selected,pseq_params_posx,pseq_params_posy,118,83);          // PATTERN SELECT
     for(int i = 1; i <= seq_pattern_count; i++) { seq_pattern_selected.addItem (TRANS(std::to_string(i)), i);   } 
     seq_pattern_selected.onChange = [this] { step_seq_change(); };
@@ -112,7 +130,7 @@ ChopperAudioProcessorEditor::ChopperAudioProcessorEditor (ChopperAudioProcessor&
     sseq_step[2].onChange = [this] { seq_seq_change(2); };sseq_step[6].onChange = [this] { seq_seq_change(6); };sseq_step[10].onChange = [this] { seq_seq_change(10); };sseq_step[14].onChange = [this] { seq_seq_change(14); };
     sseq_step[3].onChange = [this] { seq_seq_change(3); };sseq_step[7].onChange = [this] { seq_seq_change(7); };sseq_step[11].onChange = [this] { seq_seq_change(11); };sseq_step[15].onChange = [this] { seq_seq_change(15); };    */
 
-
+    
     gain__slider.reset (new juce::Slider ("mix_gain"));
     gain__slider->setRange (0.0, 10.0, 0.01);    
     gain__slider->setSliderStyle (juce::Slider::Rotary);
@@ -124,7 +142,7 @@ ChopperAudioProcessorEditor::ChopperAudioProcessorEditor (ChopperAudioProcessor&
     gain__slider->setColour(juce::Slider::textBoxTextColourId,control_value_color);
     gain__slider->setColour(juce::Slider::textBoxOutlineColourId,juce::Colours::blue);
     gain__slider->onValueChange = [this] { out_gain_change(); };
-    gain__slider->setValue (1.0);
+    gain__slider->setValue (audioProcessor.out_gain->get() );
     mix_gain_label.setText ("Out Gain", juce::dontSendNotification);
     mix_gain_label.setBounds(mix_label_posx,mix_label_posy,150,24);
     mix_gain_label.setColour(juce::Label::textColourId,control_label_color);
@@ -140,7 +158,7 @@ ChopperAudioProcessorEditor::ChopperAudioProcessorEditor (ChopperAudioProcessor&
     mix__slider->setColour(juce::Slider::textBoxTextColourId,control_value_color);
     mix__slider->setColour(juce::Slider::textBoxOutlineColourId,juce::Colours::blue);
     mix__slider->onValueChange = [this] { out_mix_change(); };
-    mix__slider->setValue (1.0);
+    mix__slider->setValue (audioProcessor.out_mix->get());
     mix_amnt_label.setText ("Dry/Wet", juce::dontSendNotification);
     mix_amnt_label.setBounds(mix_label_posx+100,mix_label_posy,150,24);
     mix_amnt_label.setColour(juce::Label::textColourId,control_label_color);
@@ -176,7 +194,7 @@ ChopperAudioProcessorEditor::ChopperAudioProcessorEditor (ChopperAudioProcessor&
 
     seq_pattern_selected.setEditableText (false);
     for(int i = 1; i <= seq_pattern_count; i++) { seq_pattern_selected.addItem (TRANS(std::to_string(i)), i);   }
-    seq_pattern_selected.setSelectedItemIndex(0);
+    seq_pattern_selected.setSelectedItemIndex(audioProcessor.pseq_current->get()-1);
     seq_pattern_selected.setColour(juce::Label::textColourId,color_text1);
     seq_pattern_selected.setColour(juce::ComboBox::backgroundColourId,juce::Colours::black);
     seq_pattern_selected.setColour(juce::ComboBox::outlineColourId ,juce::Colours::blue);
@@ -214,7 +232,7 @@ ChopperAudioProcessorEditor::ChopperAudioProcessorEditor (ChopperAudioProcessor&
     seq_sequence_selected.onChange = [this] { seq_pattern_change(); };
     
     for(int i = 1; i <= seq_sequence_count; i++) { seq_sequence_selected.addItem (TRANS(std::to_string(i)), i);   }
-    seq_sequence_selected.setSelectedItemIndex(0);
+    seq_sequence_selected.setSelectedItemIndex(audioProcessor.sseq_current->get()-1);
     seq_sequence_selected.setBounds (sseq_posx-85, sseq_posy-5, 60, 24);
 
     
@@ -224,7 +242,7 @@ ChopperAudioProcessorEditor::ChopperAudioProcessorEditor (ChopperAudioProcessor&
     seq_clock.onChange = [this] { seq_clock_change(); };
     seq_clock.addItem (TRANS("4"), 1);seq_clock.addItem (TRANS("2"), 2);seq_clock.addItem (TRANS("1"), 3);seq_clock.addItem (TRANS("1/2"), 4);
     seq_clock.addItem (TRANS("1/4"), 5);seq_clock.addItem (TRANS("1/8"), 6);seq_clock.addItem (TRANS("1/16"), 7);seq_clock.addItem (TRANS("1/32"), 8);
-    seq_clock.setSelectedItemIndex(2);
+    seq_clock.setSelectedItemIndex(audioProcessor.clock_div->getIndex());
     seq_clock.setColour(juce::ComboBox::backgroundColourId,juce::Colours::black);
     seq_clock.setColour(juce::ComboBox::outlineColourId ,juce::Colours::blue);
     seq_clock.setColour(juce::ComboBox::arrowColourId ,juce::Colours::blue);
@@ -236,7 +254,7 @@ ChopperAudioProcessorEditor::ChopperAudioProcessorEditor (ChopperAudioProcessor&
     
     seq_gate_length.setRange (0, 100, 1);
     seq_gate_length.onValueChange = [this] { seq_gate_length_change(); };
-    seq_gate_length.setValue (100);
+    seq_gate_length.setValue (audioProcessor.pseq_gate_length->get());
     seq_gate_length.setSliderStyle (juce::Slider::Rotary);
     seq_gate_length.setTextBoxStyle (juce::Slider::TextBoxBelow, true, 80, 20);
     seq_gate_length.setBounds (pseq_params_posx+80, pseq_params_posy, 118, 83);
@@ -254,7 +272,7 @@ ChopperAudioProcessorEditor::ChopperAudioProcessorEditor (ChopperAudioProcessor&
     seq_mode.addItem (TRANS("pattern"), 1);
     seq_mode.addItem (TRANS("sequence"), 2);
     seq_mode.onChange = [this] { seq_mode_change(); };
-    seq_mode.setSelectedItemIndex(0);
+    seq_mode.setSelectedItemIndex(audioProcessor.seq_mode->getIndex());
     seq_mode.setColour(juce::ComboBox::backgroundColourId,juce::Colours::black);
     seq_mode.setColour(juce::ComboBox::outlineColourId ,juce::Colours::blue);
     seq_mode.setColour(juce::ComboBox::arrowColourId ,juce::Colours::blue);
@@ -270,7 +288,7 @@ ChopperAudioProcessorEditor::ChopperAudioProcessorEditor (ChopperAudioProcessor&
     seq_env.addItem (TRANS("flat"), 1);
     seq_env.addItem (TRANS("sharp"), 2);
     seq_env.addItem (TRANS("tri"), 3);
-    seq_env.setSelectedItemIndex(0);
+    seq_env.setSelectedItemIndex(audioProcessor.seq_env->getIndex());
     seq_env.setColour(juce::ComboBox::backgroundColourId,juce::Colours::black);
     seq_env.setColour(juce::ComboBox::outlineColourId ,juce::Colours::blue);
     seq_env.setColour(juce::ComboBox::arrowColourId ,control_value_color);
@@ -292,7 +310,7 @@ ChopperAudioProcessorEditor::ChopperAudioProcessorEditor (ChopperAudioProcessor&
     seq_length.setColour(juce::Slider::textBoxTextColourId,control_value_color);
     seq_length.setColour(juce::Slider::textBoxOutlineColourId,juce::Colours::black);
     seq_length.onValueChange= [this] { seq_length_change(); };
-    seq_length.setValue(4);
+    seq_length.setValue(audioProcessor.sseq_length->get());
     seq_length_label.setText ("Seq length", juce::dontSendNotification);
     seq_length_label.setColour(juce::Label::textColourId,control_label_color);
     seq_length_label.setBounds (pseq_params_posx+100, pseq_params_posy-20+50, 86, 24);
@@ -360,7 +378,7 @@ ChopperAudioProcessorEditor::ChopperAudioProcessorEditor (ChopperAudioProcessor&
     debugBB.setBounds (debug_posx-20-30, debug_posy-20+70, 15, 15);
     debugBB.onClick = [this] { writeXMLConfig(true,true,true);};
 
-    init_all_sequences(0,0);
+    //init_all_sequences(0,0);
 
     //////////////////////////////////////////////////////////////////////////////////
     addAndMakeVisible (gain__slider.get());
@@ -393,6 +411,10 @@ ChopperAudioProcessorEditor::ChopperAudioProcessorEditor (ChopperAudioProcessor&
     addAndMakeVisible (debug);
     addAndMakeVisible (debugB);
     addAndMakeVisible (debugBB);
+
+    LoadXMLConfig(true,false,false);
+    reloadSkinFromXML();
+    
     startTimerHz(gui_refresh_rate);
 }
 
@@ -436,17 +458,22 @@ void ChopperAudioProcessorEditor::resized()
     // This is generally where you'll want to lay out the positions of any
     // subcomponents in your editor..
 }
+////////////////////////////////////////////////////////////////////////////////// TEMPLATES ////////////////////////////////////////////////////////////////////////
+void ChopperAudioProcessorEditor::initSlider1(std::unique_ptr<juce::Slider> slider,controlColorTemplate slider_colors[],int colorCount, int x,int y,int w,int h,float min,float max,float def)
+{   slider->setSliderStyle (juce::Slider::Rotary);
+    slider->setRange (min, max, def);
+    slider->setTextBoxStyle (juce::Slider::TextBoxBelow, true, 80, 20);
+    slider->setBounds (x, y, w, h);
 
-void ChopperAudioProcessorEditor::initSlider1(juce::Slider slider, int x,int y,int w,int h,float min,float max,float def)
-{   slider.setSliderStyle (juce::Slider::Rotary);
-    slider.setRange (min, max, def);
-    slider.setTextBoxStyle (juce::Slider::TextBoxBelow, true, 80, 20);
-    slider.setBounds (x, y, w, h);
+    for(int i=0;i<colorCount;i++) {
+        slider->setColour(slider_colors[i].colorId,slider_colors[i].colorValue);
+    }
+    /*
     slider.setColour(juce::Slider::thumbColourId,juce::Colours::blue);
     slider.setColour(juce::Slider::rotarySliderOutlineColourId,juce::Colours::black);
     slider.setColour(juce::Slider::rotarySliderFillColourId,juce::Colours::blue);
     slider.setColour(juce::Slider::textBoxTextColourId,juce::Colour(0xFF0000FF));
-    slider.setColour(juce::Slider::textBoxOutlineColourId,juce::Colours::blue);
+    slider.setColour(juce::Slider::textBoxOutlineColourId,juce::Colours::blue);*/
 }
 
 void ChopperAudioProcessorEditor::initSlider2(juce::Slider slider,int x,int y,int w,int h,float min,float max,float def)
@@ -471,9 +498,11 @@ void ChopperAudioProcessorEditor::initCombo1(juce::ComboBox comboBox, int x,int 
     comboBox.setBounds (x, y, w, h);    
 }
 
-void ChopperAudioProcessorEditor::initLabel1(juce::Label label,std::string text, int x,int y,int w,int h)
+void ChopperAudioProcessorEditor::initLabel1(juce::Label label,std::string text,controlColorTemplate label_colors[], int colorCount, int x,int y,int w,int h)
 {   label.setText (text, juce::dontSendNotification);
-    label.setColour(juce::Label::textColourId,juce::Colour(0xFF0000FF));
+    for(int i=0;i<colorCount;i++) {
+        label.setColour(label_colors[i].colorId,label_colors[i].colorValue);
+    }
     label.setBounds (x, y, w, h);
 }
 
@@ -521,7 +550,7 @@ void ChopperAudioProcessorEditor::timerCallback()
                    " step " +std::__cxx11::to_string(index+1)+"\n" +
                    "sequence\t" +std::__cxx11::to_string(seq_sequence_selected.getSelectedItemIndex()+1)+ 
                    " step " +std::__cxx11::to_string(seqIndex+1) +"\n"
-                   /*+"patterndata " + std::__cxx11::to_string(bitArrayToInt32(ptrn,16))*///FOR PATTERN CODE BUILDING
+                   //+"patterndata " + std::__cxx11::to_string(bitArrayToInt32(ptrn,16))//FOR PATTERN CODE BUILDING
                   , juce::dontSendNotification);  
 
     for (int i=0;i<sizeof(sequence)/sizeof(sequence[0]);i++)
@@ -564,6 +593,213 @@ void ChopperAudioProcessorEditor::timerCallback()
     
 }
 
+void ChopperAudioProcessorEditor::step_seq_update(int stepIndex)
+{
+    juce::Colour step_color_full=juce::Colour (0xFFFFFFFF& stepseq_color);
+    juce::Colour step_color_dim=juce::Colour (0xFF7F7F7F& stepseq_color);
+    
+    if ( sequence[stepIndex] == true)        
+    {
+        seq_step[stepIndex].setImages (false, true, true,stepseq_on, 1.000f, step_color_dim,juce::Image(), 1.000f, step_color_full,stepseq_off, 1.000f, step_color_dim);
+    } else 
+    {
+        seq_step[stepIndex].setImages (false, true, true,stepseq_off, 1.000f, step_color_dim,juce::Image(), 1.000f, step_color_full,stepseq_on, 1.000f, step_color_dim);
+    }
+    patterns[seq_pattern_selected.getSelectedItemIndex()][stepIndex]=sequence[stepIndex];
+    audioProcessor.updatePattern(seq_pattern_selected.getSelectedItemIndex(),bitArrayToInt32(sequence,16));       
+}
+
+void ChopperAudioProcessorEditor::step_seq_click(int stepIndex)
+{
+    if ( sequence[stepIndex] == false) { sequence[stepIndex]=true;} else {sequence[stepIndex]=false;}
+    
+    step_seq_update(stepIndex);      
+}
+
+void ChopperAudioProcessorEditor::step_seq_clear() 
+{
+    for (int i=0;i<sizeof(sequence)/sizeof(sequence[0]);i++) {
+        sequence[i]=false;
+        step_seq_update(i);
+    }
+}
+
+void ChopperAudioProcessorEditor::step_seq_reset() 
+{
+    for (int j=0;j<sizeof(sequence)/sizeof(sequence[0]);j++) {
+        for (int i=0;i<sizeof(sequence)/sizeof(sequence[0]);i++) {
+            patterns[j][i]=false;
+        }
+        sequence[j]=false;
+        step_seq_update(j);
+    }
+    
+}
+
+void ChopperAudioProcessorEditor::step_seq_copy() 
+{      
+    for (int i=0;i<sizeof(sequence)/sizeof(sequence[0]);i++) 
+    { 
+        sequence_clipboard[i]=sequence[i];
+        step_seq_update(i);
+    }
+}
+
+void ChopperAudioProcessorEditor::step_seq_paste() 
+{
+    for (int i=0;i<sizeof(sequence)/sizeof(sequence[0]);i++) 
+    { 
+        sequence[i]=sequence_clipboard[i];
+        step_seq_update(i);
+    }
+}
+
+void ChopperAudioProcessorEditor::step_seq_change() 
+{ 
+    int seqIndex=seq_pattern_selected.getSelectedItemIndex();
+    
+    for (int i=0;i<sizeof(sequence)/sizeof(sequence[0]);i++) 
+        {
+            sequence[i]=patterns[seqIndex][i];
+            step_seq_update(i);
+        }
+    audioProcessor.pseq_current->operator=(seqIndex+1);
+} 
+
+void ChopperAudioProcessorEditor::seq_seq_change(int step) 
+{   
+    int seqIndex=seq_sequence_selected.getSelectedItemIndex();
+    sequences[seqIndex][step]=sseq_step[step].getSelectedItemIndex();       
+    //ssequence[step]=sequences[seqIndex][step];
+    audioProcessor.pattern_seqs[seqIndex][step]=sseq_step[step].getSelectedItemIndex();
+    
+    //audioProcessor.sseq_current->operator=(seqIndex+1);
+}
+
+void ChopperAudioProcessorEditor::seq_pattern_change() 
+{   
+    int seqIndex=seq_sequence_selected.getSelectedItemIndex();  
+    for (int i=0;i<sizeof(sequence)/sizeof(sequence[0]);i++) 
+        {
+            //ssequence[i]=sequences[seqIndex][i];
+            sseq_step[i].setSelectedItemIndex(sequences[seqIndex][i]);
+        }
+    audioProcessor.sseq_current->operator=(seqIndex+1);
+}
+
+void ChopperAudioProcessorEditor::seq_env_change() {   audioProcessor.updateEnv(seq_env.getSelectedItemIndex());      }
+void ChopperAudioProcessorEditor::seq_length_change() {    audioProcessor.sseq_length->operator=(seq_length.getValue());}
+void ChopperAudioProcessorEditor::out_gain_change(){    audioProcessor.out_gain->operator=(gain__slider->getValue());}
+void ChopperAudioProcessorEditor::out_mix_change(){    audioProcessor.out_mix->operator=(mix__slider->getValue());}
+void ChopperAudioProcessorEditor::seq_mode_change(){    audioProcessor.seq_mode->operator=(seq_mode.getSelectedItemIndex());}
+void ChopperAudioProcessorEditor::seq_clock_change(){   audioProcessor.clock_div->operator=(seq_clock.getSelectedItemIndex());}
+void ChopperAudioProcessorEditor::seq_gate_length_change(){    audioProcessor.pseq_gate_length->operator=(seq_gate_length.getValue());}
+void ChopperAudioProcessorEditor::ui_debug(std::string text){    debug.setText (debug.getText() + "\n" + text, juce::dontSendNotification);}
+
+void ChopperAudioProcessorEditor::init_all_sequences(int returnToPattern=0,int returnToSeq=0)
+{
+    for (int i=15;i>=0;i--){
+        //audioProcessor.sequences[i]=bitArrayToInt32(patterns[i],16);
+        seq_pattern_selected.setSelectedItemIndex(i);
+        for (int j;j<16;j++){
+            audioProcessor.pattern_seqs[i][j]=patterns[i][j];
+        }
+        
+        audioProcessor.updatePattern(i,bitArrayToInt32(patterns[i],16));
+    }
+    if (returnToPattern>0) {seq_pattern_selected.setSelectedItemIndex(returnToPattern-1);}
+    if (returnToSeq>0) {seq_sequence_selected.setSelectedItemIndex(returnToSeq-1);}
+    //audioProcessor.initGatesMap();
+}
+
+void ChopperAudioProcessorEditor::seq_auto_click()
+{
+    int value=0;
+    if ( audioProcessor.pseq_auto->get() == 0) {
+        value=1;
+    } else {
+        value=0;
+    }
+    audioProcessor.pseq_auto->operator=(value);
+}
+
+void ChopperAudioProcessorEditor::debugF(bool reloadFromFile=false)
+{
+    if (reloadFromFile) { LoadXMLConfig(true,true,true); }
+    reloadSkinFromXML();
+}
+
+void ChopperAudioProcessorEditor::switch_skins()
+{
+    std::string skinsPath=dataPath+ "/skins"; // get skins folder path    
+    auto folders=get_directories(skinsPath);//get available folders in /skins
+    std::vector<std::string> skinList;//={"default","red","green","yellow","purple","turquoise"};
+    for (auto folder : folders) {      
+        if ( std::filesystem::exists(folder+"/skin.xml") ) {            // look for skin file
+            std::string folderShort=folder.substr(skinsPath.length()+1); // get skin folder name
+            //debug.setText(debug.getText()+"\nfound skin "+folderShort);
+            skinList.push_back(folderShort);  // add to skin list
+        }        
+    }
+    int currentSkinIndex=0; 
+    for (int i=0;i<skinList.size();i++) {  // find current skin index
+        if (skinList[i] == currentSkin) { currentSkinIndex=i;break; }
+    }
+    if (currentSkinIndex == skinList.size()-1) {currentSkinIndex=0;}  // increment skin index
+    else {currentSkinIndex++;}
+    
+    currentSkin=skinList[currentSkinIndex]; 
+  
+    reloadSkinFromXML();
+    
+}
+
+/////////////////////////////////////////////////////////////////////// FILES & DIRECTORIES //////////////////////////////////////////////////////////////////////////////////////////
+
+void ChopperAudioProcessorEditor::initDirectories()
+{
+    juce::File homeDir = juce::File(juce::File::getSpecialLocation (juce::File::userHomeDirectory));
+    const std::string homePath=homeDir.getFullPathName().toStdString();
+    
+    std::string skinsPath,defaultSkinPath,rootPath;
+    
+   //SystemStats::getOperatingSystemType()
+    rootPath=homePath + "/.ssabug";
+    dataPath=rootPath + "/choppah";
+    configPath=dataPath+"/config/";
+    presetPath=dataPath+"/presets";
+    skinsPath=dataPath+"/skins";
+    defaultSkinPath=skinsPath+"/"+currentSkin;
+    currentSkinPath=defaultSkinPath+"/";
+    imagePath=dataPath+ "/skins/" + currentSkin + "/images/";
+
+    if ( not std::filesystem::exists(std::string(rootPath)) )  {
+        std::filesystem::create_directory(rootPath);
+    }
+
+    if ( not std::filesystem::exists(std::string(dataPath)) )  {
+        std::filesystem::create_directory(dataPath);
+        std::filesystem::create_directory(configPath);
+        std::filesystem::create_directory(presetPath);
+        std::filesystem::create_directory(skinsPath);
+
+        std::filesystem::create_directory(defaultSkinPath);
+        std::filesystem::create_directory(defaultSkinPath+ "/images");
+    }
+   
+}
+
+
+std::vector<std::string> ChopperAudioProcessorEditor::get_directories(const std::string& s)
+{
+    std::vector<std::string> r;
+    for(auto& p : std::filesystem::recursive_directory_iterator(s))
+        if (p.is_directory())
+            r.push_back(p.path().string());
+    return r;
+}
+
+/////////////////////////////////////////////////////////////////////// XML //////////////////////////////////////////////////////////////////////////////////////////
 void ChopperAudioProcessorEditor::reloadSkinFromXML()
 {
     //COLOURS
@@ -743,160 +979,6 @@ void ChopperAudioProcessorEditor::reloadSkinFromXML()
 }  
 
 
-void ChopperAudioProcessorEditor::step_seq_update(int stepIndex)
-{
-    juce::Colour step_color_full=juce::Colour (0xFFFFFFFF& stepseq_color);
-    juce::Colour step_color_dim=juce::Colour (0xFF7F7F7F& stepseq_color);
-    
-    if ( sequence[stepIndex] == true)        
-    {
-        seq_step[stepIndex].setImages (false, true, true,stepseq_on, 1.000f, step_color_dim,juce::Image(), 1.000f, step_color_full,stepseq_off, 1.000f, step_color_dim);
-    } else 
-    {
-        seq_step[stepIndex].setImages (false, true, true,stepseq_off, 1.000f, step_color_dim,juce::Image(), 1.000f, step_color_full,stepseq_on, 1.000f, step_color_dim);
-    }
-    patterns[seq_pattern_selected.getSelectedItemIndex()][stepIndex]=sequence[stepIndex];
-    audioProcessor.updatePattern(seq_pattern_selected.getSelectedItemIndex(),bitArrayToInt32(sequence,16));       
-}
-void ChopperAudioProcessorEditor::step_seq_click(int stepIndex)
-{
-    if ( sequence[stepIndex] == false) { sequence[stepIndex]=true;} else {sequence[stepIndex]=false;}
-    
-    step_seq_update(stepIndex);      
-}
-void ChopperAudioProcessorEditor::step_seq_clear() 
-{
-    for (int i=0;i<sizeof(sequence)/sizeof(sequence[0]);i++) {
-        sequence[i]=false;
-        step_seq_update(i);
-    }
-}
-void ChopperAudioProcessorEditor::step_seq_reset() 
-{
-    for (int j=0;j<sizeof(sequence)/sizeof(sequence[0]);j++) {
-        for (int i=0;i<sizeof(sequence)/sizeof(sequence[0]);i++) {
-            patterns[j][i]=false;
-        }
-        sequence[j]=false;
-        step_seq_update(j);
-    }
-    
-}
-void ChopperAudioProcessorEditor::step_seq_copy() 
-{      
-    for (int i=0;i<sizeof(sequence)/sizeof(sequence[0]);i++) 
-    { 
-        sequence_clipboard[i]=sequence[i];
-        step_seq_update(i);
-    }
-}
-void ChopperAudioProcessorEditor::step_seq_paste() 
-{
-    for (int i=0;i<sizeof(sequence)/sizeof(sequence[0]);i++) 
-    { 
-        sequence[i]=sequence_clipboard[i];
-        step_seq_update(i);
-    }
-}
-void ChopperAudioProcessorEditor::step_seq_change() 
-{ 
-    int seqIndex=seq_pattern_selected.getSelectedItemIndex();
-    
-    for (int i=0;i<sizeof(sequence)/sizeof(sequence[0]);i++) 
-        {
-            sequence[i]=patterns[seqIndex][i];
-            step_seq_update(i);
-        }
-    audioProcessor.pseq_current->operator=(seqIndex+1);
-} 
-
-void ChopperAudioProcessorEditor::seq_seq_change(int step) 
-{   
-    int seqIndex=seq_sequence_selected.getSelectedItemIndex();
-    sequences[seqIndex][step]=sseq_step[step].getSelectedItemIndex();       
-    //ssequence[step]=sequences[seqIndex][step];
-    audioProcessor.pattern_seqs[seqIndex][step]=sseq_step[step].getSelectedItemIndex();
-    
-    //audioProcessor.sseq_current->operator=(seqIndex+1);
-}
-void ChopperAudioProcessorEditor::seq_pattern_change() 
-{   
-    int seqIndex=seq_sequence_selected.getSelectedItemIndex();  
-    for (int i=0;i<sizeof(sequence)/sizeof(sequence[0]);i++) 
-        {
-            //ssequence[i]=sequences[seqIndex][i];
-            sseq_step[i].setSelectedItemIndex(sequences[seqIndex][i]);
-        }
-    audioProcessor.sseq_current->operator=(seqIndex+1);
-}
-
-void ChopperAudioProcessorEditor::seq_env_change() {   audioProcessor.updateEnv(seq_env.getSelectedItemIndex());      }
-void ChopperAudioProcessorEditor::seq_length_change() {    audioProcessor.sseq_length->operator=(seq_length.getValue());}
-void ChopperAudioProcessorEditor::out_gain_change(){    audioProcessor.out_gain->operator=(gain__slider->getValue());}
-void ChopperAudioProcessorEditor::out_mix_change(){    audioProcessor.out_mix->operator=(mix__slider->getValue());}
-void ChopperAudioProcessorEditor::seq_mode_change(){    audioProcessor.seq_mode->operator=(seq_mode.getSelectedItemIndex());}
-void ChopperAudioProcessorEditor::seq_clock_change(){   audioProcessor.clock_div->operator=(seq_clock.getSelectedItemIndex());}
-void ChopperAudioProcessorEditor::seq_gate_length_change(){    audioProcessor.pseq_gate_length->operator=(seq_gate_length.getValue());}
-void ChopperAudioProcessorEditor::ui_debug(std::string text){    debug.setText (text, juce::dontSendNotification);}
-
-void ChopperAudioProcessorEditor::init_all_sequences(int returnToPattern=0,int returnToSeq=0)
-{
-    for (int i=15;i>=0;i--){
-        //audioProcessor.sequences[i]=bitArrayToInt32(patterns[i],16);
-        seq_pattern_selected.setSelectedItemIndex(i);
-        for (int j;j<16;j++){
-            audioProcessor.pattern_seqs[i][j]=patterns[i][j];
-        }
-        
-        audioProcessor.updatePattern(i,bitArrayToInt32(patterns[i],16));
-    }
-    if (returnToPattern>0) {seq_pattern_selected.setSelectedItemIndex(returnToPattern-1);}
-    if (returnToSeq>0) {seq_sequence_selected.setSelectedItemIndex(returnToSeq-1);}
-    //audioProcessor.initGatesMap();
-}
-
-void ChopperAudioProcessorEditor::seq_auto_click()
-{
-    int value=0;
-    if ( audioProcessor.pseq_auto->get() == 0) {
-        value=1;
-    } else {
-        value=0;
-    }
-    audioProcessor.pseq_auto->operator=(value);
-}
-
-void ChopperAudioProcessorEditor::debugF(bool reloadFromFile=false)
-{
-    if (reloadFromFile) { LoadXMLConfig(true,true,true); }
-    reloadSkinFromXML();
-}
-
-void ChopperAudioProcessorEditor::switch_skins()
-{
-    std::string skinsPath=dataPath+ "/skins"; // get skins folder path    
-    auto folders=get_directories(skinsPath);//get available folders in /skins
-    std::vector<std::string> skinList;//={"default","red","green","yellow","purple","turquoise"};
-    for (auto folder : folders) {      
-        if ( std::filesystem::exists(folder+"/skin.xml") ) {            // look for skin file
-            std::string folderShort=folder.substr(skinsPath.length()+1); // get skin folder name
-            //debug.setText(debug.getText()+"\nfound skin "+folderShort);
-            skinList.push_back(folderShort);  // add to skin list
-        }        
-    }
-    int currentSkinIndex=0; 
-    for (int i=0;i<skinList.size();i++) {  // find current skin index
-        if (skinList[i] == currentSkin) { currentSkinIndex=i;break; }
-    }
-    if (currentSkinIndex == skinList.size()-1) {currentSkinIndex=0;}  // increment skin index
-    else {currentSkinIndex++;}
-    
-    currentSkin=skinList[currentSkinIndex]; 
-  
-    reloadSkinFromXML();
-    
-}
-
 void ChopperAudioProcessorEditor::LoadXMLConfig(bool reloadSkin=true,bool reloadPatternsAndSequences=false,bool reloadParameters=true)
 {    
     std::string xmlFilePath=configPath+"config.xml";
@@ -1068,46 +1150,3 @@ void ChopperAudioProcessorEditor::writeXMLConfig(bool updateSkin=true,bool updat
     //debug.setText(xmlString);
 }
 
-
-void ChopperAudioProcessorEditor::initDirectories()
-{
-    juce::File homeDir = juce::File(juce::File::getSpecialLocation (juce::File::userHomeDirectory));
-    const std::string homePath=homeDir.getFullPathName().toStdString();
-    
-    std::string skinsPath,defaultSkinPath,rootPath;
-    
-   //SystemStats::getOperatingSystemType()
-    rootPath=homePath + "/.ssabug";
-    dataPath=rootPath + "/choppah";
-    configPath=dataPath+"/config/";
-    presetPath=dataPath+"/presets";
-    skinsPath=dataPath+"/skins";
-    defaultSkinPath=skinsPath+"/"+currentSkin;
-    currentSkinPath=defaultSkinPath+"/";
-    imagePath=dataPath+ "/skins/" + currentSkin + "/images/";
-
-    if ( not std::filesystem::exists(std::string(rootPath)) )  {
-        std::filesystem::create_directory(rootPath);
-    }
-
-    if ( not std::filesystem::exists(std::string(dataPath)) )  {
-        std::filesystem::create_directory(dataPath);
-        std::filesystem::create_directory(configPath);
-        std::filesystem::create_directory(presetPath);
-        std::filesystem::create_directory(skinsPath);
-
-        std::filesystem::create_directory(defaultSkinPath);
-        std::filesystem::create_directory(defaultSkinPath+ "/images");
-    }
-   
-}
-
-
-std::vector<std::string> ChopperAudioProcessorEditor::get_directories(const std::string& s)
-{
-    std::vector<std::string> r;
-    for(auto& p : std::filesystem::recursive_directory_iterator(s))
-        if (p.is_directory())
-            r.push_back(p.path().string());
-    return r;
-}

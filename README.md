@@ -58,6 +58,6 @@ It will create the folders and copy the plugin data in **${HOME}/.ssabug/choppah
  - build with `cd Builds/LinuxMakefile/ && clear && make clean && make`
  - the VST3 is the  **Builds/LinuxMakefile/build/chopper.vst3** directory
 
-Tested OSs  : fedora
+Tested OSs  : fedora, arch linux
 
 Tested DAWs : bitwig

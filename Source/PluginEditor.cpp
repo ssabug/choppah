@@ -287,7 +287,10 @@ ChopperAudioProcessorEditor::ChopperAudioProcessorEditor (ChopperAudioProcessor&
     seq_env.setJustificationType (juce::Justification::centredLeft);
     seq_env.addItem (TRANS("flat"), 1);
     seq_env.addItem (TRANS("sharp"), 2);
-    seq_env.addItem (TRANS("tri"), 3);
+    seq_env.addItem (TRANS("saw"), 3);
+    seq_env.addItem (TRANS("ramp"), 4);
+    seq_env.addItem (TRANS("spike"), 5);
+    seq_env.addItem (TRANS("slow"), 6);
     seq_env.setSelectedItemIndex(audioProcessor.seq_env->getIndex());
     seq_env.setColour(juce::ComboBox::backgroundColourId,juce::Colours::black);
     seq_env.setColour(juce::ComboBox::outlineColourId ,juce::Colours::blue);

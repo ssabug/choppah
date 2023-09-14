@@ -9,6 +9,7 @@
 - [x] GUI control template class created **(to be better defined)** : only in reloadSkinFromXML(), **implementation on editor construction in progress**
 - [x] click on logo switches between available skins
 - [x] added load and write XML config buttons (debug)
+- [x] added 3 enveloppes
 - [ ] find a safe way to trigger reloadSkinFromXML() once at startup (manual trigger for now)
 - [ ] configure/build scripts exists but not portable
 - [ ] save sequencer state variables

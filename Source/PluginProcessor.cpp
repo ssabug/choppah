@@ -24,7 +24,7 @@ ChopperAudioProcessor::ChopperAudioProcessor()
 
     addParameter (clock_div = new juce::AudioParameterChoice ("clock_div", "Clock division", { "4","2","1","1/2","1/4","1/8","1/16","1/32" }, 2));
     addParameter (seq_mode = new juce::AudioParameterChoice ("seq_mode", "Sequencer mode", { "Pattern","Sequence" }, 0));
-    addParameter (seq_env = new juce::AudioParameterChoice ("seq_env", "Step enveloppe", { "flat","sharp","tri" }, 0));
+    addParameter (seq_env = new juce::AudioParameterChoice ("seq_env", "Step enveloppe", { "flat","sharp","saw","ramp","spike","slow" }, 0));
 
     addParameter (out_mix = new juce::AudioParameterFloat ("out_mix","Dry/Wet",0.0f, 1.0f, 0.5f));
     addParameter (out_gain = new juce::AudioParameterFloat ("out_gain","Gain Out",0.0f, 10.0f, 1.0f));
@@ -168,7 +168,8 @@ void ChopperAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce
         ppqlastbar=*(*playposinfo).getPpqPositionOfLastBarStart();
         int coeff=pow(2,clock_div->getIndex());
         int selected_pattern=pseq_current->get()-1;
-        int step=int(std::floor( (ppq/coeff-std::floor(ppqlastbar)/coeff)*(64) ));
+        float unused;
+        int step=int(std::floor( std::modf(ppq/coeff,&unused)*(64)));
 
         if (step>63) {step-=64*int(std::floor(step/64));}
 
@@ -275,10 +276,13 @@ void ChopperAudioProcessor::generateGateMap(int patternData) {
     int step=4;
     int pattern=pseq_current->get()-1;
     float gateMap_arr[size*step];
-    const float envs[3][step]={
+    const float envs[6][step]={
         {1.0,1.0,1.0,1.0}, // FLAT 
-        {1.0,1.0,0.66,0.33}, // SHARP
-        {1.0,0.66,0.33,0.0} // TRI                  
+        {1.0,1.0,1.00,0.0}, // SHARP
+        {1.0,0.66,0.33,0.0}, // SAW
+        {0.0,0.33,0.66,1.0}, //RAMP  
+        {0.66,1.0,0.66,0.33}, //SPIKE  
+        {1.0,1.0,0.66,0.33} // SLOW               
     };
     int env=seq_env->getIndex(); 
     bool gates[size];

@@ -1039,20 +1039,20 @@ void ChopperAudioProcessorEditor::LoadXMLConfig(bool reloadSkin=true,bool reload
                             //debug.setText(debug.getText()+"\n" +e->getTagName()  + " : " +  e->getAllSubText());
                             std::string paramName = e->getTagName().toStdString();
                             std::string paramValue = e->getAllSubText().toStdString();
-                            if (paramName ==  "currentPattern" ) {audioProcessor.pseq_current->operator=(stoi(paramValue));/*step_seq_change();*/}
-                            if (paramName ==  "currentSequence" ) {audioProcessor.sseq_current->operator=(stoi(paramValue));/*seq_pattern_change();*/}
+                            if (paramName ==  "currentPattern" ) {seq_pattern_selected.setSelectedItemIndex(stoi(paramValue));audioProcessor.pseq_current->operator=(stoi(paramValue));/*step_seq_change();*/}
+                            if (paramName ==  "currentSequence" ) {seq_sequence_selected.setSelectedItemIndex(stoi(paramValue));audioProcessor.sseq_current->operator=(stoi(paramValue));/*seq_pattern_change();*/}
                             if (paramName ==  "currenPatternData" ) {audioProcessor.pseq_data->operator=(stoi(paramValue));}
                             if (paramName ==  "sequencePosition" ) {}
-                            if (paramName ==  "sequenceLength" ) {audioProcessor.sseq_length->operator=(stoi(paramValue));}
+                            if (paramName ==  "sequenceLength" ) {seq_length.setValue(stoi(paramValue));audioProcessor.sseq_length->operator=(stoi(paramValue));}
                             if (paramName ==  "patternDisplayRefresh" ) {audioProcessor.pseq_auto->operator=(stoi(paramValue));}
     
-                            if (paramName ==  "clockDivision" ) {audioProcessor.clock_div->operator=(stoi(paramValue));}
-                            if (paramName ==  "mode" ) {audioProcessor.seq_mode->operator=(stoi(paramValue));}
-                            if (paramName ==  "enveloppeType" ) {audioProcessor.seq_env->operator=(stoi(paramValue));}
+                            if (paramName ==  "clockDivision" ) {seq_clock.setSelectedItemIndex(stoi(paramValue));audioProcessor.clock_div->operator=(stoi(paramValue));}
+                            if (paramName ==  "mode" ) {seq_mode.setSelectedItemIndex(stoi(paramValue));audioProcessor.seq_mode->operator=(stoi(paramValue));}
+                            if (paramName ==  "enveloppeType" ) {seq_env.setSelectedItemIndex(stoi(paramValue));audioProcessor.seq_env->operator=(stoi(paramValue));}
 
-                            if (paramName ==  "gateLength" ) {audioProcessor.pseq_gate_length->operator=(stof(paramValue));}
-                            if (paramName ==  "dryWet" ) {audioProcessor.out_mix->operator=(stof(paramValue));}
-                            if (paramName ==  "outputGain" ) {audioProcessor.out_gain->operator=(stof(paramValue));}
+                            if (paramName ==  "gateLength" ) {seq_gate_length.setValue(stof(paramValue));audioProcessor.pseq_gate_length->operator=(stof(paramValue));}
+                            if (paramName ==  "dryWet" ) {mix__slider->setValue(stof(paramValue));audioProcessor.out_mix->operator=(stof(paramValue));mix__slider->setValue(audioProcessor.out_mix->get());}
+                            if (paramName ==  "outputGain" ) {audioProcessor.out_gain->operator=(stof(paramValue));gain__slider->setValue(audioProcessor.out_gain->get());}
                         }
                     }
                // rootElement.writeTo (xmlFile(xmlFilePath)):

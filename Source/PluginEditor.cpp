@@ -520,6 +520,7 @@ void ChopperAudioProcessorEditor::debugF(bool reloadFromFile=false)
 
 void ChopperAudioProcessorEditor::switch_skins()
 {
+    // /!\ PLATFORM SPECIFIC CODE
     std::string skinsPath=dataPath+ "/skins"; // get skins folder path    
     auto folders=get_directories(skinsPath);//get available folders in /skins
     std::vector<std::string> skinList;//={"default","red","green","yellow","purple","turquoise"};
@@ -549,6 +550,7 @@ void ChopperAudioProcessorEditor::switch_skins()
 
 void ChopperAudioProcessorEditor::initDirectories()
 {
+    // /!\ PLATFORM SPECIFIC CODE
     juce::File homeDir = juce::File(juce::File::getSpecialLocation (juce::File::userHomeDirectory));
     const std::string homePath=homeDir.getFullPathName().toStdString();
     

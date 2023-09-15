@@ -20,18 +20,11 @@ class ChopperAudioProcessorEditor  : public juce::AudioProcessorEditor,
                                      public juce::Timer
 {
 public:
-    ChopperAudioProcessorEditor (ChopperAudioProcessor&);
-    ~ChopperAudioProcessorEditor() override;
-
-    //==============================================================================
-    void paint (juce::Graphics&) override;
-    void resized() override;    
-    void timerCallback() override;
-    
     class controlColorTemplate 
     {
         public:
-            void init (int ref,juce::Colour color) { this->colorId = ref; this->colorValue=color;}
+            void init (int ref,juce::Colour color,std::string templateName="None") { this->colorId = ref; this->colorValue=color; if(templateName!="None") {this->templateName=templateName;}}
+            std::string templateName="None";
             int colorId=juce::Label::textColourId;
             juce::Colour colorValue=juce::Colour(juce::Colours::white);
                        
@@ -41,6 +34,14 @@ public:
          int a;   
     };
 
+    ChopperAudioProcessorEditor (ChopperAudioProcessor&);
+    ~ChopperAudioProcessorEditor() override;
+
+    //==============================================================================
+    void paint (juce::Graphics&) override;
+    void resized() override;    
+    void timerCallback() override;
+    
     int bitArrayToInt32(bool arrr[], int count);
     
     void step_seq_update(int stepIndex);
@@ -61,11 +62,13 @@ public:
     void seq_gate_length_change();
     void seq_auto_click();
     void ui_debug(std::string text);
-    void init_all_sequences(int returnToPattern,int returnToSeq);
+    void init_all_sequences();
 
+    std::vector<ChopperAudioProcessorEditor::controlColorTemplate> getSkinColorsFromXML();
     void reloadSkinFromXML();
     void LoadXMLConfig(bool reloadSkin,bool reloadPatternsAndSequences,bool reloadParameters);
     void writeXMLConfig(bool updateSkin,bool updatePatternsAndSequences,bool updateParameters);
+    void writeXMLConfigSkin();    
 
     void initDirectories();     
     void debugF(bool reloadFromFile);   
@@ -135,12 +138,12 @@ private:
     bool sequence[16];
     bool sequence_clipboard[16];
 
-    void initSlider1(std::string name,std::unique_ptr<juce::Slider>& slider,controlColorTemplate slider_colors[],int colorCount,int x,int y,int w,int h,float min,float max,float def);
-    void initSlider2(juce::Slider& slider,controlColorTemplate slider_colors[],int colorCount,int x,int y,int w,int h,float min,float max,float def);    
-    void initCombo1(juce::ComboBox& comboBox,controlColorTemplate combo_colors[],int colorCount, int x,int y,int w,int h);
-    void initLabel1(juce::Label& label,std::string text,controlColorTemplate label_colors[],int colorCount,int x,int y,int w,int h);
-    void initUtilityButton(juce::ImageButton& button,controlColorTemplate imagebutton_colors[],int colorCount, int x,int y,int w,int h);
-    void initStepSeqButton(juce::ImageButton& button,const int index,controlColorTemplate imagebutton_colors[],int colorCount, int x,int y,int w,int h);    
+    void initSlider1(std::string name,std::unique_ptr<juce::Slider>& slider,std::vector<controlColorTemplate> slider_colors,int x,int y,int w,int h,float min,float max,float def);
+    void initSlider2(juce::Slider& slider,std::vector<controlColorTemplate> slider_colors,int x,int y,int w,int h,float min,float max,float def);    
+    void initCombo1(juce::ComboBox& comboBox,std::vector<controlColorTemplate> combo_colors, int x,int y,int w,int h);
+    void initLabel1(juce::Label& label,std::string text,std::vector<controlColorTemplate> label_colors,int x,int y,int w,int h);
+    void initUtilityButton(juce::ImageButton& button,std::vector<controlColorTemplate> imagebutton_colors, int x,int y,int w,int h);
+    void initStepSeqButton(juce::ImageButton& button,const int index,std::vector<controlColorTemplate> imagebutton_colors, int x,int y,int w,int h);    
     
 
     void switch_skins();

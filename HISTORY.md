@@ -6,20 +6,20 @@
 #### Features
 - [x] XML config file read/write : patterns, sequences, plugin controls values implemented
 - [x] XML skin colours definition **control location/style to be implemented** 
-- [x] GUI control template class created **(to be better defined)** : only in reloadSkinFromXML(), implementation on editor construction done
+- [x] GUI control template class created **(to be better defined)** : implementation in editor construction & reloadSkinFromXML done
 - [x] click on logo switches between available skins
 - [x] added load and write XML config buttons (debug)
 - [x] added 3 enveloppes
-- [ ] find a safe way to trigger reloadSkinFromXML() once at startup (manual trigger for now)
-- [ ] configure/build scripts exists but not portable
-- [ ] save sequencer state variables
+- [ ] find a safe way to trigger loadXMLConfig(1,1,1) once at plugin startup (manual trigger for now)
+- [x] configure/build scripts exists but not portable
+- [ ] save sequencer state with project
 - [ ] gain slider custom range implementation
 - [ ] code cleaning + opti
 #### Bugs
 - [x] clock division applied to GUI but not implemented in sequencer
-- [ ] does not come back to selected pattern after XML load
-- [ ] reloadSkinFromXML() crashes when triggered sometimes
-- [ ] reloadSkinFromXML() causes dry/wet value change
+- [x] does not come back to selected pattern after XML load
+- [x] reloadSkinFromXML() crashes when triggered sometimes
+- [x] reloadSkinFromXML() causes dry/wet value change
 - [ ] sequences dont update after loadXMLConfig
 - [ ] optimize/compensate latency
 - [ ] sequence mode : sequence 0 not init as expected

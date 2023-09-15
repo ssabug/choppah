@@ -9,7 +9,6 @@ then
     echo "Did you modify the Makefile with your JUCE path? (y/n)"
     read answer
     if [ "$answer" = "y" ]; then
-
         clear
         echo "moving to dir ${workingath}"
         cd "${workingath}"

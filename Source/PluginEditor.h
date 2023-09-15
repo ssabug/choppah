@@ -135,11 +135,14 @@ private:
     bool sequence[16];
     bool sequence_clipboard[16];
 
-    void initSlider1(std::unique_ptr<juce::Slider> slider,controlColorTemplate slider_colors[],int colorCount,int x,int y,int w,int h,float min,float max,float def);    
-    void initSlider2(juce::Slider slider,int x,int y,int w,int h,float min,float max,float def);   
-    void initCombo1(juce::ComboBox comboBox, int x,int y,int w,int h);
-    void initLabel1(juce::Label label,std::string text,controlColorTemplate label_colors[],int colorCount,int x,int y,int w,int h);
+    void initSlider1(std::string name,std::unique_ptr<juce::Slider>& slider,controlColorTemplate slider_colors[],int colorCount,int x,int y,int w,int h,float min,float max,float def);
+    void initSlider2(juce::Slider& slider,controlColorTemplate slider_colors[],int colorCount,int x,int y,int w,int h,float min,float max,float def);    
+    void initCombo1(juce::ComboBox& comboBox,controlColorTemplate combo_colors[],int colorCount, int x,int y,int w,int h);
+    void initLabel1(juce::Label& label,std::string text,controlColorTemplate label_colors[],int colorCount,int x,int y,int w,int h);
+    void initUtilityButton(juce::ImageButton& button,controlColorTemplate imagebutton_colors[],int colorCount, int x,int y,int w,int h);
+    void initStepSeqButton(juce::ImageButton& button,const int index,controlColorTemplate imagebutton_colors[],int colorCount, int x,int y,int w,int h);    
     
+
     void switch_skins();
    
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ChopperAudioProcessorEditor)

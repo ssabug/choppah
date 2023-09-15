@@ -1,16 +1,17 @@
 CURRENT_DIR="$(pwd)"
+PLUGIN_DIR="${HOME}/.ssabug/choppah"
 
 if [ -n "$1" ]
 then
     GITHUB_FILES_PATH="$1"
 
-    echo "/////// Creating folders"
-    mkdir -p "${HOME}/.ssabug/choppah/config"
-    mkdir -p "${HOME}/.ssabug/choppah/presets"
+    echo "/////// Creating folders in ${PLUGIN_DIR}"
+    mkdir -p "${PLUGIN_DIR}/config"
+    mkdir -p "${PLUGIN_DIR}/presets"
 
-    echo "/////// Copying config & skin files ..."
-    cp "${GITHUB_FILES_PATH}/Ressources/config_files/config.xml" "${HOME}/.ssabug/choppah/config/"
-    cp -r "${GITHUB_FILES_PATH}/Ressources/skins" "${HOME}/.ssabug/choppah/"
+    echo "/////// Copying files from  ${GITHUB_FILES_PATH}/Ressources/ ..."
+    cp "${GITHUB_FILES_PATH}/Ressources/config_files/config.xml" "${PLUGIN_DIR}/config/"
+    cp -r "${GITHUB_FILES_PATH}/Ressources/skins" "${PLUGIN_DIR}/"
 
     echo "/////// Finished"
 

@@ -33,14 +33,14 @@ ChopperAudioProcessorEditor::ChopperAudioProcessorEditor (ChopperAudioProcessor&
 
     // POSITIONS
     int bottomy=130;
-    int pseq_posx=100;int pseq_posy=20; 
-    int sseq_posx=100;int sseq_posy=70;   
-    int pseq_params_posx=pseq_posx-80;int pseq_params_posy=pseq_posy+bottomy;
-    int mix_posx=840;int mix_posy=pseq_posy+bottomy;
-    int mix_label_posx=mix_posx+30;int mix_label_posy=mix_posy-20;
-    int util_posx=500;int util_posy=pseq_posy+bottomy;
-    int debug_posx=util_posx-210+10;int debug_posy=pseq_posy+bottomy;
-    int banner_posx=640;int banner_posy=bottomy-50;
+    int pseq_posx=100,pseq_posy=20; 
+    int sseq_posx=100,sseq_posy=70;   
+    int pseq_params_posx=pseq_posx-80, pseq_params_posy=pseq_posy+bottomy;
+    int mix_posx=840, mix_posy=pseq_posy+bottomy;
+    int mix_label_posx=mix_posx+30, mix_label_posy=mix_posy-20;
+    int util_posx=500, util_posy=pseq_posy+bottomy;
+    int debug_posx=util_posx-210+10, debug_posy=pseq_posy+bottomy;
+    int banner_posx=640, banner_posy=bottomy-50;
     //COLOURS
     juce::Colour color_text2=juce::Colours::blue;
     juce::Colour color_text1=juce::Colours::blue;
@@ -55,69 +55,111 @@ ChopperAudioProcessorEditor::ChopperAudioProcessorEditor (ChopperAudioProcessor&
     plugin_banner=juce::ImageFileFormat::loadFrom(juce::File(imagePath+"banner_4.png"));
 
     //////////////////////////////// OUT SETTINGS///////////////////////////////
-     /*°NEW IMPL 
+    //NEW IMPL 
     controlColorTemplate slider_1_colors[5];
     slider_1_colors[0].init(0x1001300,juce::Colour(0xFF0000FF));
     slider_1_colors[1].init(0x1001312,juce::Colour(0xFF000000));
     slider_1_colors[2].init(0x1001311,juce::Colour(0xFF0000FF));
     slider_1_colors[3].init(0x1001400,juce::Colour(0xFF0000FF));
-    slider_1_colors[4].init(0x1001700,juce::Colour(0xFF000000));
-
+    slider_1_colors[4].init(0x1001700,juce::Colour(0xFF000000));   
     controlColorTemplate label_1_colors[1];
     label_1_colors[0].init(0x1000281,juce::Colour(0xFF0000FF));
-
-    gain__slider.reset (new juce::Slider ("mix_gain"));
-    initSlider1(gain__slider,slider_1_colors,mix_posx,mix_posy,118,83,0.0,10.0,0.01);            //OUT GAIN
-    //initLabel1(mix_gain_label.get(),"Out Gain",label_1_colors,sizeof(label_1_colors)/sizeof(label_1_colors[0]),mix_posx,mix_posy,150,24);
-    //gain__slider.onValueChange = [this] { out_gain_change(); };
-    //gain__slider.setValue (1.0);
+    controlColorTemplate combo_1_colors[5];
+    combo_1_colors[1].init(0x1000b00,juce::Colour(0xFF000000));
+    combo_1_colors[1].init(0x1000c00,juce::Colour(0xFF0000FF));
+    combo_1_colors[1].init(0x1000e00,juce::Colour(0xFF0000FF));
+    combo_1_colors[1].init(0x1000a00,juce::Colour(0xFF0000FF));
+    controlColorTemplate stepseq_colors[2];
+    stepseq_colors[0].init(0x1000281,juce::Colour(0xFF0000FF));
+    stepseq_colors[1].init(0x1000281,juce::Colour(0xFF0000FF));
+    
+    initSlider1("out_gain",gain__slider,slider_1_colors,sizeof(slider_1_colors)/sizeof(slider_1_colors[0]),mix_posx,mix_posy,118,83,0.0f,10.0f,0.01f);            //OUT GAIN
+    gain__slider->onValueChange = [this] { out_gain_change(); };
+    gain__slider->setValue (audioProcessor.out_gain->get());
+    initLabel1(mix_gain_label,"Out Gain",label_1_colors,sizeof(label_1_colors)/sizeof(label_1_colors[0]),mix_label_posx,mix_label_posy,150,24);
  
-    //initSlider1(mix__slider,slider_1_colors,mix_posx+100, mix_posy, 118, 83,0.0,1.0,0.01);       // DRY/WET
-    //initLabel1(mix_amnt_label,"Dry/Wet",label_1_colors,mix_posx+100,mix_posy,150,24);
-    //mix__slider.onValueChange = [this] { out_mix_change(); };
-    //mix__slider.setValue (1.0);
-    /*
-    initCombo1(seq_pattern_selected,pseq_params_posx,pseq_params_posy,118,83);          // PATTERN SELECT
+    initSlider1("out_mix",mix__slider,slider_1_colors,sizeof(slider_1_colors)/sizeof(slider_1_colors[0]),mix_posx+100, mix_posy, 118, 83,0.0,1.0,0.01);       // DRY/WET
+    mix__slider->onValueChange = [this] { out_mix_change(); };
+    mix__slider->setValue (audioProcessor.out_mix->get());
+    initLabel1(mix_amnt_label,"Dry/Wet",label_1_colors,sizeof(label_1_colors)/sizeof(label_1_colors[0]),mix_label_posx+100,mix_label_posy,150,24);
+    
+    initCombo1(seq_pattern_selected,combo_1_colors,sizeof(combo_1_colors)/sizeof(combo_1_colors[0]),pseq_posx-85,pseq_posy-3 , 60, 24);          // PATTERN SELECT
     for(int i = 1; i <= seq_pattern_count; i++) { seq_pattern_selected.addItem (TRANS(std::to_string(i)), i);   } 
     seq_pattern_selected.onChange = [this] { step_seq_change(); };
-    seq_pattern_selected.setSelectedItemIndex(0);
-
-    initCombo1(seq_sequence_selected,pseq_params_posx,pseq_params_posy,118,83);         // SEQUENCE SELECT
+    seq_pattern_selected.setSelectedItemIndex(audioProcessor.pseq_current->get()-1);
+    
+    initCombo1(seq_sequence_selected,combo_1_colors,sizeof(combo_1_colors)/sizeof(combo_1_colors[0]),sseq_posx-85, sseq_posy-5, 60, 24);         // SEQUENCE SELECT
     for(int i = 1; i <= seq_pattern_count; i++) { seq_sequence_selected.addItem (TRANS(std::to_string(i)), i);   }
     seq_sequence_selected.onChange = [this] { seq_pattern_change(); };
-    seq_sequence_selected.setSelectedItemIndex(0);
+    seq_sequence_selected.setSelectedItemIndex(audioProcessor.sseq_current->get()-1);
 
-    initCombo1(seq_clock,pseq_params_posx,pseq_params_posy,118,83);                     // CLOCK SELECT
-    initLabel1(seq_clock_label,"Clock div",pseq_params_posx+20,pseq_params_posy-20,150,24);
+    initCombo1(seq_clock,combo_1_colors,sizeof(combo_1_colors)/sizeof(combo_1_colors[0]),pseq_params_posx, pseq_params_posy, 86, 24);                     // CLOCK SELECT
+    initLabel1(seq_clock_label,"Clock div",label_1_colors,sizeof(label_1_colors)/sizeof(label_1_colors[0]),pseq_params_posx, pseq_params_posy-20, 86, 24);
     seq_clock.onChange = [this] { seq_clock_change(); };
     seq_clock.addItem (TRANS("4"), 1);seq_clock.addItem (TRANS("2"), 2);seq_clock.addItem (TRANS("1"), 3);seq_clock.addItem (TRANS("1/2"), 4);
     seq_clock.addItem (TRANS("1/4"), 5);seq_clock.addItem (TRANS("1/8"), 6);seq_clock.addItem (TRANS("1/16"), 7);seq_clock.addItem (TRANS("1/32"), 8);
-    seq_clock.setSelectedItemIndex(2);
+    seq_clock.setSelectedItemIndex(audioProcessor.clock_div->getIndex());
 
-    initCombo1(seq_mode,pseq_params_posx,pseq_params_posy+50,86,24);                     // MODE SELECT
-    initLabel1(seq_mode_label,"Mode",pseq_params_posx+20,pseq_params_posy-20+50,150,24);
+    initCombo1(seq_mode,combo_1_colors,sizeof(combo_1_colors)/sizeof(combo_1_colors[0]),pseq_params_posx,pseq_params_posy+50,86,24);                     // MODE SELECT
+    initLabel1(seq_mode_label,"Mode",label_1_colors,sizeof(label_1_colors)/sizeof(label_1_colors[0]),pseq_params_posx+20,pseq_params_posy-20+50,150,24);
     seq_mode.onChange = [this] { seq_mode_change(); };
     seq_mode.addItem (TRANS("pattern"), 1);seq_mode.addItem (TRANS("sequence"), 2);
-    seq_mode.setSelectedItemIndex(0);
+    seq_mode.setSelectedItemIndex(audioProcessor.seq_mode->getIndex());
 
-    initCombo1(seq_env,pseq_params_posx+100, pseq_params_posy, 86, 24);                     // ENV SELECT
-    initLabel1(seq_env_label,"Env",pseq_params_posx+100, pseq_params_posy-20, 86, 24);
+    initCombo1(seq_env,combo_1_colors,sizeof(combo_1_colors)/sizeof(combo_1_colors[0]),pseq_params_posx+100, pseq_params_posy, 86, 24);                     // ENV SELECT
+    initLabel1(seq_env_label,"Env",label_1_colors,sizeof(label_1_colors)/sizeof(label_1_colors[0]),pseq_params_posx+100, pseq_params_posy-20, 86, 24);
     seq_env.onChange = [this] { seq_env_change(); };
     seq_env.addItem (TRANS("flat"), 1);seq_env.addItem (TRANS("sharp"), 2);seq_env.addItem (TRANS("tri"), 3);
-    seq_env.setSelectedItemIndex(0);
+    seq_env.setSelectedItemIndex(audioProcessor.seq_env->getIndex());
 
-    initSlider1(seq_gate_length,pseq_params_posx+80, pseq_params_posy, 118, 83,0, 100, 1);  // GATE LENGTH
-    initLabel1(seq_gate_length_label,"Gate length",pseq_params_posx+80+20, pseq_params_posy-20, 86, 24);
-    gain__slider->onValueChange = [this] { seq_gate_length_change(); };
-    gain__slider->setValue (100); 
+    initSlider2(seq_gate_length,slider_1_colors,sizeof(slider_1_colors)/sizeof(slider_1_colors[0]),pseq_params_posx+80, pseq_params_posy, 118, 83,0, 100, 1);  // GATE LENGTH
+    initLabel1(seq_gate_length_label,"Gate length",label_1_colors,sizeof(label_1_colors)/sizeof(label_1_colors[0]),pseq_params_posx+80+20, pseq_params_posy-20, 86, 24);
+    seq_gate_length.onValueChange = [this] { seq_gate_length_change(); };
+    seq_gate_length.setValue (100); 
    
-    initSlider2(seq_length,pseq_params_posx+100, pseq_params_posy+50, 86, 28,2, 16, 1);  // SEQUENCE LENGTH
-    initLabel1(seq_length_label,"Seq length",pseq_params_posx+100, pseq_params_posy-20+50, 86, 24);
-    gain__slider->onValueChange = [this] { seq_length_change(); };
-    gain__slider->setValue (4);  
+    initSlider2(seq_length,slider_1_colors,sizeof(slider_1_colors)/sizeof(slider_1_colors[0]),pseq_params_posx+100, pseq_params_posy+50, 86, 28,2, 16, 1);  // SEQUENCE LENGTH
+    initLabel1(seq_length_label,"Seq length",label_1_colors,sizeof(label_1_colors)/sizeof(label_1_colors[0]),pseq_params_posx+100, pseq_params_posy-20+50, 86, 24);
+    seq_length.onValueChange = [this] { seq_length_change(); };
+    seq_length.setValue (audioProcessor.sseq_length->get());  
+    
+    for(int i = 0; i < sizeof(seq_step_l)/sizeof(seq_step_l[0]); i++) {                             // 4 STEP MARKS
+            seq_step_l[i].setText ("______", juce::dontSendNotification);
+            seq_step_l[i].setColour(juce::Label::textColourId,color_text2);
+            seq_step_l[i].setBounds (pseq_posx+i*240, pseq_posy+10, 46, 16);
+            addAndMakeVisible (seq_step_l[i]);
+        }
+       
+    for(int i = 0; i < seq_size;i++) {
+        const int idx=i;
+        initStepSeqButton(seq_step[i],idx,stepseq_colors,sizeof(stepseq_colors)/sizeof(stepseq_colors[0]),pseq_posx+i*60, pseq_posy, 46, 16);  // PATTERN BUTTONS 
+    }
+    seq_step[0].onClick = [this] { step_seq_click(0); };seq_step[8].onClick = [this] { step_seq_click(8); };seq_step[4].onClick = [this] { step_seq_click(4); };seq_step[12].onClick = [this] { step_seq_click(12); };
+    seq_step[1].onClick = [this] { step_seq_click(1); };seq_step[9].onClick = [this] { step_seq_click(9); };seq_step[5].onClick = [this] { step_seq_click(5); };seq_step[13].onClick = [this] { step_seq_click(13); };
+    seq_step[2].onClick = [this] { step_seq_click(2); };seq_step[10].onClick = [this] { step_seq_click(10); };seq_step[6].onClick = [this] { step_seq_click(6); };seq_step[14].onClick = [this] { step_seq_click(14); };
+    seq_step[3].onClick = [this] { step_seq_click(3); };seq_step[11].onClick = [this] { step_seq_click(11); };seq_step[7].onClick = [this] { step_seq_click(7); };seq_step[15].onClick = [this] { step_seq_click(15); };
+    
+    initUtilityButton(seq_clear,stepseq_colors,sizeof(stepseq_colors)/sizeof(stepseq_colors[0]),util_posx, util_posy, 46, 16);              // CLEAR
+    seq_clear.onClick = [this] { step_seq_clear();};
+    initLabel1(seq_clear_label,"clear",label_1_colors,sizeof(label_1_colors)/sizeof(label_1_colors[0]),util_posx, util_posy-20, 86, 24);    
+    
+    initUtilityButton(seq_reset,stepseq_colors,sizeof(stepseq_colors)/sizeof(stepseq_colors[0]),util_posx, util_posy+40, 46, 16);              // RESET
+    seq_reset.onClick = [this] { step_seq_reset();};
+    initLabel1(seq_reset_label,"reset",label_1_colors,sizeof(label_1_colors)/sizeof(label_1_colors[0]),util_posx, util_posy+40-20, 86, 24);
+
+    initUtilityButton(seq_copy,stepseq_colors,sizeof(stepseq_colors)/sizeof(stepseq_colors[0]),util_posx+60, util_posy, 46, 16);              // COPY
+    seq_copy.onClick = [this] { step_seq_copy();};
+    initLabel1(seq_copy_label,"copy",label_1_colors,sizeof(label_1_colors)/sizeof(label_1_colors[0]),util_posx+60, util_posy-20, 86, 24);
+    
+    initUtilityButton(seq_paste,stepseq_colors,sizeof(stepseq_colors)/sizeof(stepseq_colors[0]),util_posx+60, util_posy+40, 46, 16);              // PASTE
+    seq_paste.onClick = [this] { step_seq_paste();};
+    initLabel1(seq_paste_label,"paste",label_1_colors,sizeof(label_1_colors)/sizeof(label_1_colors[0]),util_posx+60, util_posy+40-20, 86, 24);
+
+    initUtilityButton(seq_auto,stepseq_colors,sizeof(stepseq_colors)/sizeof(stepseq_colors[0]),pseq_params_posx+200, pseq_params_posy, 46, 16);              // AUTO
+    seq_auto.onClick = [this] { seq_auto_click();};
+    initLabel1(seq_auto_label,"Auto",label_1_colors,sizeof(label_1_colors)/sizeof(label_1_colors[0]),pseq_params_posx+200, pseq_params_posy-20, 86, 24);
 
     for(int i = 0; i < seq_size; i++) {
-        initCombo1(sseq_step[i],sseq_posx-3+i*60, sseq_posy, 53, 16);                   // SEQUENCE SEQ COMBOBOXES
+        initCombo1(sseq_step[i],combo_1_colors,sizeof(combo_1_colors)/sizeof(combo_1_colors[0]),sseq_posx-3+i*60, sseq_posy, 53, 16);                   // SEQUENCE SEQ COMBOBOXES
         sseq_step[i].addItem (TRANS("1"), 1);sseq_step[i].addItem (TRANS("2"), 2);sseq_step[i].addItem (TRANS("3"), 3);sseq_step[i].addItem (TRANS("4"), 4);
         sseq_step[i].addItem (TRANS("5"), 5);sseq_step[i].addItem (TRANS("6"), 6);sseq_step[i].addItem (TRANS("7"), 7);sseq_step[i].addItem (TRANS("8"), 8);
         sseq_step[i].addItem (TRANS("9"), 9);sseq_step[i].addItem (TRANS("10"), 10);sseq_step[i].addItem (TRANS("11"), 11);sseq_step[i].addItem (TRANS("12"), 12);
@@ -128,9 +170,9 @@ ChopperAudioProcessorEditor::ChopperAudioProcessorEditor (ChopperAudioProcessor&
     sseq_step[0].onChange = [this] { seq_seq_change(0); };sseq_step[4].onChange = [this] { seq_seq_change(4); };sseq_step[8].onChange = [this] { seq_seq_change(8); };sseq_step[12].onChange = [this] { seq_seq_change(12); };
     sseq_step[1].onChange = [this] { seq_seq_change(1); };sseq_step[5].onChange = [this] { seq_seq_change(5); };sseq_step[9].onChange = [this] { seq_seq_change(9); };sseq_step[13].onChange = [this] { seq_seq_change(13); };
     sseq_step[2].onChange = [this] { seq_seq_change(2); };sseq_step[6].onChange = [this] { seq_seq_change(6); };sseq_step[10].onChange = [this] { seq_seq_change(10); };sseq_step[14].onChange = [this] { seq_seq_change(14); };
-    sseq_step[3].onChange = [this] { seq_seq_change(3); };sseq_step[7].onChange = [this] { seq_seq_change(7); };sseq_step[11].onChange = [this] { seq_seq_change(11); };sseq_step[15].onChange = [this] { seq_seq_change(15); };    */
+    sseq_step[3].onChange = [this] { seq_seq_change(3); };sseq_step[7].onChange = [this] { seq_seq_change(7); };sseq_step[11].onChange = [this] { seq_seq_change(11); };sseq_step[15].onChange = [this] { seq_seq_change(15); };    
 
-    
+    /*
     gain__slider.reset (new juce::Slider ("mix_gain"));
     gain__slider->setRange (0.0, 10.0, 0.01);    
     gain__slider->setSliderStyle (juce::Slider::Rotary);
@@ -145,8 +187,8 @@ ChopperAudioProcessorEditor::ChopperAudioProcessorEditor (ChopperAudioProcessor&
     gain__slider->setValue (audioProcessor.out_gain->get() );
     mix_gain_label.setText ("Out Gain", juce::dontSendNotification);
     mix_gain_label.setBounds(mix_label_posx,mix_label_posy,150,24);
-    mix_gain_label.setColour(juce::Label::textColourId,control_label_color);
-
+    mix_gain_label.setColour(juce::Label::textColourId,control_label_color);*/
+    /*
     mix__slider.reset (new juce::Slider ("mix_amnt"));
     mix__slider->setRange (0.0, 1.0, 0.01);
     mix__slider->setSliderStyle (juce::Slider::Rotary);
@@ -168,7 +210,7 @@ ChopperAudioProcessorEditor::ChopperAudioProcessorEditor (ChopperAudioProcessor&
     auto* attachment = new juce::AudioProcessorValueTreeState::SliderAttachment(processor.getParameterTree(), param, mix__slider);*/
 
     //////////////////////////////PATTERN SEQ//////////////////////////////////////
-    for(int i = 0; i < seq_size;i++) {
+    /*for(int i = 0; i < seq_size;i++) {
         //seq_step[i].setButtonText (TRANS("stepseq"<<i));
         seq_step[i].setToggleable(true);
         seq_step[i].setImages (false, true, true,stepseq_off, 1.000f, juce::Colour (color_stepseq_1),juce::Image(), 1.000f, juce::Colour (color_stepseq_2),stepseq_on, 1.000f, juce::Colour (color_stepseq_1));
@@ -191,7 +233,7 @@ ChopperAudioProcessorEditor::ChopperAudioProcessorEditor (ChopperAudioProcessor&
             seq_step_l[i].setBounds (pseq_posx+i*240, pseq_posy+10, 46, 16);
             addAndMakeVisible (seq_step_l[i]);
         }
-
+    /*
     seq_pattern_selected.setEditableText (false);
     for(int i = 1; i <= seq_pattern_count; i++) { seq_pattern_selected.addItem (TRANS(std::to_string(i)), i);   }
     seq_pattern_selected.setSelectedItemIndex(audioProcessor.pseq_current->get()-1);
@@ -201,11 +243,11 @@ ChopperAudioProcessorEditor::ChopperAudioProcessorEditor (ChopperAudioProcessor&
     seq_pattern_selected.setColour(juce::ComboBox::arrowColourId ,control_value_color);
     seq_pattern_selected.setColour(juce::ComboBox::textColourId,control_value_color);
     seq_pattern_selected.setBounds (pseq_posx-85,pseq_posy-3 , 60, 24);
-    seq_pattern_selected.onChange = [this] { step_seq_change(); };
+    seq_pattern_selected.onChange = [this] { step_seq_change(); };*/
     
 
     //////////////////////////////SEQUENCE SEQ////////////////////////////////////// 
-    for(int i = 0; i < seq_size; i++) {
+    /*for(int i = 0; i < seq_size; i++) {
         sseq_step[i].addItem (TRANS("1"), 1);sseq_step[i].addItem (TRANS("2"), 2);sseq_step[i].addItem (TRANS("3"), 3);sseq_step[i].addItem (TRANS("4"), 4);
         sseq_step[i].addItem (TRANS("5"), 5);sseq_step[i].addItem (TRANS("6"), 6);sseq_step[i].addItem (TRANS("7"), 7);sseq_step[i].addItem (TRANS("8"), 8);
         sseq_step[i].addItem (TRANS("9"), 9);sseq_step[i].addItem (TRANS("10"), 10);sseq_step[i].addItem (TRANS("11"), 11);sseq_step[i].addItem (TRANS("12"), 12);
@@ -316,8 +358,8 @@ ChopperAudioProcessorEditor::ChopperAudioProcessorEditor (ChopperAudioProcessor&
     seq_length.setValue(audioProcessor.sseq_length->get());
     seq_length_label.setText ("Seq length", juce::dontSendNotification);
     seq_length_label.setColour(juce::Label::textColourId,control_label_color);
-    seq_length_label.setBounds (pseq_params_posx+100, pseq_params_posy-20+50, 86, 24);
-
+    seq_length_label.setBounds (pseq_params_posx+100, pseq_params_posy-20+50, 86, 24);*/
+    /*
     seq_auto.setToggleable(true);
     seq_auto.setImages (false, true, true,
                               stepseq_off, 1.000f, juce::Colour (color_stepseq_1),
@@ -325,8 +367,6 @@ ChopperAudioProcessorEditor::ChopperAudioProcessorEditor (ChopperAudioProcessor&
                                   stepseq_on, 1.000f, juce::Colour (color_stepseq_1));
     seq_auto.setBounds (pseq_params_posx+200, pseq_params_posy, 46, 16);
     seq_auto.onClick = [this] { seq_auto_click();};
-
-    //seq_clear.addListener (this);
     seq_auto_label.setColour(juce::Label::textColourId,control_label_color);
     seq_auto_label.setText ("Auto", juce::dontSendNotification);
     seq_auto_label.setBounds (pseq_params_posx+200, pseq_params_posy-20, 86, 24);
@@ -362,7 +402,7 @@ ChopperAudioProcessorEditor::ChopperAudioProcessorEditor (ChopperAudioProcessor&
     seq_paste.onClick = [this] { step_seq_paste();};
     seq_paste_label.setColour(juce::Label::textColourId,control_label_color);
     seq_paste_label.setText ("paste", juce::dontSendNotification);
-    seq_paste_label.setBounds (util_posx+60, util_posy+40-20, 86, 24);
+    seq_paste_label.setBounds (util_posx+60, util_posy+40-20, 86, 24);*/
     /////////////////////////////////////BANNER///////////////////////////////////////
     banner.setToggleable(true);
     banner.setImages (false, true, true,plugin_banner, 1.000f,juce::Colour (color_stepseq_1),juce::Image(), 1.000f, control_label_color,juce::Image(), 1.000f, control_value_color);
@@ -462,46 +502,37 @@ void ChopperAudioProcessorEditor::resized()
     // subcomponents in your editor..
 }
 ////////////////////////////////////////////////////////////////////////////////// TEMPLATES ////////////////////////////////////////////////////////////////////////
-void ChopperAudioProcessorEditor::initSlider1(std::unique_ptr<juce::Slider> slider,controlColorTemplate slider_colors[],int colorCount, int x,int y,int w,int h,float min,float max,float def)
-{   slider->setSliderStyle (juce::Slider::Rotary);
+void ChopperAudioProcessorEditor::initSlider1(std::string name,std::unique_ptr<juce::Slider>& slider,controlColorTemplate slider_colors[],int colorCount, int x,int y,int w,int h,float min,float max,float def)
+{   slider.reset (new juce::Slider (name));   
+    slider->setSliderStyle (juce::Slider::Rotary);
     slider->setRange (min, max, def);
     slider->setTextBoxStyle (juce::Slider::TextBoxBelow, true, 80, 20);
     slider->setBounds (x, y, w, h);
-
     for(int i=0;i<colorCount;i++) {
         slider->setColour(slider_colors[i].colorId,slider_colors[i].colorValue);
     }
-    /*
-    slider.setColour(juce::Slider::thumbColourId,juce::Colours::blue);
-    slider.setColour(juce::Slider::rotarySliderOutlineColourId,juce::Colours::black);
-    slider.setColour(juce::Slider::rotarySliderFillColourId,juce::Colours::blue);
-    slider.setColour(juce::Slider::textBoxTextColourId,juce::Colour(0xFF0000FF));
-    slider.setColour(juce::Slider::textBoxOutlineColourId,juce::Colours::blue);*/
 }
 
-void ChopperAudioProcessorEditor::initSlider2(juce::Slider slider,int x,int y,int w,int h,float min,float max,float def)
+void ChopperAudioProcessorEditor::initSlider2(juce::Slider& slider,controlColorTemplate slider_colors[],int colorCount,int x,int y,int w,int h,float min,float max,float def)
 {   slider.setSliderStyle (juce::Slider::LinearHorizontal );
     slider.setRange (min, max, def);
     slider.setTextBoxStyle (juce::Slider::TextBoxBelow, true, 80, 20);
     slider.setBounds (x, y, w, h);        
-    slider.setColour(juce::Slider::thumbColourId,juce::Colours::blue);
-    slider.setColour(juce::Slider::rotarySliderOutlineColourId,juce::Colours::black);
-    slider.setColour(juce::Slider::rotarySliderFillColourId,juce::Colours::blue);
-    slider.setColour(juce::Slider::textBoxTextColourId,juce::Colour(0xFF0000FF));
-    slider.setColour(juce::Slider::textBoxOutlineColourId,juce::Colours::black);
+    for(int i=0;i<colorCount;i++) {
+        slider.setColour(slider_colors[i].colorId,slider_colors[i].colorValue);
+    }
 }
 
-void ChopperAudioProcessorEditor::initCombo1(juce::ComboBox comboBox, int x,int y,int w,int h)
+void ChopperAudioProcessorEditor::initCombo1(juce::ComboBox& comboBox,controlColorTemplate combo_colors[],int colorCount, int x,int y,int w,int h)
 {   comboBox.setEditableText (false);
     comboBox.setJustificationType (juce::Justification::centredLeft);
-    comboBox.setColour(juce::ComboBox::backgroundColourId,juce::Colours::black);
-    comboBox.setColour(juce::ComboBox::outlineColourId ,juce::Colours::blue);
-    comboBox.setColour(juce::ComboBox::arrowColourId ,juce::Colours::blue);
-    comboBox.setColour(juce::ComboBox::textColourId,juce::Colour(0xFF0000FF));
+    for(int i=0;i<colorCount;i++) {
+        comboBox.setColour(combo_colors[i].colorId,combo_colors[i].colorValue);
+    }
     comboBox.setBounds (x, y, w, h);    
 }
 
-void ChopperAudioProcessorEditor::initLabel1(juce::Label label,std::string text,controlColorTemplate label_colors[], int colorCount, int x,int y,int w,int h)
+void ChopperAudioProcessorEditor::initLabel1(juce::Label& label,std::string text,controlColorTemplate label_colors[], int colorCount, int x,int y,int w,int h)
 {   label.setText (text, juce::dontSendNotification);
     for(int i=0;i<colorCount;i++) {
         label.setColour(label_colors[i].colorId,label_colors[i].colorValue);
@@ -509,6 +540,26 @@ void ChopperAudioProcessorEditor::initLabel1(juce::Label label,std::string text,
     label.setBounds (x, y, w, h);
 }
 
+void ChopperAudioProcessorEditor::initStepSeqButton(juce::ImageButton& button,const int index,controlColorTemplate imagebutton_colors[],int colorCount, int x,int y,int w,int h)
+{
+    juce::Colour color_stepseq_1=imagebutton_colors[1].colorValue;
+    juce::Colour color_stepseq_2=imagebutton_colors[0].colorValue;
+    button.setToggleable(true);
+    button.setImages (false, true, true,stepseq_off, 1.000f, color_stepseq_1,juce::Image(), 1.000f, color_stepseq_2,stepseq_on, 1.000f, color_stepseq_1);
+    button.setBounds (x, y, w, h);
+    addAndMakeVisible (button);
+    //button.onClick = [this] { step_seq_click(index);
+    //sequence[i]=false;
+}
+    
+void ChopperAudioProcessorEditor::initUtilityButton(juce::ImageButton& button,controlColorTemplate imagebutton_colors[],int colorCount, int x,int y,int w,int h)
+{
+    juce::Colour color_stepseq_1=imagebutton_colors[1].colorValue;
+    juce::Colour color_stepseq_2=imagebutton_colors[0].colorValue;
+    button.setToggleable(true);
+    button.setImages (false, true, true,stepseq_off, 1.000f, color_stepseq_1,juce::Image(), 1.000f, color_stepseq_2,stepseq_on, 1.000f, color_stepseq_1);
+    button.setBounds (x, y, w, h);
+} 
 
 int ChopperAudioProcessorEditor::bitArrayToInt32(bool arrr[], int count)
 {
@@ -525,7 +576,7 @@ int ChopperAudioProcessorEditor::bitArrayToInt32(bool arrr[], int count)
     }
     return ret;
 }
-
+////////////////////////////////////////////////////////////////////////////////// TIMER CALLBACK ////////////////////////////////////////////////////////////////////////
 void ChopperAudioProcessorEditor::timerCallback()
 {
     juce::Colour step_color_full=juce::Colour (0xFFFFFFFF & stepseq_color);
@@ -595,7 +646,7 @@ void ChopperAudioProcessorEditor::timerCallback()
     }
     
 }
-
+////////////////////////////////////////////////////////////////////////////////// CONTROL CALLBACKS ////////////////////////////////////////////////////////////////////////
 void ChopperAudioProcessorEditor::step_seq_update(int stepIndex)
 {
     juce::Colour step_color_full=juce::Colour (0xFFFFFFFF& stepseq_color);

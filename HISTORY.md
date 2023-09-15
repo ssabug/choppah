@@ -2,11 +2,11 @@
 
 ## Change records
 
-### v0.11 13092023 XML & control template class on going
+### v0.11 14092023 XML & control template class on going
 #### Features
 - [x] XML config file read/write : patterns, sequences, plugin controls values implemented
 - [x] XML skin colours definition **control location/style to be implemented** 
-- [x] GUI control template class created **(to be better defined)** : only in reloadSkinFromXML(), **implementation on editor construction in progress**
+- [x] GUI control template class created **(to be better defined)** : only in reloadSkinFromXML(), implementation on editor construction done
 - [x] click on logo switches between available skins
 - [x] added load and write XML config buttons (debug)
 - [x] added 3 enveloppes

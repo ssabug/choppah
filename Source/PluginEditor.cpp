@@ -112,7 +112,7 @@ ChopperAudioProcessorEditor::ChopperAudioProcessorEditor (ChopperAudioProcessor&
     seq_mode.setSelectedItemIndex(audioProcessor.seq_mode->getIndex());
 
     initCombo1(seq_env,combo_1_colors,sizeof(combo_1_colors)/sizeof(combo_1_colors[0]),pseq_params_posx+100, pseq_params_posy, 86, 24);                     // ENV SELECT
-    initLabel1(seq_env_label,"Env",label_1_colors,sizeof(label_1_colors)/sizeof(label_1_colors[0]),pseq_params_posx+100, pseq_params_posy-20, 86, 24);
+    initLabel1(seq_env_label,"Enveloppe",label_1_colors,sizeof(label_1_colors)/sizeof(label_1_colors[0]),pseq_params_posx+100, pseq_params_posy-20, 86, 24);
     seq_env.onChange = [this] { seq_env_change(); };
     seq_env.addItem (TRANS("flat"), 1);seq_env.addItem (TRANS("sharp"), 2);seq_env.addItem (TRANS("tri"), 3);
     seq_env.setSelectedItemIndex(audioProcessor.seq_env->getIndex());

@@ -2,6 +2,21 @@
 
 ## Change records
 
+### v0.12 15092023 XML & control template polish
+#### Features
+- [x] XML skin colours definition **control location/style to be implemented** 
+- [x] GUI control template class created **(to be better defined)** : implementation in editor construction & reloadSkinFromXML done
+- [ ] find a safe way to trigger loadXMLConfig(1,1,1) once at plugin startup (manual trigger for now)
+- [x] build/install scripts OK 
+- [ ] save sequencer state with project
+- [ ] gain slider custom range implementation
+- [ ] code cleaning + opti
+#### Bugs
+- [ ] sequences dont update after loadXMLConfig
+- [ ] optimize/compensate latency
+- [ ] sequence mode : sequence 0 not init as expected
+- [ ] plugin parameters not in line with GUI values on start
+
 ### v0.11 14092023 XML & control template class on going
 #### Features
 - [x] XML config file read/write : patterns, sequences, plugin controls values implemented

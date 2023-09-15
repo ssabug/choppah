@@ -34,7 +34,7 @@ Click on the logo to switch between skins.
 
 The two small unnamed buttons are XMLconfig **load** (left) and **write** (right)
 
-**NOTE :** Theres a bug on some combo boxes : sometimes the button doesnt change the value.The workaround is to click on the combobox (not on the arrow) then reclick here again,then you can change values with Up/Down keys.  
+**NOTE :** Theres a bug on some combo boxes : sometimes the button doesnt change the value.The workaround is to click on the combobox (not on the arrow) then reclick here again,then you can change values with **Up/Down keys**.  
 
 ## Requirements
 JUCE Version 7.0.7
@@ -49,15 +49,16 @@ gcc
 
 It will create the folders and copy the plugin data in **${HOME}/.ssabug/choppah/**
 
- - load the plugin in your daw
+ - load the plugin in your DAW
 
 ## Building 
 ### Linux
  - git clone the repo or get a release zip. Extract if necessary.
- - in file **Builds/LinuxMakefile/Makefile** modify variable **JUCE_MODULES_INSTALLATION_DIR** to point to your juce module directory
- - build with `cd Builds/LinuxMakefile/ && clear && make clean && make`
- - the VST3 is the  **Builds/LinuxMakefile/build/chopper.vst3** directory
+ - Then `cd choppah`  
+ - Run the build script with `./Ressources/scripts/build_linux_vst3.sh $(pwd)`
+ - The script will ask for your **JUCE/modules** path
+ - the VST3 folder will be in the  **Builds/LinuxMakefile/build/chopper.vst3** directory
 
-Tested OSs  : fedora, arch linux
+Tested OSs  : Fedora, Arch Linux
 
-Tested DAWs : bitwig
+Tested DAWs : Bitwig

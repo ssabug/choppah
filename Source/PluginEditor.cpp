@@ -71,7 +71,12 @@ ChopperAudioProcessorEditor::ChopperAudioProcessorEditor (ChopperAudioProcessor&
     combo_1_colors[1].init(0x1000a00,juce::Colour(0xFF0000FF));
     controlColorTemplate stepseq_colors[2];
     stepseq_colors[0].init(0x1000281,juce::Colour(0xFF0000FF));
-    stepseq_colors[1].init(0x1000281,juce::Colour(0xFF0000FF));
+    stepseq_colors[1].init(0x1000281,juce::Colour(0xFF00007F));
+    controlColorTemplate textbox_colors[4];
+    textbox_colors[0].init(0x1000201,juce::Colour(0xFF0000FF));
+    textbox_colors[1].init(0x1000200,juce::Colour(0xFF000000));
+    textbox_colors[2].init(0x1000205,juce::Colour(0xFF000000));
+    textbox_colors[3].init(0x1000207,juce::Colour(0xFF000000));
     
     initSlider1("out_gain",gain__slider,slider_1_colors,sizeof(slider_1_colors)/sizeof(slider_1_colors[0]),mix_posx,mix_posy,118,83,0.0f,10.0f,0.01f);            //OUT GAIN
     gain__slider->onValueChange = [this] { out_gain_change(); };
@@ -405,17 +410,15 @@ ChopperAudioProcessorEditor::ChopperAudioProcessorEditor (ChopperAudioProcessor&
     seq_paste_label.setBounds (util_posx+60, util_posy+40-20, 86, 24);*/
     /////////////////////////////////////BANNER///////////////////////////////////////
     banner.setToggleable(true);
-    banner.setImages (false, true, true,plugin_banner, 1.000f,juce::Colour (color_stepseq_1),juce::Image(), 1.000f, control_label_color,juce::Image(), 1.000f, control_value_color);
+    banner.setImages (false, true, true,plugin_banner, 1.000f,stepseq_colors[1].colorValue,juce::Image(), 1.000f, stepseq_colors[0].colorValue,juce::Image(), 1.000f, stepseq_colors[1].colorValue);
     banner.setBounds (banner_posx,banner_posy+30, 190, 120);
     banner.onClick = [this] { switch_skins();};
 
     //////////////////////////////////////DEBUG///////////////////////////////////////
-    debug.setColour(juce::TextEditor::textColourId,control_value_color);
+    debug.setColour(label_1_colors[0].colorId,label_1_colors[0].colorValue);
     //debug.setText ("debug", juce::dontSendNotification);
     debug.setBounds (debug_posx, debug_posy-20, 170, 100);
-    debug.setColour(juce::TextEditor::backgroundColourId,background_color);
-    debug.setColour(juce::TextEditor::outlineColourId,background_color);
-    debug.setColour(juce::TextEditor::shadowColourId,background_color);
+    for (auto c : textbox_colors) { debug.setColour(c.colorId,juce::Colour(c.colorValue));  }
     debugB.setBounds (debug_posx-20-60, debug_posy-20+70, 15, 15);
     debugB.onClick = [this] { debugF(true);};
     debugBB.setBounds (debug_posx-20-30, debug_posy-20+70, 15, 15);

@@ -55,7 +55,7 @@ It will create the folders and copy the plugin data in **${HOME}/.ssabug/choppah
 ### Linux
  - git clone the repo or get a release zip. Extract if necessary.
  - Then `cd choppah`  
- - Run the build script with `./Ressources/scripts/build_linux_vst3.sh $(pwd)`
+ - Run the build script with `./Ressources/scripts/build_linux_vst3.sh "$(pwd)"`
  - The script will ask for your **JUCE/modules** path
  - the VST3 folder will be in the  **Builds/LinuxMakefile/build/chopper.vst3** directory
 

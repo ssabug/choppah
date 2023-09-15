@@ -786,8 +786,8 @@ void ChopperAudioProcessorEditor::LoadXMLConfig(bool reloadSkin=true,bool reload
                             //debug.setText(debug.getText()+"\n" +e->getTagName()  + " : " +  e->getAllSubText());
                             std::string paramName = e->getTagName().toStdString();
                             std::string paramValue = e->getAllSubText().toStdString();
-                            if (paramName ==  "currentPattern" ) {seq_pattern_selected.setSelectedItemIndex(stoi(paramValue));audioProcessor.pseq_current->operator=(stoi(paramValue));/*step_seq_change();*/}
-                            if (paramName ==  "currentSequence" ) {seq_sequence_selected.setSelectedItemIndex(stoi(paramValue));audioProcessor.sseq_current->operator=(stoi(paramValue));/*seq_pattern_change();*/}
+                            if (paramName ==  "currentPattern" ) {seq_pattern_selected.setSelectedItemIndex(stoi(paramValue)-1);audioProcessor.pseq_current->operator=(stoi(paramValue));/*step_seq_change();*/}
+                            if (paramName ==  "currentSequence" ) {seq_sequence_selected.setSelectedItemIndex(stoi(paramValue)-1);audioProcessor.sseq_current->operator=(stoi(paramValue));/*seq_pattern_change();*/}
                             if (paramName ==  "currenPatternData" ) {audioProcessor.pseq_data->operator=(stoi(paramValue));}
                             if (paramName ==  "sequencePosition" ) {}
                             if (paramName ==  "sequenceLength" ) {seq_length.setValue(stoi(paramValue));audioProcessor.sseq_length->operator=(stoi(paramValue));}

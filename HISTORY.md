@@ -2,7 +2,7 @@
 
 ## Change records
 
-### v0.12 15092023 XML & presets & control template polish
+### v0.12 17092023 XML & presets & control template polish
 #### Features
 - [x] XML skin definition upgraded (added textbutton color def)
 - [x] added new XML functions : writeXMLParam,readXMLParam,loadXMLPreset,readXMLPreset,.. + little xml cleanup (**still needs more**)

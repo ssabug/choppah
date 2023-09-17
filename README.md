@@ -10,13 +10,13 @@ It is my very first JUCE project and i suck at C++ so...apologies for the crappy
 ![alt text](Ressources/images/GUI.png)
 The chopper has 2 modes : pattern & sequence.
 
-In **pattern** mode, the step seq current selected pattern is looping.It's the first line. 
+In **pattern** mode, the step seq (first line) current selected pattern is looping
 You can change the pattern to play/edit with the upper left combo box.
-Note that patterns have a fixed length of 16.
+Patterns have a fixed length of 16.
 
-In **sequence** mode, the chopper runs the combobox sequence of patterns.It's the second line.
+In **sequence** mode, the chopper runs the combobox sequence of patterns (second line).
 The current sequence can be changed with the corresponding combobox to the left.
-You can change the sequence length with the **seq length** left slider.
+**seq length** bottom left slider changes the sequence length.
 
 To stop auto pattern display in **sequence** mode, disable **Auto** button.
 
@@ -30,9 +30,11 @@ To stop auto pattern display in **sequence** mode, disable **Auto** button.
 
 **Paste** pastes the clipboard content into current pattern.If no copy was done, it is an empty pattern.
 
-Click on the logo to switch between skins.
+**Load cfg** reloads plugin default state.
 
-The two small unnamed buttons are XMLconfig **load** (left) and **write** (right)
+**Save** saves preset to the name filled in **Presets**, if the preset already exists, it will be overwritten.
+
+Click on the logo to switch between skins.
 
 **NOTE :** Theres a bug on some combo boxes : sometimes the button doesnt change the value.The workaround is to click on the combobox (not on the arrow) then reclick here again,then you can change values with **Up/Down keys**.  
 

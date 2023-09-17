@@ -176,8 +176,8 @@ ChopperAudioProcessorEditor::ChopperAudioProcessorEditor (ChopperAudioProcessor&
     //debug.setText ("debug", juce::dontSendNotification);
     debug.setBounds (debug_posx, debug_posy-20, 170, 100);
     for (auto c : textbox1Template) { debug.setColour(c.colorId,juce::Colour(c.colorValue));  }
-    initPresetButton(debugB,textButton1Template,debug_posx-20-60, debug_posy-20+70, 15, 15);           //DEBUG Button1                                  
-    //debugB.onClick = [this] { debugF(true);};
+    initPresetButton(debugB,textButton1Template,debug_posx-5-60, debug_posy-20+70, 15, 15);           //DEBUG Button1                                  
+    debugB.onClick = [this] { debugF(true);};
     initPresetButton(debugBB,textButton1Template,debug_posx-20-30, debug_posy-20+70, 15, 15);          //DEBUG button2
     //debugBB.onClick = [this] { /*writeXMLConfig(true,true,true);*/};
 
@@ -216,7 +216,7 @@ ChopperAudioProcessorEditor::ChopperAudioProcessorEditor (ChopperAudioProcessor&
     addAndMakeVisible (config_load_label);
     addAndMakeVisible (banner);
     //addAndMakeVisible (debug);
-    //addAndMakeVisible (debugB);
+    addAndMakeVisible (debugB);
     //addAndMakeVisible (debugBB);
 
     //LoadXMLConfig(true,false,false);
@@ -522,13 +522,13 @@ void ChopperAudioProcessorEditor::timerCallback()
     if (index>16) {index-=16*int(std::floor(index/16));}
     if (ppq>=seqLength) {seqIndex=int(std::floor(ppq)-seqLength*std::floor(ppq/seqLength));} else {seqIndex=std::floor(ppq);}
 
-    /*debug.setText ("ppq = " + std::__cxx11::to_string(ppq)+"\n"+
+    debug.setText ("ppq = " + std::__cxx11::to_string(ppq)+"\n"+
                    "pattern\t\t\t" + std::__cxx11::to_string(audioProcessor.pseq_current->get())+
                    " step " +std::__cxx11::to_string(index+1)+"\n" +
                    "sequence\t" +std::__cxx11::to_string(seq_sequence_selected.getSelectedItemIndex()+1)+ 
                    " step " +std::__cxx11::to_string(seqIndex+1) +"\n"
                    //+"patterndata " + std::__cxx11::to_string(bitArrayToInt32(ptrn,16))//FOR PATTERN CODE BUILDING
-                  , juce::dontSendNotification);*/
+                  , juce::dontSendNotification);
 
     for (int i=0;i<sizeof(sequence)/sizeof(sequence[0]);i++)
     {
@@ -693,8 +693,10 @@ void ChopperAudioProcessorEditor::seq_auto_click()
 
 void ChopperAudioProcessorEditor::debugF(bool reloadFromFile=false)
 {
-    if (reloadFromFile) { LoadXMLConfig(true,true,true); }
-    reloadSkin();
+    //if (reloadFromFile) { LoadXMLConfig(true,true,true); }
+    if (debug.isShowing()) {    debug.setVisible(false);    }
+    else {  addAndMakeVisible (debug);  }
+    //reloadSkin();
 }
 
 
@@ -718,7 +720,7 @@ void ChopperAudioProcessorEditor::save_preset()
         writeXMLPreset(presetText);
         
         if ( not presetExists(presetText)) {
-            preset_sel.addItem (TRANS(presetText), preset_sel.getNumItems ()+1 );
+            preset_sel.addItem (TRANS(presetText), preset_sel.getNumItems ());
         }
     }
 }

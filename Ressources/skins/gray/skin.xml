@@ -46,5 +46,12 @@
                 <entry><id>0x1000281</id><color>0xFF7F7F7F</color></entry><!--juce::Label::textColourId -->
             </colors>
         </imagebutton1>
+        <textbutton1>
+            <colors>
+                <entry><id>0x1000c00</id><color>0xFF7F7F7F</color></entry><!--juce::Label::textColourId -->
+                <entry><id>0x1000100</id><color>0xFF000000</color></entry><!--juce::Label::textColourId -->
+                <entry><id>0x1000101</id><color>0xFFFFFFFF</color></entry><!--juce::Label::textColourId -->
+            </colors>
+        </textbutton1>
     </templates>
 </skin>

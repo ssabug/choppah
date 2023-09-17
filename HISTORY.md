@@ -2,6 +2,23 @@
 
 ## Change records
 
+### v0.12 15092023 XML & presets & control template polish
+#### Features
+- [x] XML skin definition upgraded (added textbutton color def)
+- [x] added new XML functions : writeXMLParam,readXMLParam,loadXMLPreset,readXMLPreset,.. + little xml cleanup (**still needs more**)
+- [x] presets implementation (xml files) : load, save, GUI
+- [ ] find a safe way to trigger loadXMLConfig(1,1,1) once at plugin startup (manual trigger for now)
+- [ ] save sequencer state with project
+- [ ] gain slider custom range implementation
+- [ ] code cleaning + opti
+#### Bugs
+- [ ] newly created preset doesnt show right after in preset combo box
+- [ ] if loading a new preset and selected pattern not changing, no step seq display refresh
+- [ ] sequence display dont update after loadXMLConfig
+- [ ] optimize/compensate latency
+- [ ] sequence mode : sequence 0 not init as expected
+- [ ] plugin parameters not in line with GUI values on start
+
 ### v0.12 15092023 XML & control template polish
 #### Features
 - [x] XML skin colours definition **control location/style to be implemented** 
@@ -12,7 +29,7 @@
 - [ ] gain slider custom range implementation
 - [ ] code cleaning + opti
 #### Bugs
-- [ ] sequences dont update after loadXMLConfig
+- [ ] sequence display dont update after loadXMLConfig
 - [ ] optimize/compensate latency
 - [ ] sequence mode : sequence 0 not init as expected
 - [ ] plugin parameters not in line with GUI values on start

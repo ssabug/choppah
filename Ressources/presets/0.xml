@@ -1,27 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<choppah>
+<preset>
   <options>
-    <skin>default</skin>
+    <name>Default</name>
     <version>0.11</version>
   </options>
   <parameters>
     <currentPattern>1</currentPattern>
     <currentSequence>1</currentSequence>
-    <currenPatternData>36236</currenPatternData>
+    <currenPatternData>21855</currenPatternData>
     <sequencePosition>1</sequencePosition>
     <sequenceLength>4</sequenceLength>
     <patternDisplayRefresh>1</patternDisplayRefresh>
     <clockDivision>2</clockDivision>
     <mode>0</mode>
     <enveloppeType>0</enveloppeType>
-    <gateLength>0.000000</gateLength>
+    <gateLength>1.000000</gateLength>
     <dryWet>1.000000</dryWet>
-    <outputGain>1.060000</outputGain>
+    <outputGain>1.000000</outputGain>
   </parameters>
   <patterns>
-    <pattern1>43690</pattern1>
-    <pattern2>65535</pattern2>
+    <pattern1>64170</pattern1>
+    <pattern2>43690</pattern2>
     <pattern3>52428</pattern3>
     <pattern4>61166</pattern4>
     <pattern5>34952</pattern5>
@@ -55,4 +55,4 @@
     <sequence15>72696711011959302</sequence15>
     <sequence16>72696711011959302</sequence16>
   </sequences>
-</choppah>
+</preset>

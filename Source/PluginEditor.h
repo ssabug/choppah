@@ -41,8 +41,11 @@ public:
     void paint (juce::Graphics&) override;
     void resized() override;    
     void timerCallback() override;
+    void reloadSkin();
     
     int bitArrayToInt32(bool arrr[], int count);
+    std::vector<std::string> split(std::string s, std::string delimiter);
+    int invert_int(int toBeInverted);
     
     void step_seq_update(int stepIndex);
     void step_seq_click(int stepIndex);
@@ -63,17 +66,27 @@ public:
     void seq_auto_click();
     void ui_debug(std::string text);
     void init_all_sequences();
+    void preset_change();
+    void save_preset();
+    void load_config();
 
     std::vector<ChopperAudioProcessorEditor::controlColorTemplate> getSkinColorsFromXML();
-    void reloadSkinFromXML();
     void LoadXMLConfig(bool reloadSkin,bool reloadPatternsAndSequences,bool reloadParameters);
     void writeXMLConfig(bool updateSkin,bool updatePatternsAndSequences,bool updateParameters);
-    void writeXMLConfigSkin();    
+    void writeXMLParam(std::string xmlFilePath,std::string paramPath,std::string paramWriteValue);
+    std::string readXMLParam(std::string xmlFilePath,std::string paramPath);
+    void loadXMLPreset(std::string presetPath);
+    void writeXMLPreset(std::string presetName);
+    juce::XmlElement* getXMLDef_PluginParameters();
+    juce::XmlElement* getXMLDef_Patterns();
+    juce::XmlElement* getXMLDef_Sequences();
 
-    void initDirectories();     
-    void debugF(bool reloadFromFile);   
+    bool presetExists(std::string presetText);
+    std::vector<std::string> getPresetList();
+    void initDirectories();  
     std::vector<std::string> get_directories(const std::string& s);
 
+    void debugF(bool reloadFromFile); 
 private:
     // This reference is provided as a quick way for your editor to
     // access the processor object that created it.
@@ -114,6 +127,11 @@ private:
     juce::ImageButton seq_paste;
     juce::Label seq_paste_label;
 
+    juce::ComboBox preset_sel;
+    juce::Label preset_sel_label;
+    juce::TextButton preset_save,config_load;
+    juce::Label preset_save_label,config_load_label;
+
     juce::ImageButton banner;
     juce::TextEditor debug;
     juce::TextButton debugB,debugBB;
@@ -143,9 +161,10 @@ private:
     void initCombo1(juce::ComboBox& comboBox,std::vector<controlColorTemplate> combo_colors, int x,int y,int w,int h);
     void initLabel1(juce::Label& label,std::string text,std::vector<controlColorTemplate> label_colors,int x,int y,int w,int h);
     void initUtilityButton(juce::ImageButton& button,std::vector<controlColorTemplate> imagebutton_colors, int x,int y,int w,int h);
-    void initStepSeqButton(juce::ImageButton& button,const int index,std::vector<controlColorTemplate> imagebutton_colors, int x,int y,int w,int h);    
+    void initStepSeqButton(juce::ImageButton& button,const int index,std::vector<controlColorTemplate> imagebutton_colors, int x,int y,int w,int h); 
+    void initPresetCombo(juce::ComboBox& comboBox,std::vector<controlColorTemplate> combo_colors, int x,int y,int w,int h);   
+    void initPresetButton(juce::TextButton& button,std::vector<controlColorTemplate> imagebutton_colors, int x,int y,int w,int h);
     
-
     void switch_skins();
    
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ChopperAudioProcessorEditor)

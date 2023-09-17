@@ -7,11 +7,11 @@ then
 
     echo "/////// Creating folders in ${PLUGIN_DIR}"
     mkdir -p "${PLUGIN_DIR}/config"
-    mkdir -p "${PLUGIN_DIR}/presets"
 
     echo "/////// Copying files from  ${GITHUB_FILES_PATH}/Ressources/ ..."
     cp "${GITHUB_FILES_PATH}/Ressources/config_files/config.xml" "${PLUGIN_DIR}/config/"
     cp -r "${GITHUB_FILES_PATH}/Ressources/skins" "${PLUGIN_DIR}/"
+    cp -r "${GITHUB_FILES_PATH}/Ressources/presets" "${PLUGIN_DIR}/"
 
     echo "/////// Finished"
 

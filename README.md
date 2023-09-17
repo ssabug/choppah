@@ -16,11 +16,11 @@ Patterns have a fixed length of 16.
 
 In **sequence** mode, the chopper runs the combobox sequence of patterns (second line).
 The current sequence can be changed with the corresponding combobox to the left.
-**seq length** bottom left slider changes the sequence length.
+**Seq length** bottom left slider changes the sequence length.
 
 To stop auto pattern display in **sequence** mode, disable **Auto** button.
 
-**clock division** apply for pattern mode only.
+**Clock division** applies for pattern mode only.
 
 **Clear** erases current selected pattern.
 
@@ -30,7 +30,7 @@ To stop auto pattern display in **sequence** mode, disable **Auto** button.
 
 **Paste** pastes the clipboard content into current pattern.If no copy was done, it is an empty pattern.
 
-**Load cfg** reloads plugin default state.
+**Load cfg** reloads plugin default state (defined in **config.xml**).
 
 **Save** saves preset to the name filled in **Presets**, if the preset already exists, it will be overwritten.
 

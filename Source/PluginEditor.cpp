@@ -494,10 +494,26 @@ bool ChopperAudioProcessorEditor::presetExists(std::string presetText)
 {
     std::vector<std::string> presetList=getPresetList();
     for (auto p:presetList) {
-        if( readXMLParam(p,"preset/options/name").find(presetText)  != std::string::npos) {    return true;    }
+        if( readXMLParam(p,"preset/options/name").find(presetText)  != std::string::npos) {   return true;     }
     }
 
     return false;
+}
+
+std::string ChopperAudioProcessorEditor::removeForbiddenCharacters(std::string text)
+{
+    std::vector<std::string> forbiddenCharacters={".",",","/",":","*","?","<",">","|"};
+    std::string character,result=text;   
+    character=(char) 34;forbiddenCharacters.push_back(character);
+    character=(char) 92;forbiddenCharacters.push_back(character);
+
+    for (auto c:forbiddenCharacters) {
+        while (text.find(c) != std::string::npos) {         
+            text.erase(text.find(c), c.length());
+            result=text;
+        }
+    }
+    return result;
 }
 ////////////////////////////////////////////////////////////////////////////////// TIMER CALLBACK ////////////////////////////////////////////////////////////////////////
 void ChopperAudioProcessorEditor::timerCallback()
@@ -696,6 +712,7 @@ void ChopperAudioProcessorEditor::debugF(bool reloadFromFile=false)
     //if (reloadFromFile) { LoadXMLConfig(true,true,true); }
     if (debug.isShowing()) {    debug.setVisible(false);    }
     else {  addAndMakeVisible (debug);  }
+    //removeForbiddenCharacters(preset_sel.getText().toStdString());
     //reloadSkin();
 }
 
@@ -714,14 +731,14 @@ void ChopperAudioProcessorEditor::preset_change()
 
 void ChopperAudioProcessorEditor::save_preset() 
 {
-    std::string presetText = preset_sel.getText().toStdString();
+    std::string presetText = removeForbiddenCharacters(preset_sel.getText().toStdString());
+    
     if (presetText  != "" ) {
-        //writeXMLPreset("/home/pwner/.ssabug/choppah/presets/test.xml");
-        writeXMLPreset(presetText);
-        
+        //writeXMLPreset("/home/pwner/.ssabug/choppah/presets/test.xml");       
         if ( not presetExists(presetText)) {
-            preset_sel.addItem (TRANS(presetText), preset_sel.getNumItems ());
-        }
+            preset_sel.addItem (TRANS(presetText), preset_sel.getNumItems()+1);
+        } 
+        writeXMLPreset(presetText);
     }
 }
 

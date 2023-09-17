@@ -7,12 +7,13 @@
 - [x] XML skin definition upgraded (added textbutton color def)
 - [x] added new XML functions : writeXMLParam,readXMLParam,loadXMLPreset,readXMLPreset,.. + little xml cleanup (**still needs more**)
 - [x] presets implementation (xml files) : load, save, GUI
+- [x] function removeForbiddenCharacters() to remove forbidden characters in preset names
 - [ ] find a safe way to trigger loadXMLConfig(1,1,1) once at plugin startup (manual trigger for now)
 - [ ] save sequencer state with project
 - [ ] gain slider custom range implementation
 - [ ] code cleaning + opti
 #### Bugs
-- [ ] newly created preset doesnt show right after in preset combo box
+- [x] newly created preset doesnt show right after in preset combo box
 - [ ] if loading a new preset and selected pattern not changing, no step seq display refresh
 - [ ] sequence display dont update after loadXMLConfig
 - [ ] optimize/compensate latency

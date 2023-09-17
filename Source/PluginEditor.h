@@ -46,6 +46,7 @@ public:
     int bitArrayToInt32(bool arrr[], int count);
     std::vector<std::string> split(std::string s, std::string delimiter);
     int invert_int(int toBeInverted);
+    std::string removeForbiddenCharacters(std::string text);
     
     void step_seq_update(int stepIndex);
     void step_seq_click(int stepIndex);

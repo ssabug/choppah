@@ -538,12 +538,12 @@ void ChopperAudioProcessorEditor::timerCallback()
     if (index>16) {index-=16*int(std::floor(index/16));}
     if (ppq>=seqLength) {seqIndex=int(std::floor(ppq)-seqLength*std::floor(ppq/seqLength));} else {seqIndex=std::floor(ppq);}
 
-    debug.setText ("ppq = " + std::__cxx11::to_string(ppq)+"\n"+
-                   "pattern\t\t\t" + std::__cxx11::to_string(audioProcessor.pseq_current->get())+
-                   " step " +std::__cxx11::to_string(index+1)+"\n" +
-                   "sequence\t" +std::__cxx11::to_string(seq_sequence_selected.getSelectedItemIndex()+1)+ 
-                   " step " +std::__cxx11::to_string(seqIndex+1) +"\n"
-                   //+"patterndata " + std::__cxx11::to_string(bitArrayToInt32(ptrn,16))//FOR PATTERN CODE BUILDING
+    debug.setText ("ppq = " + std::to_string(ppq)+"\n"+
+                   "pattern\t\t\t" + std::to_string(audioProcessor.pseq_current->get())+
+                   " step " +std::to_string(index+1)+"\n" +
+                   "sequence\t" +std::to_string(seq_sequence_selected.getSelectedItemIndex()+1)+ 
+                   " step " +std::to_string(seqIndex+1) +"\n"
+                   //+"patterndata " + std::to_string(bitArrayToInt32(ptrn,16))//FOR PATTERN CODE BUILDING
                   , juce::dontSendNotification);
 
     for (int i=0;i<sizeof(sequence)/sizeof(sequence[0]);i++)
@@ -873,7 +873,7 @@ std::vector<ChopperAudioProcessorEditor::controlColorTemplate> ChopperAudioProce
     }
     
     /*for (auto ct : colorTemplates) {
-        ui_debug(ct.templateName +" " + std::__cxx11::to_string(ct.colorId) + " " + std::__cxx11::to_string(ct.colorValue.getARGB()));
+        ui_debug(ct.templateName +" " + std::to_string(ct.colorId) + " " + std::to_string(ct.colorValue.getARGB()));
     }*/
     return colorTemplates;
 }
@@ -1182,18 +1182,18 @@ juce::XmlElement* ChopperAudioProcessorEditor::getXMLDef_PluginParameters()
     juce::XmlElement* par_out_mix = new juce::XmlElement ("dryWet");
     juce::XmlElement* par_out_gain= new juce::XmlElement ("outputGain");
 
-    par_pseq_current->addTextElement (std::__cxx11::to_string(audioProcessor.pseq_current->get())); // INTEGERS
-    par_sseq_current->addTextElement (std::__cxx11::to_string(audioProcessor.sseq_current->get())); //copy values to XmlElements
-    par_pseq_data->addTextElement (std::__cxx11::to_string(audioProcessor.pseq_data->get()));
-    par_seq_pos->addTextElement (std::__cxx11::to_string(audioProcessor.seq_pos->get()));
-    par_sseq_length->addTextElement (std::__cxx11::to_string(audioProcessor.sseq_length->get()));
-    par_pseq_auto->addTextElement (std::__cxx11::to_string(audioProcessor.pseq_auto->get()));
-    par_clock_div->addTextElement (std::__cxx11::to_string(audioProcessor.clock_div->getIndex())); // CHOICES (INTEGERS)
-    par_seq_mode->addTextElement (std::__cxx11::to_string(audioProcessor.seq_mode->getIndex()));
-    par_seq_env->addTextElement (std::__cxx11::to_string(audioProcessor.seq_env->getIndex()));  
-    par_pseq_gate_length->addTextElement (std::__cxx11::to_string(audioProcessor.pseq_gate_length->get()));   // FLOATS
-    par_out_mix->addTextElement (std::__cxx11::to_string(audioProcessor.out_mix->get()));
-    par_out_gain->addTextElement (std::__cxx11::to_string(audioProcessor.out_gain->get()));
+    par_pseq_current->addTextElement (std::to_string(audioProcessor.pseq_current->get())); // INTEGERS
+    par_sseq_current->addTextElement (std::to_string(audioProcessor.sseq_current->get())); //copy values to XmlElements
+    par_pseq_data->addTextElement (std::to_string(audioProcessor.pseq_data->get()));
+    par_seq_pos->addTextElement (std::to_string(audioProcessor.seq_pos->get()));
+    par_sseq_length->addTextElement (std::to_string(audioProcessor.sseq_length->get()));
+    par_pseq_auto->addTextElement (std::to_string(audioProcessor.pseq_auto->get()));
+    par_clock_div->addTextElement (std::to_string(audioProcessor.clock_div->getIndex())); // CHOICES (INTEGERS)
+    par_seq_mode->addTextElement (std::to_string(audioProcessor.seq_mode->getIndex()));
+    par_seq_env->addTextElement (std::to_string(audioProcessor.seq_env->getIndex()));  
+    par_pseq_gate_length->addTextElement (std::to_string(audioProcessor.pseq_gate_length->get()));   // FLOATS
+    par_out_mix->addTextElement (std::to_string(audioProcessor.out_mix->get()));
+    par_out_gain->addTextElement (std::to_string(audioProcessor.out_gain->get()));
 
     parameters->addChildElement(par_pseq_current);//copy values to parameter collection
     parameters->addChildElement(par_sseq_current); 
@@ -1216,9 +1216,9 @@ juce::XmlElement* ChopperAudioProcessorEditor::getXMLDef_Patterns()
     juce::XmlElement* patternes = new juce::XmlElement ("patterns");  // create pattern collection
     for (int i=0;i<16;i++) {
         juce::XmlElement* pattern = new juce::XmlElement ("pattern");  // create pattern
-        pattern->setTagName("pattern" + std::__cxx11::to_string(i+1)); // change pattern tag to numbered one
+        pattern->setTagName("pattern" + std::to_string(i+1)); // change pattern tag to numbered one
         bool ptrn[16];for (int j=0;j<16;j++) {ptrn[j]=patterns[i][15-j];}  //get & invert pattern[i]             
-        pattern->addTextElement (std::__cxx11::to_string(bitArrayToInt32(ptrn,16))); // compute & add pattern int
+        pattern->addTextElement (std::to_string(bitArrayToInt32(ptrn,16))); // compute & add pattern int
         patternes->addChildElement(pattern); //add pattern to pattern collection
     } 
     return patternes;
@@ -1229,10 +1229,10 @@ juce::XmlElement* ChopperAudioProcessorEditor::getXMLDef_Sequences()
     juce::XmlElement* sequencess = new juce::XmlElement ("sequences"); // create sequence collection
     for (int i=0;i<16;i++) {
         juce::XmlElement* seq = new juce::XmlElement ("sequence");  // create sequence
-        seq->setTagName("sequence" + std::__cxx11::to_string(i+1)); // change sequence tag name to numbered one
+        seq->setTagName("sequence" + std::to_string(i+1)); // change sequence tag name to numbered one
         long int sequenceCode=0;//  init sequence code
         for (int k=0;k<16;k++) { sequenceCode+=((long)(sequences[i][15-k]) << 4*k );} // calculate sequence code : each sequence step is stored on 4 bits so we create a (16 steps x 4 bits = ) 64 bit int 
-        seq->addTextElement (std::__cxx11::to_string(sequenceCode)); // write in sequence
+        seq->addTextElement (std::to_string(sequenceCode)); // write in sequence
         sequencess->addChildElement(seq); // add sequence to sequence collection
     }
     return sequencess;

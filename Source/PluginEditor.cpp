@@ -1138,7 +1138,7 @@ void ChopperAudioProcessorEditor::writeXMLPreset(std::string presetName)
 
 void ChopperAudioProcessorEditor::writeXMLConfig(bool updateSkin=true,bool updatePatternsAndSequences=true,bool updateParameters=true)
 {
-    LoadXMLConfig(not updateSkin,not updatePatternsAndSequences,not updateParameters);
+    LoadXMLConfig(!updateSkin,!updatePatternsAndSequences,!updateParameters);
    
     juce::XmlElement configFile ("choppah");// create root
     //////////////////////// OPTIONS ///////////////////////////////////////////

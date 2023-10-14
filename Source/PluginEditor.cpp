@@ -735,7 +735,7 @@ void ChopperAudioProcessorEditor::save_preset()
     
     if (presetText  != "" ) {
         //writeXMLPreset("/home/pwner/.ssabug/choppah/presets/test.xml");       
-        if ( not presetExists(presetText)) {
+        if ( !presetExists(presetText)) {
             preset_sel.addItem (TRANS(presetText), preset_sel.getNumItems()+1);
         } 
         writeXMLPreset(presetText);
@@ -793,11 +793,11 @@ void ChopperAudioProcessorEditor::initDirectories()
     currentSkinPath=defaultSkinPath+"/";
     imagePath=dataPath+ "/skins/" + currentSkin + "/images/";
 
-    if ( not std::filesystem::exists(std::string(rootPath)) )  {
+    if ( !std::filesystem::exists(std::string(rootPath)) )  {
         std::filesystem::create_directory(rootPath);
     }
 
-    if ( not std::filesystem::exists(std::string(dataPath)) )  {
+    if ( !std::filesystem::exists(std::string(dataPath)) )  {
         std::filesystem::create_directory(dataPath);
         std::filesystem::create_directory(configPath);
         std::filesystem::create_directory(presetPath);
@@ -823,7 +823,7 @@ std::vector<std::string> ChopperAudioProcessorEditor::getPresetList()
 {
     std::vector<std::string> presetFiles;
     for (const auto & entry : std::filesystem::directory_iterator(presetPath)) {
-        std::string file=entry.path();
+        std::string file=entry.path().string();
         if (file.find(".xml") != std::string::npos ) {
             presetFiles.push_back(file);
         }
@@ -838,7 +838,7 @@ std::vector<ChopperAudioProcessorEditor::controlColorTemplate> ChopperAudioProce
 
      // LOAD SKIN XML DEF
     std::string xmlFilePath=currentSkinPath+"skin.xml"; 
-    if ( not std::filesystem::exists(std::string(xmlFilePath)) )  {
+    if ( !std::filesystem::exists(std::string(xmlFilePath)) )  {
         
     } else {
         juce::File xmlFile(xmlFilePath);
@@ -887,7 +887,7 @@ void ChopperAudioProcessorEditor::LoadXMLConfig(bool reloadSkin=true,bool reload
         init_all_sequences();
     }
 
-    if ( not std::filesystem::exists(std::string(xmlFilePath)) )  {
+    if ( !std::filesystem::exists(std::string(xmlFilePath)) )  {
 
     } else {
         juce::File xmlFile(xmlFilePath);
@@ -903,7 +903,7 @@ void ChopperAudioProcessorEditor::LoadXMLConfig(bool reloadSkin=true,bool reload
                         //debug.setText(debug.getText()+"\n" +e->getTagName()  + " : " +  e->getAllSubText());
                         juce::String paramName = e->getAllSubText();
                                                
-                        if ( (e->getTagName() == "skin") and reloadSkin) { currentSkin=paramName.toStdString(); /*e->setText("red");*/}
+                        if ( (e->getTagName() == "skin") && reloadSkin) { currentSkin=paramName.toStdString(); /*e->setText("red");*/}
                     } 
                 if (reloadPatternsAndSequences) {
                     int patternNum=0; 
@@ -974,7 +974,7 @@ void ChopperAudioProcessorEditor::writeXMLParam(std::string xmlFilePath,std::str
     categoryTagName=v[1];
     paramTagName=v[2];
     
-    if ( not std::filesystem::exists(std::string(xmlFilePath)) )  {
+    if ( !std::filesystem::exists(std::string(xmlFilePath)) )  {
 
     } else {
         juce::File xmlFile(xmlFilePath);
@@ -1007,7 +1007,7 @@ std::string ChopperAudioProcessorEditor::readXMLParam(std::string xmlFilePath,st
     categoryTagName=v[1];
     paramTagName=v[2];
     
-    if ( not std::filesystem::exists(std::string(xmlFilePath)) )  {
+    if ( !std::filesystem::exists(std::string(xmlFilePath)) )  {
 
     } else {
         juce::File xmlFile(xmlFilePath);
@@ -1035,7 +1035,7 @@ void ChopperAudioProcessorEditor::loadXMLPreset(std::string presetPath)
 {
     initDirectories(); 
 
-    if ( not std::filesystem::exists(std::string(presetPath)) )  {
+    if ( !std::filesystem::exists(std::string(presetPath)) )  {
 
     } else {
         juce::File xmlFile(presetPath);

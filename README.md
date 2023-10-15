@@ -76,5 +76,11 @@ It will create the folders and copy the plugin data in **${HOME}/.ssabug/choppah
 #### DAWs
 - [ ] Ableton
 
+| OS            | Working       |  Not working  |
+| ------------- |:-------------:| -----:|
+| Linux         | Bitwig, Qtractor | Tracktion Waveform 12, Carla, Ardour |
+| Windows       |        |   Ableton 11 |
+
+
 ## History
 see ![HISTORY](HISTORY.md) for more details.

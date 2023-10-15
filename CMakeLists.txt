@@ -53,6 +53,7 @@ juce_add_plugin (choppah-${format}
         PRODUCT_NAME "choppah"
         PLUGIN_MANUFACTURER_CODE Sabg
         PLUGIN_CODE Chpa
+        COMPANY_WEBSITE "https://github.com/ssabug/choppah"
         IS_SYNTH FALSE
         NEEDS_MIDI_INPUT FALSE
         NEEDS_MIDI_OUTPUT FALSE

@@ -63,7 +63,7 @@ It will create the folders and copy the plugin data in **${HOME}/.ssabug/choppah
 
 ## Testing
 ### Linux
-#### OS
+#### Distro
 - [x] Fedora
 - [x] Arch Linux
 #### DAWs
@@ -72,3 +72,9 @@ It will create the folders and copy the plugin data in **${HOME}/.ssabug/choppah
 - [ ] Carla / Zrythm
 - [ ] Ardour 
 - [x] Qtractor 
+### Windows
+#### DAWs
+- [ ] Ableton
+
+## History
+see ![HISTORY](HISTORY.md) for more details.

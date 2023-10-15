@@ -71,6 +71,7 @@ It will create the folders and copy the plugin data in **${HOME}/.ssabug/choppah
 | Windows       |               | Ableton 11            |
 
 Linux distributions tested : Fedora, Arch Linux
+
 Windows versions tested : 11
 
 ## History

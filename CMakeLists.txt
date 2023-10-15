@@ -1,5 +1,28 @@
 cmake_minimum_required(VERSION 3.22)
 
+set(CMAKE_CXX_STANDARD 20)
+#target_compile_features (fxseq-${format} PRIVATE cxx_std_20)
+
+set(COMP_TARGET "The system to be built for (linux or windows)" "linux")
+
+if (COMP_TARGET STREQUAL "windows")
+
+    set(CMAKE_SYSTEM_NAME Windows)
+    add_definitions(-D_WIN32_WINNT=0x0603) # windows vista is 0x0600, 8.1 is 0x0603
+    set(CMAKE_SYSTEM_PROCESSOR x86_64)
+    set(THREADS_PREFER_PTHREAD_FLAG ON)
+
+    set(TOOLCHAIN_PREFIX x86_64-w64-mingw32)
+    set(TOOLCHAIN_SUFFIX -posix) #or ""
+    set(CMAKE_C_COMPILER ${TOOLCHAIN_PREFIX}-gcc${TOOLCHAIN_SUFFIX})
+    set(CMAKE_CXX_COMPILER ${TOOLCHAIN_PREFIX}-g++${TOOLCHAIN_SUFFIX})
+    set(CMAKE_RC_COMPILER ${TOOLCHAIN_PREFIX}-windres)
+    set(CMAKE_CXX_COMPILER /usr/bin/x86_64-w64-mingw32-g++${TOOLCHAIN_SUFFIX})
+   
+    #set(CMAKE_FIND_ROOT_PATH /usr/share/mingw-w64/include)
+    set(CMAKE_FIND_ROOT_PATH /usr/x86_64-w64-mingw32/include/) #path to mingw windows sdk
+endif()
+
 project (choppah VERSION 0.1)
 
 # Adding JUCE
@@ -28,15 +51,20 @@ juce_add_plugin (choppah-${format}
 
         COMPANY_NAME Ssabug
         PRODUCT_NAME "choppah"
+        PLUGIN_MANUFACTURER_CODE Sabg
+        PLUGIN_CODE Chpa
+        IS_SYNTH FALSE
+        NEEDS_MIDI_INPUT FALSE
+        NEEDS_MIDI_OUTPUT FALSE
+        IS_MIDI_EFFECT FALSE
+        EDITOR_WANTS_KEYBOARD_FOCUS FALSE
 
         COPY_PLUGIN_AFTER_BUILD ${COPY_PLUGIN_AFTER_BUILD}
         FORMATS ${format}
 
         ${ARGN})
 
-# We want to compile the plugin with C++14
-target_compile_features (choppah-${format} PRIVATE cxx_std_17)
-set(CMAKE_CXX_STANDARD 17)
+
 #set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall  -O3 -march=native -std=c++11")
 # Gather some info regarding our git commit to inject them into a header file.
 #jb_add_git_version_info (choppah-${format})
@@ -98,7 +126,7 @@ add_choppah_version (VST3
         # A four-character manufacturer id with at least one upper-case character
         PLUGIN_MANUFACTURER_CODE Sabg
         # A unique four-character plugin id with at least one upper-case character
-        PLUGIN_CODE FXSQ
+        PLUGIN_CODE Chop
 
         # When the choppah was released, there was a bug in JUCE that wrongly reported the plugin code "proj". Applying this
         # to not break existing sessions
@@ -108,15 +136,15 @@ add_choppah_version (VST3
 
         target_compile_definitions (choppah-VST3 PRIVATE JUCE_DISPLAY_SPLASH_SCREEN=0)
 
-#add_choppah_version (LV2
+add_choppah_version (LV2
         # A four-character manufacturer id with at least one upper-case character
-#        PLUGIN_MANUFACTURER_CODE Sabg
+        PLUGIN_MANUFACTURER_CODE Sabg
         # A unique four-character plugin id with at least one upper-case character
-#        PLUGIN_CODE FXSQ
+        PLUGIN_CODE Chop
 
- #       LV2URI "http://github.com/ssabug/choppah"
-#        LVZ_SHARED_LIBRARY_NAME choppah)
- #       target_compile_definitions (choppah-LV2 PRIVATE JUCE_DISPLAY_SPLASH_SCREEN=0)
+        LV2URI "http://github.com/ssabug/choppah"
+        LVZ_SHARED_LIBRARY_NAME choppah)
+        target_compile_definitions (choppah-LV2 PRIVATE JUCE_DISPLAY_SPLASH_SCREEN=0)
 
 if (APPLE)
 add_choppah_version (AU
@@ -160,5 +188,5 @@ target_link_libraries (choppah-ALL_FORMATS
     INTERFACE
     choppah-AU_AU
     choppah-VST3_VST3
-    #choppah-LV2_LV2
+    choppah-LV2_LV2
     choppah-AAX_AAX)

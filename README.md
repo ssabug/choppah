@@ -61,24 +61,13 @@ It will create the folders and copy the plugin data in **${HOME}/.ssabug/choppah
  - The script will ask for your **JUCE/modules** path
  - the VST3 folder will be in the  **Builds/LinuxMakefile/build/chopper.vst3** directory
 
-## Testing
-### Linux
-#### Distro
-- [x] Fedora
-- [x] Arch Linux
-#### DAWs
-- [x] Bitwig
-- [ ] Tracktion Waveform 12
-- [ ] Carla / Zrythm
-- [ ] Ardour 
-- [x] Qtractor 
-### Windows
-#### DAWs
-- [ ] Ableton
+## Compatibility
 
 | OS            | Working       |  Not working  |
 | ------------- |:-------------:| -----:|
-| Linux         | Bitwig, Qtractor | Tracktion Waveform 12, Carla, Ardour |
+| Linux         | Bitwig | Tracktion Waveform 12 |
+|               | Qtractor | Carla |
+|               |  | Ardour |
 | Windows       |        |   Ableton 11 |
 
 

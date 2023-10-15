@@ -49,7 +49,7 @@ function (add_choppah_version format)
 # Add the plugin target itself
 juce_add_plugin (choppah-${format}
 
-        COMPANY_NAME Ssabug
+        COMPANY_NAME ssabug
         PRODUCT_NAME "choppah"
         PLUGIN_MANUFACTURER_CODE Sabg
         PLUGIN_CODE Chpa

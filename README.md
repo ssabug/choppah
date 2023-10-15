@@ -68,7 +68,7 @@ It will create the folders and copy the plugin data in **${HOME}/.ssabug/choppah
 | Linux         | Bitwig        | Tracktion Waveform 12 |
 |               | Qtractor      | Carla                 |
 |               |               | Ardour                |
-|-------------------------------------------------------|
+| -------       | --------      | --------------------- |
 | Windows       |               | Ableton 11            |
 
 Linux distributions tested : Fedora, Arch Linux

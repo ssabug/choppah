@@ -5,7 +5,7 @@ echo "Moving into build directory"
 cd "${workingPath}"
 
 echo "Making symbolic link to JUCE"
-ln -s "${HOME}/Soft/JUCE" "${HOME}/dev/fxseq/JUCE"
+ln -s "${HOME}/Soft/JUCE" "${HOME}/dev/choppah/JUCE"
 
 mkdir build
 cd build

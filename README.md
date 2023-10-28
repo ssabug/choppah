@@ -1,74 +1,80 @@
 # Choppah
 
+## Description
+![alt text](Ressources/images/GUI.png)
 As I haven't found yet any trance gate VST for linux, DIY was the only way.
 
 **IMPORTANT** For the moment the processing part has just started, so it may sound **CRAP**.
 
 It is my very first JUCE project and i suck at C++ so...apologies for the crappy code ^^ .
 
-## Description
-![alt text](Ressources/images/GUI.png)
-The chopper has 2 modes : pattern & sequence.
-
-In **pattern** mode, the step seq (first line) current selected pattern is looping
-You can change the pattern to play/edit with the upper left combo box.
-Patterns have a fixed length of 16.
-
-In **sequence** mode, the chopper runs the combobox sequence of patterns (second line).
-The current sequence can be changed with the corresponding combobox to the left.
-**Seq length** bottom left slider changes the sequence length.
-
-To stop auto pattern display in **sequence** mode, disable **Auto** button.
-
-**Clock division** applies for pattern mode only.
-
-**Clear** erases current selected pattern.
-
-**Reset** erases all patterns.
-
-**Copy** copies the current selected pattern.
-
-**Paste** pastes the clipboard content into current pattern.If no copy was done, it is an empty pattern.
-
-**Load cfg** reloads plugin default state (defined in **config.xml**).
-
-**Save** saves preset to the name filled in **Presets**, if the preset already exists, it will be overwritten.
-
-Click on the logo to switch between skins.
-
-**NOTE :** Theres a bug on some combo boxes : sometimes the button doesnt change the value.The workaround is to click on the combobox (not on the arrow) then reclick here again,then you can change values with **Up/Down keys**.  
+## Documentation
+see ![DOCUMENTATION](DOCUMENTATION.md) for more details.
 
 ## Requirements
-JUCE Version 7.0.7
-
-gcc
+ - JUCE Version 7.0.7
+ - CMake
 
 ## Installation
 ### Linux
- - get the pre-built **chopper.vst3** folder in **Releases** or build it (see below).
+<details>
+  <summary> Instructions </summary>
+  
+ - get the pre-built **.vst3/.lv2** folder in **Releases** or build it (see below).
+ - put it in your VST3/LV2 folder
+ - run the script `./Ressources/scripts/copy_plugin_data_linux.sh`
+
+ </details>
+
+ The plugin data is stored in `${HOME}/.ssabug/choppah`
+
+### Windows
+<details>
+  <summary> Instructions </summary>
+
+ - get the pre-built **.vst3** folder in **Releases** or build it (see below).
  - put it in your VST3 folder
- - run the script `./Ressources/scripts/copy_plugin_data.sh [path to downloaded github stuff]`
+ - run the script `.\Ressources\scripts\copy_plugin_data_windows.cmd`
 
-It will create the folders and copy the plugin data in **${HOME}/.ssabug/choppah/**
+ </details>
 
- - load the plugin in your DAW
+  The plugin data is stored in `%HomePath%\ssabug\choppah`
 
 ## Building 
+
+In the root folder of the repository, create a symbolic link or a copy to your JUCE folder ( named "JUCE" ).
+
 ### Linux
+<details>
+  <summary> Instructions </summary>
+
  - git clone the repo or get a release zip. Extract if necessary.
- - Then `cd choppah`  
- - Run the build script with `./Ressources/scripts/build_linux_vst3.sh "$(pwd)"`
- - The script will ask for your **JUCE/modules** path
- - the VST3 folder will be in the  **Builds/LinuxMakefile/build/chopper.vst3** directory
+ - then in a terminal, type `mkdir build && cd build && cmake .. && make`
+
+ Cross compilation can be done with `cmake -DCOMP_TARGET::STRING=windows ..`.You'll have to edit `CMakeLists.txt` file to select the compiler and the libraries.
+ </details>
+
+ ### Windows
+ <details>
+  <summary> Instructions </summary>
+
+ - git clone the repo or get a release zip. Extract if necessary.
+ - in the created folder `choppah`, open the file **choppah.jucer** with JUCE Projucer
+ - generate the project for your IDE and build
+ </details>
 
 ## Compatibility
-
-| OS            | Working       |  Not working          |
-|:-------------:|:-------------:|:---------------------:|
-| Linux         | Bitwig        | Tracktion Waveform 12 |
-|               | Qtractor      | Carla                 |
-|               |               | Ardour                |
-| Windows       |               | Ableton 11            |
+### Linux  
+|**Working**           |  **Not working**      |
+|:--------------------:|:---------------------:|
+| Bitwig               | Ardour                |
+| Qtractor             | Tracktion Waveform 12 |
+|                      | Carla                 |
+### Windows
+|**Working**           |  **Not working**      |
+|:--------------------:|:---------------------:| 
+|                      |  Bitwig (TBC)         |
+|                      |  Ableton 11 (TBC)     |
 
 Linux distributions tested : Fedora, Arch Linux
 

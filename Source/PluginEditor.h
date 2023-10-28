@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include <JuceHeader.h>
+#include "../JuceLibraryCode/JuceHeader.h"
 #include "PluginProcessor.h"
 #include <juce_gui_extra/juce_gui_extra.h>
 #include <filesystem>

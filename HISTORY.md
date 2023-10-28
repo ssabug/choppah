@@ -2,6 +2,20 @@
 
 ## Change records
 
+### v0.13 28102023 
+#### Features
+- [x] CMake implementation
+- [ ] find a safe way to trigger loadXMLConfig(1,1,1) once at plugin startup (manual trigger for now)
+- [ ] save sequencer state with project
+- [ ] gain slider custom range implementation
+- [ ] code cleaning + opti
+#### Bugs
+- [ ] if loading a new preset and selected pattern not changing, no step seq display refresh
+- [ ] sequence display dont update after loadXMLConfig
+- [ ] optimize/compensate latency
+- [ ] sequence mode : sequence 0 not init as expected
+- [ ] plugin parameters not in line with GUI values on start
+
 ### v0.12 17092023 XML & presets & control template polish
 #### Features
 - [x] XML skin definition upgraded (added textbutton color def)

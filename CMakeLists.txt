@@ -1,9 +1,33 @@
 cmake_minimum_required(VERSION 3.22)
 
+SET(COMP_TARGET "linux" CACHE STRING "OS target name")
+
 set(CMAKE_CXX_STANDARD 20)
 #target_compile_features (fxseq-${format} PRIVATE cxx_std_20)
 
-set(COMP_TARGET "linux") # windows or linux
+if (UNIX)
+    set(HOST_SYSTEM "linux")
+    if(NOT DEFINED COMP_TARGET)
+        set(COMP_TARGET "linux")
+    endif()
+endif (UNIX)
+if (WIN32)
+    set(HOST_SYSTEM "windows")
+    if(NOT DEFINED COMP_TARGET)
+        set(COMP_TARGET "windows")
+    endif()
+endif (WIN32)
+if (MSVC)
+    set(HOST_SYSTEM "windows")
+    if(NOT DEFINED COMP_TARGET)
+        set(COMP_TARGET "windows")
+    endif()
+endif (MSVC)
+
+
+message("-- HOST SYSTEM :      ${HOST_SYSTEM}")
+message("-- TARGET SYSTEM :    ${COMP_TARGET}")
+#set(COMP_TARGET"linux") #linux or windows
 
 if (COMP_TARGET STREQUAL "windows")
 
@@ -11,22 +35,24 @@ if (COMP_TARGET STREQUAL "windows")
     add_definitions(-D_WIN32_WINNT=0x0603) # windows vista is 0x0600, 8.1 is 0x0603
     set(CMAKE_SYSTEM_PROCESSOR x86_64)
     set(THREADS_PREFER_PTHREAD_FLAG ON)
-
-    set(TOOLCHAIN_PREFIX x86_64-w64-mingw32)
-    set(TOOLCHAIN_SUFFIX -posix) #or ""
-    set(CMAKE_C_COMPILER ${TOOLCHAIN_PREFIX}-gcc${TOOLCHAIN_SUFFIX})
-    set(CMAKE_CXX_COMPILER ${TOOLCHAIN_PREFIX}-g++${TOOLCHAIN_SUFFIX})
-    set(CMAKE_RC_COMPILER ${TOOLCHAIN_PREFIX}-windres)
-    set(CMAKE_CXX_COMPILER /usr/bin/x86_64-w64-mingw32-g++${TOOLCHAIN_SUFFIX})
-   
-    #set(CMAKE_FIND_ROOT_PATH /usr/share/mingw-w64/include)
-    set(CMAKE_FIND_ROOT_PATH /usr/x86_64-w64-mingw32/include/) #path to mingw windows sdk
+    if (UNIX)
+        set(TOOLCHAIN_PREFIX x86_64-w64-mingw32)
+        set(TOOLCHAIN_SUFFIX -posix) #or ""
+        #set(TOOLCHAIN_SUFFIX "")
+        set(CMAKE_C_COMPILER ${TOOLCHAIN_PREFIX}-gcc${TOOLCHAIN_SUFFIX})
+        set(CMAKE_CXX_COMPILER ${TOOLCHAIN_PREFIX}-g++${TOOLCHAIN_SUFFIX})
+        set(CMAKE_RC_COMPILER ${TOOLCHAIN_PREFIX}-windres)
+        set(CMAKE_CXX_COMPILER /usr/bin/x86_64-w64-mingw32-g++${TOOLCHAIN_SUFFIX})
+    
+        #set(CMAKE_FIND_ROOT_PATH /usr/share/mingw-w64/include)
+        set(CMAKE_FIND_ROOT_PATH /usr/x86_64-w64-mingw32/include/) #path to mingw windows sdk
+    endif(UNIX)
 endif()
 
 project (choppah VERSION 0.1)
-
+message("----- ${PROJECT_NAME} version ${PROJECT_VERSION} -----") 
 # Adding JUCE
-add_subdirectory (External/JUCE)
+add_subdirectory (JUCE)
 
 
 # Set the C++ compiler to the cross-compiler for Windows
@@ -49,21 +75,25 @@ function (add_choppah_version format)
 # Add the plugin target itself
 juce_add_plugin (choppah-${format}
 
-        COMPANY_NAME ssabug
-        PRODUCT_NAME "choppah"
-        PLUGIN_MANUFACTURER_CODE Sabg
-        PLUGIN_CODE Chpa
-        COMPANY_WEBSITE "https://github.com/ssabug/choppah"
-        IS_SYNTH FALSE
-        NEEDS_MIDI_INPUT FALSE
-        NEEDS_MIDI_OUTPUT FALSE
-        IS_MIDI_EFFECT FALSE
-        EDITOR_WANTS_KEYBOARD_FOCUS FALSE
+    VERSION "0.1.0"
+    COMPANY_NAME "ssabug"
+    COMPANY_WEBSITE "https://github.com/ssabug/"
+    PRODUCT_NAME choppah
+    PLUGIN_NAME choppah
+    PLUGIN_MANUFACTURER_CODE Sabg
+    PLUGIN_CODE Chop
+    VST3_CATEGORIES Fx
+    BUNDLE_ID "com.ssabug.choppah"
+    IS_SYNTH FALSE
+    NEEDS_MIDI_INPUT FALSE
+    NEEDS_MIDI_OUTPUT FALSE
+    IS_MIDI_EFFECT FALSE
+    EDITOR_WANTS_KEYBOARD_FOCUS FALSE
 
-        COPY_PLUGIN_AFTER_BUILD ${COPY_PLUGIN_AFTER_BUILD}
-        FORMATS ${format}
+    COPY_PLUGIN_AFTER_BUILD ${COPY_PLUGIN_AFTER_BUILD}
+    FORMATS ${format}
 
-        ${ARGN})
+    ${ARGN})
 
 
 #set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall  -O3 -march=native -std=c++11")
